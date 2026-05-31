@@ -1,0 +1,13 @@
+<resources>
+    <color name="skin_background">#FAFAF7</color>
+    <color name="skin_surface">#FFFFFF</color>
+    <color name="skin_surface_alt">#EEF4F3</color>
+    <color name="skin_primary">#315C6B</color>
+    <color name="skin_primary_dark">#233F49</color>
+    <color name="skin_accent">#F5B84B</color>
+    <color name="skin_highlight">#FFE08A</color>
+    <color name="skin_mark">#DDEB86</color>
+    <color name="skin_ink">#172126</color>
+    <color name="skin_muted">#637176</color>
+    <color name="skin_line">#DDE5E2</color>
+</resources>

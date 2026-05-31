@@ -1,0 +1,25 @@
+{
+  "lessons": [
+    {
+      "id": "gamemaster_gap_aware",
+      "title": "A Vow I Can Keep",
+      "subtitle": "Gap-aware chunk test",
+      "level": "A1",
+      "path": "lessons/gamemaster_gap_aware/lesson.json"
+    },
+    {
+      "id": "three_types_matter_1149",
+      "title": "Three Types of Matter",
+      "subtitle": "Vocabulary + story draft",
+      "level": "A1",
+      "path": "lessons/three_types_matter_1149/lesson.json"
+    },
+    {
+      "id": "the_color_of_royalty_tyrian_purple",
+      "title": "The Color of Royalty",
+      "subtitle": "Tyrian Purple",
+      "level": "A1",
+      "path": "lessons/the_color_of_royalty_tyrian_purple/lesson.json"
+    }
+  ]
+}

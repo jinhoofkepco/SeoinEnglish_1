@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "id": "new_lesson_001",
+  "title": "New Lesson Title",
+  "subtitle": "Part 1",
+  "level": "A1",
+  "language": "en",
+  "defaultAudioId": "main_en",
+  "defaultChunkSetId": "sentence",
+  "imageAssets": [
+    {
+      "id": "vocab_page_001",
+      "file": "vocab/page_001.jpg",
+      "role": "vocabulary_source",
+      "label": "Optional vocabulary photo",
+      "page": 1
+    }
+  ],
+  "audioAssets": [
+    {
+      "id": "main_en",
+      "file": "audio.mp3",
+      "role": "main_narration",
+      "language": "en",
+      "durationMs": 0
+    }
+  ],
+  "chunkProfiles": [
+    {
+      "id": "sentence",
+      "label": "문장",
+      "description": "one sentence at a time",
+      "pauseBehavior": "after_each_sentence"
+    },
+    {
+      "id": "short",
+      "label": "자동 짧게",
+      "description": "short chunks if supplied",
+      "pauseBehavior": "manual_next"
+    },
+    {
+      "id": "natural",
+      "label": "자연스럽게",
+      "description": "continuous playback",
+      "pauseBehavior": "none"
+    }
+  ],
+  "vocabularySources": [
+    {
+      "id": "vocab_sheet_001",
+      "type": "image",
+      "label": "Optional vocabulary source",
+      "imageId": "vocab_page_001",
+      "items": [
+        {
+          "rowId": "vs001_r001",
+          "vocabId": "w_friend",
+          "sourceText": "friend",
+          "meaningText": "A person you like and know well.",
+          "rowIndex": 1,
+          "box": {
+            "x": 0.08,
+            "y": 0.12,
+            "w": 0.78,
+            "h": 0.05
+          }
+        }
+      ]
+    }
+  ],
+  "paragraphs": [
+    {
+      "id": "p1",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s1",
+          "text": "My best friend Paul and I were excited.",
+          "audioId": "main_en",
+          "startMs": 0,
+          "endMs": 3000,
+          "chunkSets": [
+            {
+              "id": "sentence",
+              "chunks": [
+                {
+                  "id": "s1_sentence_c1",
+                  "text": "My best friend Paul and I were excited.",
+                  "startChar": 0,
+                  "endChar": 42,
+                  "startMs": 0,
+                  "endMs": 3000
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s1_friend",
+              "type": "vocab",
+              "wordId": "w_friend",
+              "text": "friend",
+              "startChar": 8,
+              "endChar": 14,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_friend_basic"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "vocabulary": [
+    {
+      "id": "w_friend",
+      "word": "friend",
+      "lemma": "friend",
+      "forms": [
+        "friend",
+        "friends"
+      ],
+      "partOfSpeech": "noun",
+      "easyEnglish": "A person you like and know well.",
+      "meaningKo": "친구",
+      "simpleKo": "좋아하고 잘 아는 사람",
+      "examples": [
+        "My best friend Paul and I were excited.",
+        "A friend can help you do the right thing."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "sourceRefs": [
+        {
+          "sourceId": "vocab_sheet_001",
+          "rowId": "vs001_r001",
+          "rowIndex": 1,
+          "box": {
+            "x": 0.08,
+            "y": 0.12,
+            "w": 0.78,
+            "h": 0.05
+          }
+        }
+      ],
+      "explanationIds": [
+        "exp_w_friend_basic"
+      ]
+    }
+  ],
+  "explanations": [
+    {
+      "id": "exp_w_friend_basic",
+      "targetType": "vocab",
+      "targetId": "w_friend",
+      "title": "friend 뜻",
+      "easyEnglish": "A person you like and know well.",
+      "textKo": "friend는 좋아하고 잘 아는 사람, 즉 친구라는 뜻이에요.",
+      "examples": [
+        "My best friend Paul and I were excited."
+      ]
+    }
+  ]
+}

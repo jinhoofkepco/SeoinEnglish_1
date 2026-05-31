@@ -1,0 +1,2997 @@
+{
+  "schemaVersion": 1,
+  "id": "vuvuzela_175616",
+  "title": "Lerato and Her Vuvuzela",
+  "subtitle": "Original aligned chunks",
+  "level": "A1",
+  "language": "en",
+  "defaultAudioId": "main_en",
+  "defaultChunkSetId": "short",
+  "audioAssets": [
+    {
+      "id": "main_en",
+      "file": "audio.mp3",
+      "role": "main_narration",
+      "language": "en",
+      "durationMs": 71379
+    }
+  ],
+  "chunkProfiles": [
+    {
+      "id": "natural",
+      "label": "자연스럽게",
+      "description": "continuous playback",
+      "pauseBehavior": "none"
+    },
+    {
+      "id": "short",
+      "label": "원본 chunk",
+      "description": "source lesson.json chunk timing without re-splitting",
+      "pauseBehavior": "after_each_chunk"
+    },
+    {
+      "id": "long",
+      "label": "원본 chunk",
+      "description": "same source chunk timing for comparison",
+      "pauseBehavior": "after_each_chunk"
+    },
+    {
+      "id": "sentence",
+      "label": "원본 chunk",
+      "description": "same source chunk timing as sentence playback",
+      "pauseBehavior": "after_each_sentence"
+    }
+  ],
+  "paragraphs": [
+    {
+      "id": "p1",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s1",
+          "text": "The thief was scared and ran into the street.",
+          "audioId": "main_en",
+          "startMs": 99,
+          "endMs": 2720,
+          "matchQuality": "aligned",
+          "sourceChunkId": 1,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s1_original_c1",
+                  "text": "The thief was scared and ran into the street.",
+                  "startChar": 0,
+                  "endChar": 45,
+                  "startMs": 99,
+                  "endMs": 2720,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 1,
+                  "sourceStartTimeSeconds": 0.099,
+                  "sourceEndTimeSeconds": 2.72
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s1_original_c1",
+                  "text": "The thief was scared and ran into the street.",
+                  "startChar": 0,
+                  "endChar": 45,
+                  "startMs": 99,
+                  "endMs": 2720,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 1,
+                  "sourceStartTimeSeconds": 0.099,
+                  "sourceEndTimeSeconds": 2.72
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s1_original_c1",
+                  "text": "The thief was scared and ran into the street.",
+                  "startChar": 0,
+                  "endChar": 45,
+                  "startMs": 99,
+                  "endMs": 2720,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 1,
+                  "sourceStartTimeSeconds": 0.099,
+                  "sourceEndTimeSeconds": 2.72
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s1_w_thief_1",
+              "type": "vocab",
+              "wordId": "w_thief",
+              "text": "thief",
+              "startChar": 4,
+              "endChar": 9,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_thief_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s2",
+          "text": "The people were running at him.",
+          "audioId": "main_en",
+          "startMs": 3419,
+          "endMs": 4900,
+          "matchQuality": "aligned",
+          "sourceChunkId": 2,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s2_original_c1",
+                  "text": "The people were running at him.",
+                  "startChar": 0,
+                  "endChar": 31,
+                  "startMs": 3419,
+                  "endMs": 4900,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 2,
+                  "sourceStartTimeSeconds": 3.419,
+                  "sourceEndTimeSeconds": 4.9
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s2_original_c1",
+                  "text": "The people were running at him.",
+                  "startChar": 0,
+                  "endChar": 31,
+                  "startMs": 3419,
+                  "endMs": 4900,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 2,
+                  "sourceStartTimeSeconds": 3.419,
+                  "sourceEndTimeSeconds": 4.9
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s2_original_c1",
+                  "text": "The people were running at him.",
+                  "startChar": 0,
+                  "endChar": 31,
+                  "startMs": 3419,
+                  "endMs": 4900,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 2,
+                  "sourceStartTimeSeconds": 3.419,
+                  "sourceEndTimeSeconds": 4.9
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s3",
+          "text": "He ran the other way and never came back!",
+          "audioId": "main_en",
+          "startMs": 5259,
+          "endMs": 7639,
+          "matchQuality": "aligned",
+          "sourceChunkId": 3,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s3_original_c1",
+                  "text": "He ran the other way and never came back!",
+                  "startChar": 0,
+                  "endChar": 41,
+                  "startMs": 5259,
+                  "endMs": 7639,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 3,
+                  "sourceStartTimeSeconds": 5.259,
+                  "sourceEndTimeSeconds": 7.639
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s3_original_c1",
+                  "text": "He ran the other way and never came back!",
+                  "startChar": 0,
+                  "endChar": 41,
+                  "startMs": 5259,
+                  "endMs": 7639,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 3,
+                  "sourceStartTimeSeconds": 5.259,
+                  "sourceEndTimeSeconds": 7.639
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s3_original_c1",
+                  "text": "He ran the other way and never came back!",
+                  "startChar": 0,
+                  "endChar": 41,
+                  "startMs": 5259,
+                  "endMs": 7639,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 3,
+                  "sourceStartTimeSeconds": 5.259,
+                  "sourceEndTimeSeconds": 7.639
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s4",
+          "text": "All of the villagers thanked Lerato and her vuvuzela.",
+          "audioId": "main_en",
+          "startMs": 8500,
+          "endMs": 11960,
+          "matchQuality": "aligned",
+          "sourceChunkId": 4,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s4_original_c1",
+                  "text": "All of the villagers thanked Lerato and her vuvuzela.",
+                  "startChar": 0,
+                  "endChar": 53,
+                  "startMs": 8500,
+                  "endMs": 11960,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 4,
+                  "sourceStartTimeSeconds": 8.5,
+                  "sourceEndTimeSeconds": 11.96
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s4_original_c1",
+                  "text": "All of the villagers thanked Lerato and her vuvuzela.",
+                  "startChar": 0,
+                  "endChar": 53,
+                  "startMs": 8500,
+                  "endMs": 11960,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 4,
+                  "sourceStartTimeSeconds": 8.5,
+                  "sourceEndTimeSeconds": 11.96
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s4_original_c1",
+                  "text": "All of the villagers thanked Lerato and her vuvuzela.",
+                  "startChar": 0,
+                  "endChar": 53,
+                  "startMs": 8500,
+                  "endMs": 11960,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 4,
+                  "sourceStartTimeSeconds": 8.5,
+                  "sourceEndTimeSeconds": 11.96
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s4_w_villager_1",
+              "type": "vocab",
+              "wordId": "w_villager",
+              "text": "villagers",
+              "startChar": 11,
+              "endChar": 20,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_villager_basic"
+              ]
+            },
+            {
+              "id": "ann_s4_w_vuvuzela_1",
+              "type": "vocab",
+              "wordId": "w_vuvuzela",
+              "text": "vuvuzela",
+              "startChar": 44,
+              "endChar": 52,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_vuvuzela_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s5",
+          "text": "“You saved the village!” They said.",
+          "audioId": "main_en",
+          "startMs": 13139,
+          "endMs": 15259,
+          "matchQuality": "aligned",
+          "sourceChunkId": 5,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s5_original_c1",
+                  "text": "“You saved the village!” They said.",
+                  "startChar": 0,
+                  "endChar": 35,
+                  "startMs": 13139,
+                  "endMs": 15259,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 5,
+                  "sourceStartTimeSeconds": 13.139,
+                  "sourceEndTimeSeconds": 15.259
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s5_original_c1",
+                  "text": "“You saved the village!” They said.",
+                  "startChar": 0,
+                  "endChar": 35,
+                  "startMs": 13139,
+                  "endMs": 15259,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 5,
+                  "sourceStartTimeSeconds": 13.139,
+                  "sourceEndTimeSeconds": 15.259
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s5_original_c1",
+                  "text": "“You saved the village!” They said.",
+                  "startChar": 0,
+                  "endChar": 35,
+                  "startMs": 13139,
+                  "endMs": 15259,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 5,
+                  "sourceStartTimeSeconds": 13.139,
+                  "sourceEndTimeSeconds": 15.259
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s5_w_save_1",
+              "type": "vocab",
+              "wordId": "w_save",
+              "text": "saved",
+              "startChar": 5,
+              "endChar": 10,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_save_basic"
+              ]
+            },
+            {
+              "id": "ann_s5_w_village_1",
+              "type": "vocab",
+              "wordId": "w_village",
+              "text": "village",
+              "startChar": 15,
+              "endChar": 22,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_village_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s6",
+          "text": "“You and your vuvuzela are heroes!”",
+          "audioId": "main_en",
+          "startMs": 15679,
+          "endMs": 17879,
+          "matchQuality": "aligned",
+          "sourceChunkId": 6,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s6_original_c1",
+                  "text": "“You and your vuvuzela are heroes!”",
+                  "startChar": 0,
+                  "endChar": 35,
+                  "startMs": 15679,
+                  "endMs": 17879,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 6,
+                  "sourceStartTimeSeconds": 15.679,
+                  "sourceEndTimeSeconds": 17.879
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s6_original_c1",
+                  "text": "“You and your vuvuzela are heroes!”",
+                  "startChar": 0,
+                  "endChar": 35,
+                  "startMs": 15679,
+                  "endMs": 17879,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 6,
+                  "sourceStartTimeSeconds": 15.679,
+                  "sourceEndTimeSeconds": 17.879
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s6_original_c1",
+                  "text": "“You and your vuvuzela are heroes!”",
+                  "startChar": 0,
+                  "endChar": 35,
+                  "startMs": 15679,
+                  "endMs": 17879,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 6,
+                  "sourceStartTimeSeconds": 15.679,
+                  "sourceEndTimeSeconds": 17.879
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s6_w_vuvuzela_1",
+              "type": "vocab",
+              "wordId": "w_vuvuzela",
+              "text": "vuvuzela",
+              "startChar": 14,
+              "endChar": 22,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_vuvuzela_basic"
+              ]
+            },
+            {
+              "id": "ann_s6_w_hero_1",
+              "type": "vocab",
+              "wordId": "w_hero",
+              "text": "heroes",
+              "startChar": 27,
+              "endChar": 33,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_hero_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s7",
+          "text": "match n.",
+          "audioId": "main_en",
+          "startMs": 18619,
+          "endMs": 19399,
+          "matchQuality": "aligned",
+          "sourceChunkId": 7,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s7_original_c1",
+                  "text": "match n.",
+                  "startChar": 0,
+                  "endChar": 8,
+                  "startMs": 18619,
+                  "endMs": 19399,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 7,
+                  "sourceStartTimeSeconds": 18.619,
+                  "sourceEndTimeSeconds": 19.399
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s7_original_c1",
+                  "text": "match n.",
+                  "startChar": 0,
+                  "endChar": 8,
+                  "startMs": 18619,
+                  "endMs": 19399,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 7,
+                  "sourceStartTimeSeconds": 18.619,
+                  "sourceEndTimeSeconds": 19.399
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s7_original_c1",
+                  "text": "match n.",
+                  "startChar": 0,
+                  "endChar": 8,
+                  "startMs": 18619,
+                  "endMs": 19399,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 7,
+                  "sourceStartTimeSeconds": 18.619,
+                  "sourceEndTimeSeconds": 19.399
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s7_w_match_1",
+              "type": "vocab",
+              "wordId": "w_match",
+              "text": "match",
+              "startChar": 0,
+              "endChar": 5,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_match_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s8",
+          "text": "a sports game",
+          "audioId": "main_en",
+          "startMs": 19719,
+          "endMs": 20600,
+          "matchQuality": "aligned",
+          "sourceChunkId": 8,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s8_original_c1",
+                  "text": "a sports game",
+                  "startChar": 0,
+                  "endChar": 13,
+                  "startMs": 19719,
+                  "endMs": 20600,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 8,
+                  "sourceStartTimeSeconds": 19.719,
+                  "sourceEndTimeSeconds": 20.6
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s8_original_c1",
+                  "text": "a sports game",
+                  "startChar": 0,
+                  "endChar": 13,
+                  "startMs": 19719,
+                  "endMs": 20600,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 8,
+                  "sourceStartTimeSeconds": 19.719,
+                  "sourceEndTimeSeconds": 20.6
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s8_original_c1",
+                  "text": "a sports game",
+                  "startChar": 0,
+                  "endChar": 13,
+                  "startMs": 19719,
+                  "endMs": 20600,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 8,
+                  "sourceStartTimeSeconds": 19.719,
+                  "sourceEndTimeSeconds": 20.6
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s9",
+          "text": "practice v.",
+          "audioId": "main_en",
+          "startMs": 20819,
+          "endMs": 21599,
+          "matchQuality": "aligned",
+          "sourceChunkId": 9,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s9_original_c1",
+                  "text": "practice v.",
+                  "startChar": 0,
+                  "endChar": 11,
+                  "startMs": 20819,
+                  "endMs": 21599,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 9,
+                  "sourceStartTimeSeconds": 20.819,
+                  "sourceEndTimeSeconds": 21.599
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s9_original_c1",
+                  "text": "practice v.",
+                  "startChar": 0,
+                  "endChar": 11,
+                  "startMs": 20819,
+                  "endMs": 21599,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 9,
+                  "sourceStartTimeSeconds": 20.819,
+                  "sourceEndTimeSeconds": 21.599
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s9_original_c1",
+                  "text": "practice v.",
+                  "startChar": 0,
+                  "endChar": 11,
+                  "startMs": 20819,
+                  "endMs": 21599,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 9,
+                  "sourceStartTimeSeconds": 20.819,
+                  "sourceEndTimeSeconds": 21.599
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s9_w_practice_1",
+              "type": "vocab",
+              "wordId": "w_practice",
+              "text": "practice",
+              "startChar": 0,
+              "endChar": 8,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_practice_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s10",
+          "text": "to try to get better at doing something",
+          "audioId": "main_en",
+          "startMs": 22100,
+          "endMs": 24159,
+          "matchQuality": "aligned",
+          "sourceChunkId": 10,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s10_original_c1",
+                  "text": "to try to get better at doing something",
+                  "startChar": 0,
+                  "endChar": 39,
+                  "startMs": 22100,
+                  "endMs": 24159,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 10,
+                  "sourceStartTimeSeconds": 22.1,
+                  "sourceEndTimeSeconds": 24.159
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s10_original_c1",
+                  "text": "to try to get better at doing something",
+                  "startChar": 0,
+                  "endChar": 39,
+                  "startMs": 22100,
+                  "endMs": 24159,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 10,
+                  "sourceStartTimeSeconds": 22.1,
+                  "sourceEndTimeSeconds": 24.159
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s10_original_c1",
+                  "text": "to try to get better at doing something",
+                  "startChar": 0,
+                  "endChar": 39,
+                  "startMs": 22100,
+                  "endMs": 24159,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 10,
+                  "sourceStartTimeSeconds": 22.1,
+                  "sourceEndTimeSeconds": 24.159
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s11",
+          "text": "suddenly adv.",
+          "audioId": "main_en",
+          "startMs": 24779,
+          "endMs": 25719,
+          "matchQuality": "normalized",
+          "sourceChunkId": 11,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s11_original_c1",
+                  "text": "suddenly adv.",
+                  "startChar": 0,
+                  "endChar": 13,
+                  "startMs": 24779,
+                  "endMs": 25719,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 11,
+                  "sourceStartTimeSeconds": 24.779,
+                  "sourceEndTimeSeconds": 25.719
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s11_original_c1",
+                  "text": "suddenly adv.",
+                  "startChar": 0,
+                  "endChar": 13,
+                  "startMs": 24779,
+                  "endMs": 25719,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 11,
+                  "sourceStartTimeSeconds": 24.779,
+                  "sourceEndTimeSeconds": 25.719
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s11_original_c1",
+                  "text": "suddenly adv.",
+                  "startChar": 0,
+                  "endChar": 13,
+                  "startMs": 24779,
+                  "endMs": 25719,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 11,
+                  "sourceStartTimeSeconds": 24.779,
+                  "sourceEndTimeSeconds": 25.719
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s11_w_suddenly_1",
+              "type": "vocab",
+              "wordId": "w_suddenly",
+              "text": "suddenly",
+              "startChar": 0,
+              "endChar": 8,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_suddenly_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s12",
+          "text": "happening at once",
+          "audioId": "main_en",
+          "startMs": 25799,
+          "endMs": 26679,
+          "matchQuality": "aligned",
+          "sourceChunkId": 12,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s12_original_c1",
+                  "text": "happening at once",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 25799,
+                  "endMs": 26679,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 12,
+                  "sourceStartTimeSeconds": 25.799,
+                  "sourceEndTimeSeconds": 26.679
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s12_original_c1",
+                  "text": "happening at once",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 25799,
+                  "endMs": 26679,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 12,
+                  "sourceStartTimeSeconds": 25.799,
+                  "sourceEndTimeSeconds": 26.679
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s12_original_c1",
+                  "text": "happening at once",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 25799,
+                  "endMs": 26679,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 12,
+                  "sourceStartTimeSeconds": 25.799,
+                  "sourceEndTimeSeconds": 26.679
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s13",
+          "text": "neighbor n.",
+          "audioId": "main_en",
+          "startMs": 27399,
+          "endMs": 28099,
+          "matchQuality": "normalized",
+          "sourceChunkId": 13,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s13_original_c1",
+                  "text": "neighbor n.",
+                  "startChar": 0,
+                  "endChar": 11,
+                  "startMs": 27399,
+                  "endMs": 28099,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 13,
+                  "sourceStartTimeSeconds": 27.399,
+                  "sourceEndTimeSeconds": 28.099
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s13_original_c1",
+                  "text": "neighbor n.",
+                  "startChar": 0,
+                  "endChar": 11,
+                  "startMs": 27399,
+                  "endMs": 28099,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 13,
+                  "sourceStartTimeSeconds": 27.399,
+                  "sourceEndTimeSeconds": 28.099
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s13_original_c1",
+                  "text": "neighbor n.",
+                  "startChar": 0,
+                  "endChar": 11,
+                  "startMs": 27399,
+                  "endMs": 28099,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 13,
+                  "sourceStartTimeSeconds": 27.399,
+                  "sourceEndTimeSeconds": 28.099
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s13_w_neighbor_1",
+              "type": "vocab",
+              "wordId": "w_neighbor",
+              "text": "neighbor",
+              "startChar": 0,
+              "endChar": 8,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_neighbor_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s14",
+          "text": "the person who lives near you",
+          "audioId": "main_en",
+          "startMs": 28279,
+          "endMs": 29639,
+          "matchQuality": "aligned",
+          "sourceChunkId": 14,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s14_original_c1",
+                  "text": "the person who lives near you",
+                  "startChar": 0,
+                  "endChar": 29,
+                  "startMs": 28279,
+                  "endMs": 29639,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 14,
+                  "sourceStartTimeSeconds": 28.279,
+                  "sourceEndTimeSeconds": 29.639
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s14_original_c1",
+                  "text": "the person who lives near you",
+                  "startChar": 0,
+                  "endChar": 29,
+                  "startMs": 28279,
+                  "endMs": 29639,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 14,
+                  "sourceStartTimeSeconds": 28.279,
+                  "sourceEndTimeSeconds": 29.639
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s14_original_c1",
+                  "text": "the person who lives near you",
+                  "startChar": 0,
+                  "endChar": 29,
+                  "startMs": 28279,
+                  "endMs": 29639,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 14,
+                  "sourceStartTimeSeconds": 28.279,
+                  "sourceEndTimeSeconds": 29.639
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s15",
+          "text": "thief n.",
+          "audioId": "main_en",
+          "startMs": 30199,
+          "endMs": 30840,
+          "matchQuality": "normalized",
+          "sourceChunkId": 15,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s15_original_c1",
+                  "text": "thief n.",
+                  "startChar": 0,
+                  "endChar": 8,
+                  "startMs": 30199,
+                  "endMs": 30840,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 15,
+                  "sourceStartTimeSeconds": 30.199,
+                  "sourceEndTimeSeconds": 30.84
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s15_original_c1",
+                  "text": "thief n.",
+                  "startChar": 0,
+                  "endChar": 8,
+                  "startMs": 30199,
+                  "endMs": 30840,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 15,
+                  "sourceStartTimeSeconds": 30.199,
+                  "sourceEndTimeSeconds": 30.84
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s15_original_c1",
+                  "text": "thief n.",
+                  "startChar": 0,
+                  "endChar": 8,
+                  "startMs": 30199,
+                  "endMs": 30840,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 15,
+                  "sourceStartTimeSeconds": 30.199,
+                  "sourceEndTimeSeconds": 30.84
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s15_w_thief_1",
+              "type": "vocab",
+              "wordId": "w_thief",
+              "text": "thief",
+              "startChar": 0,
+              "endChar": 5,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_thief_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s16",
+          "text": "a person who takes things from others",
+          "audioId": "main_en",
+          "startMs": 31420,
+          "endMs": 33340,
+          "matchQuality": "aligned",
+          "sourceChunkId": 16,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s16_original_c1",
+                  "text": "a person who takes things from others",
+                  "startChar": 0,
+                  "endChar": 37,
+                  "startMs": 31420,
+                  "endMs": 33340,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 16,
+                  "sourceStartTimeSeconds": 31.42,
+                  "sourceEndTimeSeconds": 33.34
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s16_original_c1",
+                  "text": "a person who takes things from others",
+                  "startChar": 0,
+                  "endChar": 37,
+                  "startMs": 31420,
+                  "endMs": 33340,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 16,
+                  "sourceStartTimeSeconds": 31.42,
+                  "sourceEndTimeSeconds": 33.34
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s16_original_c1",
+                  "text": "a person who takes things from others",
+                  "startChar": 0,
+                  "endChar": 37,
+                  "startMs": 31420,
+                  "endMs": 33340,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 16,
+                  "sourceStartTimeSeconds": 31.42,
+                  "sourceEndTimeSeconds": 33.34
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s17",
+          "text": "adult n.",
+          "audioId": "main_en",
+          "startMs": 33779,
+          "endMs": 34459,
+          "matchQuality": "normalized",
+          "sourceChunkId": 17,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s17_original_c1",
+                  "text": "adult n.",
+                  "startChar": 0,
+                  "endChar": 8,
+                  "startMs": 33779,
+                  "endMs": 34459,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 17,
+                  "sourceStartTimeSeconds": 33.779,
+                  "sourceEndTimeSeconds": 34.459
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s17_original_c1",
+                  "text": "adult n.",
+                  "startChar": 0,
+                  "endChar": 8,
+                  "startMs": 33779,
+                  "endMs": 34459,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 17,
+                  "sourceStartTimeSeconds": 33.779,
+                  "sourceEndTimeSeconds": 34.459
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s17_original_c1",
+                  "text": "adult n.",
+                  "startChar": 0,
+                  "endChar": 8,
+                  "startMs": 33779,
+                  "endMs": 34459,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 17,
+                  "sourceStartTimeSeconds": 33.779,
+                  "sourceEndTimeSeconds": 34.459
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s17_w_adult_1",
+              "type": "vocab",
+              "wordId": "w_adult",
+              "text": "adult",
+              "startChar": 0,
+              "endChar": 5,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_adult_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s18",
+          "text": "a man or a woman; not a child",
+          "audioId": "main_en",
+          "startMs": 34619,
+          "endMs": 36879,
+          "matchQuality": "aligned",
+          "sourceChunkId": 18,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s18_original_c1",
+                  "text": "a man or a woman; not a child",
+                  "startChar": 0,
+                  "endChar": 29,
+                  "startMs": 34619,
+                  "endMs": 36879,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 18,
+                  "sourceStartTimeSeconds": 34.619,
+                  "sourceEndTimeSeconds": 36.879
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s18_original_c1",
+                  "text": "a man or a woman; not a child",
+                  "startChar": 0,
+                  "endChar": 29,
+                  "startMs": 34619,
+                  "endMs": 36879,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 18,
+                  "sourceStartTimeSeconds": 34.619,
+                  "sourceEndTimeSeconds": 36.879
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s18_original_c1",
+                  "text": "a man or a woman; not a child",
+                  "startChar": 0,
+                  "endChar": 29,
+                  "startMs": 34619,
+                  "endMs": 36879,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 18,
+                  "sourceStartTimeSeconds": 34.619,
+                  "sourceEndTimeSeconds": 36.879
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s19",
+          "text": "save v.",
+          "audioId": "main_en",
+          "startMs": 37020,
+          "endMs": 37520,
+          "matchQuality": "normalized",
+          "sourceChunkId": 19,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s19_original_c1",
+                  "text": "save v.",
+                  "startChar": 0,
+                  "endChar": 7,
+                  "startMs": 37020,
+                  "endMs": 37520,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 19,
+                  "sourceStartTimeSeconds": 37.02,
+                  "sourceEndTimeSeconds": 37.52
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s19_original_c1",
+                  "text": "save v.",
+                  "startChar": 0,
+                  "endChar": 7,
+                  "startMs": 37020,
+                  "endMs": 37520,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 19,
+                  "sourceStartTimeSeconds": 37.02,
+                  "sourceEndTimeSeconds": 37.52
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s19_original_c1",
+                  "text": "save v.",
+                  "startChar": 0,
+                  "endChar": 7,
+                  "startMs": 37020,
+                  "endMs": 37520,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 19,
+                  "sourceStartTimeSeconds": 37.02,
+                  "sourceEndTimeSeconds": 37.52
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s19_w_save_1",
+              "type": "vocab",
+              "wordId": "w_save",
+              "text": "save",
+              "startChar": 0,
+              "endChar": 4,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_save_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s20",
+          "text": "to stop something bad from happening",
+          "audioId": "main_en",
+          "startMs": 37579,
+          "endMs": 39279,
+          "matchQuality": "aligned",
+          "sourceChunkId": 20,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s20_original_c1",
+                  "text": "to stop something bad from happening",
+                  "startChar": 0,
+                  "endChar": 36,
+                  "startMs": 37579,
+                  "endMs": 39279,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 20,
+                  "sourceStartTimeSeconds": 37.579,
+                  "sourceEndTimeSeconds": 39.279
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s20_original_c1",
+                  "text": "to stop something bad from happening",
+                  "startChar": 0,
+                  "endChar": 36,
+                  "startMs": 37579,
+                  "endMs": 39279,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 20,
+                  "sourceStartTimeSeconds": 37.579,
+                  "sourceEndTimeSeconds": 39.279
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s20_original_c1",
+                  "text": "to stop something bad from happening",
+                  "startChar": 0,
+                  "endChar": 36,
+                  "startMs": 37579,
+                  "endMs": 39279,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 20,
+                  "sourceStartTimeSeconds": 37.579,
+                  "sourceEndTimeSeconds": 39.279
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s21",
+          "text": "hero n.",
+          "audioId": "main_en",
+          "startMs": 39520,
+          "endMs": 40519,
+          "matchQuality": "aligned",
+          "sourceChunkId": 21,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s21_original_c1",
+                  "text": "hero n.",
+                  "startChar": 0,
+                  "endChar": 7,
+                  "startMs": 39520,
+                  "endMs": 40519,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 21,
+                  "sourceStartTimeSeconds": 39.52,
+                  "sourceEndTimeSeconds": 40.519
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s21_original_c1",
+                  "text": "hero n.",
+                  "startChar": 0,
+                  "endChar": 7,
+                  "startMs": 39520,
+                  "endMs": 40519,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 21,
+                  "sourceStartTimeSeconds": 39.52,
+                  "sourceEndTimeSeconds": 40.519
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s21_original_c1",
+                  "text": "hero n.",
+                  "startChar": 0,
+                  "endChar": 7,
+                  "startMs": 39520,
+                  "endMs": 40519,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 21,
+                  "sourceStartTimeSeconds": 39.52,
+                  "sourceEndTimeSeconds": 40.519
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s21_w_hero_1",
+              "type": "vocab",
+              "wordId": "w_hero",
+              "text": "hero",
+              "startChar": 0,
+              "endChar": 4,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_hero_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s22",
+          "text": "someone who does amazing things",
+          "audioId": "main_en",
+          "startMs": 41219,
+          "endMs": 44059,
+          "matchQuality": "aligned",
+          "sourceChunkId": 22,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s22_original_c1",
+                  "text": "someone who does amazing things",
+                  "startChar": 0,
+                  "endChar": 31,
+                  "startMs": 41219,
+                  "endMs": 44059,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 22,
+                  "sourceStartTimeSeconds": 41.219,
+                  "sourceEndTimeSeconds": 44.059
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s22_original_c1",
+                  "text": "someone who does amazing things",
+                  "startChar": 0,
+                  "endChar": 31,
+                  "startMs": 41219,
+                  "endMs": 44059,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 22,
+                  "sourceStartTimeSeconds": 41.219,
+                  "sourceEndTimeSeconds": 44.059
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s22_original_c1",
+                  "text": "someone who does amazing things",
+                  "startChar": 0,
+                  "endChar": 31,
+                  "startMs": 41219,
+                  "endMs": 44059,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 22,
+                  "sourceStartTimeSeconds": 41.219,
+                  "sourceEndTimeSeconds": 44.059
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s23",
+          "text": "How to Blow a Vuvuzela",
+          "audioId": "main_en",
+          "startMs": 44139,
+          "endMs": 45419,
+          "matchQuality": "aligned",
+          "sourceChunkId": 23,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s23_original_c1",
+                  "text": "How to Blow a Vuvuzela",
+                  "startChar": 0,
+                  "endChar": 22,
+                  "startMs": 44139,
+                  "endMs": 45419,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 23,
+                  "sourceStartTimeSeconds": 44.139,
+                  "sourceEndTimeSeconds": 45.419
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s23_original_c1",
+                  "text": "How to Blow a Vuvuzela",
+                  "startChar": 0,
+                  "endChar": 22,
+                  "startMs": 44139,
+                  "endMs": 45419,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 23,
+                  "sourceStartTimeSeconds": 44.139,
+                  "sourceEndTimeSeconds": 45.419
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s23_original_c1",
+                  "text": "How to Blow a Vuvuzela",
+                  "startChar": 0,
+                  "endChar": 22,
+                  "startMs": 44139,
+                  "endMs": 45419,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 23,
+                  "sourceStartTimeSeconds": 44.139,
+                  "sourceEndTimeSeconds": 45.419
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s23_w_blow_1",
+              "type": "vocab",
+              "wordId": "w_blow",
+              "text": "Blow",
+              "startChar": 7,
+              "endChar": 11,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_blow_basic"
+              ]
+            },
+            {
+              "id": "ann_s23_w_vuvuzela_1",
+              "type": "vocab",
+              "wordId": "w_vuvuzela",
+              "text": "Vuvuzela",
+              "startChar": 14,
+              "endChar": 22,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_vuvuzela_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s24",
+          "text": "1. Make your lips small and round.",
+          "audioId": "main_en",
+          "startMs": 45500,
+          "endMs": 48119,
+          "matchQuality": "normalized",
+          "sourceChunkId": 24,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s24_original_c1",
+                  "text": "1. Make your lips small and round.",
+                  "startChar": 0,
+                  "endChar": 34,
+                  "startMs": 45500,
+                  "endMs": 48119,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 24,
+                  "sourceStartTimeSeconds": 45.5,
+                  "sourceEndTimeSeconds": 48.119
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s24_original_c1",
+                  "text": "1. Make your lips small and round.",
+                  "startChar": 0,
+                  "endChar": 34,
+                  "startMs": 45500,
+                  "endMs": 48119,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 24,
+                  "sourceStartTimeSeconds": 45.5,
+                  "sourceEndTimeSeconds": 48.119
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s24_original_c1",
+                  "text": "1. Make your lips small and round.",
+                  "startChar": 0,
+                  "endChar": 34,
+                  "startMs": 45500,
+                  "endMs": 48119,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 24,
+                  "sourceStartTimeSeconds": 45.5,
+                  "sourceEndTimeSeconds": 48.119
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s25",
+          "text": "2. Wrap the narrow end of the vuvuzela with your lips.",
+          "audioId": "main_en",
+          "startMs": 48759,
+          "endMs": 52359,
+          "matchQuality": "normalized",
+          "sourceChunkId": 25,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s25_original_c1",
+                  "text": "2. Wrap the narrow end of the vuvuzela with your lips.",
+                  "startChar": 0,
+                  "endChar": 54,
+                  "startMs": 48759,
+                  "endMs": 52359,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 25,
+                  "sourceStartTimeSeconds": 48.759,
+                  "sourceEndTimeSeconds": 52.359
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s25_original_c1",
+                  "text": "2. Wrap the narrow end of the vuvuzela with your lips.",
+                  "startChar": 0,
+                  "endChar": 54,
+                  "startMs": 48759,
+                  "endMs": 52359,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 25,
+                  "sourceStartTimeSeconds": 48.759,
+                  "sourceEndTimeSeconds": 52.359
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s25_original_c1",
+                  "text": "2. Wrap the narrow end of the vuvuzela with your lips.",
+                  "startChar": 0,
+                  "endChar": 54,
+                  "startMs": 48759,
+                  "endMs": 52359,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 25,
+                  "sourceStartTimeSeconds": 48.759,
+                  "sourceEndTimeSeconds": 52.359
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s25_w_narrow_1",
+              "type": "vocab",
+              "wordId": "w_narrow",
+              "text": "narrow",
+              "startChar": 12,
+              "endChar": 18,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_narrow_basic"
+              ]
+            },
+            {
+              "id": "ann_s25_w_vuvuzela_1",
+              "type": "vocab",
+              "wordId": "w_vuvuzela",
+              "text": "vuvuzela",
+              "startChar": 30,
+              "endChar": 38,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_vuvuzela_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s26",
+          "text": "3. Use your mouth, cheeks, and lips.",
+          "audioId": "main_en",
+          "startMs": 53079,
+          "endMs": 56159,
+          "matchQuality": "normalized",
+          "sourceChunkId": 26,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s26_original_c1",
+                  "text": "3. Use your mouth, cheeks, and lips.",
+                  "startChar": 0,
+                  "endChar": 36,
+                  "startMs": 53079,
+                  "endMs": 56159,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 26,
+                  "sourceStartTimeSeconds": 53.079,
+                  "sourceEndTimeSeconds": 56.159
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s26_original_c1",
+                  "text": "3. Use your mouth, cheeks, and lips.",
+                  "startChar": 0,
+                  "endChar": 36,
+                  "startMs": 53079,
+                  "endMs": 56159,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 26,
+                  "sourceStartTimeSeconds": 53.079,
+                  "sourceEndTimeSeconds": 56.159
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s26_original_c1",
+                  "text": "3. Use your mouth, cheeks, and lips.",
+                  "startChar": 0,
+                  "endChar": 36,
+                  "startMs": 53079,
+                  "endMs": 56159,
+                  "timingQuality": "normalized",
+                  "sourceChunkId": 26,
+                  "sourceStartTimeSeconds": 53.079,
+                  "sourceEndTimeSeconds": 56.159
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s26_w_cheek_1",
+              "type": "vocab",
+              "wordId": "w_cheek",
+              "text": "cheeks",
+              "startChar": 19,
+              "endChar": 25,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_cheek_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s27",
+          "text": "Then blooooowwww!",
+          "audioId": "main_en",
+          "startMs": 56559,
+          "endMs": 58039,
+          "matchQuality": "aligned",
+          "sourceChunkId": 27,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s27_original_c1",
+                  "text": "Then blooooowwww!",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 56559,
+                  "endMs": 58039,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 27,
+                  "sourceStartTimeSeconds": 56.559,
+                  "sourceEndTimeSeconds": 58.039
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s27_original_c1",
+                  "text": "Then blooooowwww!",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 56559,
+                  "endMs": 58039,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 27,
+                  "sourceStartTimeSeconds": 56.559,
+                  "sourceEndTimeSeconds": 58.039
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s27_original_c1",
+                  "text": "Then blooooowwww!",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 56559,
+                  "endMs": 58039,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 27,
+                  "sourceStartTimeSeconds": 56.559,
+                  "sourceEndTimeSeconds": 58.039
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s28",
+          "text": "Try to imagine how fish breathe or blow.",
+          "audioId": "main_en",
+          "startMs": 58819,
+          "endMs": 61479,
+          "matchQuality": "aligned",
+          "sourceChunkId": 28,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s28_original_c1",
+                  "text": "Try to imagine how fish breathe or blow.",
+                  "startChar": 0,
+                  "endChar": 40,
+                  "startMs": 58819,
+                  "endMs": 61479,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 28,
+                  "sourceStartTimeSeconds": 58.819,
+                  "sourceEndTimeSeconds": 61.479
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s28_original_c1",
+                  "text": "Try to imagine how fish breathe or blow.",
+                  "startChar": 0,
+                  "endChar": 40,
+                  "startMs": 58819,
+                  "endMs": 61479,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 28,
+                  "sourceStartTimeSeconds": 58.819,
+                  "sourceEndTimeSeconds": 61.479
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s28_original_c1",
+                  "text": "Try to imagine how fish breathe or blow.",
+                  "startChar": 0,
+                  "endChar": 40,
+                  "startMs": 58819,
+                  "endMs": 61479,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 28,
+                  "sourceStartTimeSeconds": 58.819,
+                  "sourceEndTimeSeconds": 61.479
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s28_w_imagine_1",
+              "type": "vocab",
+              "wordId": "w_imagine",
+              "text": "imagine",
+              "startChar": 7,
+              "endChar": 14,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_imagine_basic"
+              ]
+            },
+            {
+              "id": "ann_s28_w_breathe_1",
+              "type": "vocab",
+              "wordId": "w_breathe",
+              "text": "breathe",
+              "startChar": 24,
+              "endChar": 31,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_breathe_basic"
+              ]
+            },
+            {
+              "id": "ann_s28_w_blow_1",
+              "type": "vocab",
+              "wordId": "w_blow",
+              "text": "blow",
+              "startChar": 35,
+              "endChar": 39,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_blow_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s29",
+          "text": "Blowing a vuvuzela is",
+          "audioId": "main_en",
+          "startMs": 62119,
+          "endMs": 63959,
+          "matchQuality": "aligned",
+          "sourceChunkId": 29,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s29_original_c1",
+                  "text": "Blowing a vuvuzela is",
+                  "startChar": 0,
+                  "endChar": 21,
+                  "startMs": 62119,
+                  "endMs": 63959,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 29,
+                  "sourceStartTimeSeconds": 62.119,
+                  "sourceEndTimeSeconds": 63.959
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s29_original_c1",
+                  "text": "Blowing a vuvuzela is",
+                  "startChar": 0,
+                  "endChar": 21,
+                  "startMs": 62119,
+                  "endMs": 63959,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 29,
+                  "sourceStartTimeSeconds": 62.119,
+                  "sourceEndTimeSeconds": 63.959
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s29_original_c1",
+                  "text": "Blowing a vuvuzela is",
+                  "startChar": 0,
+                  "endChar": 21,
+                  "startMs": 62119,
+                  "endMs": 63959,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 29,
+                  "sourceStartTimeSeconds": 62.119,
+                  "sourceEndTimeSeconds": 63.959
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s29_w_vuvuzela_1",
+              "type": "vocab",
+              "wordId": "w_vuvuzela",
+              "text": "vuvuzela",
+              "startChar": 10,
+              "endChar": 18,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_vuvuzela_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "type": "quiz",
+      "sentences": [
+        {
+          "id": "s30",
+          "text": "TIME FOR A QUIZ!",
+          "audioId": "main_en",
+          "startMs": 64040,
+          "endMs": 65539,
+          "matchQuality": "aligned",
+          "sourceChunkId": 30,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s30_original_c1",
+                  "text": "TIME FOR A QUIZ!",
+                  "startChar": 0,
+                  "endChar": 16,
+                  "startMs": 64040,
+                  "endMs": 65539,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 30,
+                  "sourceStartTimeSeconds": 64.04,
+                  "sourceEndTimeSeconds": 65.539
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s30_original_c1",
+                  "text": "TIME FOR A QUIZ!",
+                  "startChar": 0,
+                  "endChar": 16,
+                  "startMs": 64040,
+                  "endMs": 65539,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 30,
+                  "sourceStartTimeSeconds": 64.04,
+                  "sourceEndTimeSeconds": 65.539
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s30_original_c1",
+                  "text": "TIME FOR A QUIZ!",
+                  "startChar": 0,
+                  "endChar": 16,
+                  "startMs": 64040,
+                  "endMs": 65539,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 30,
+                  "sourceStartTimeSeconds": 64.04,
+                  "sourceEndTimeSeconds": 65.539
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s30_w_quiz_1",
+              "type": "vocab",
+              "wordId": "w_quiz",
+              "text": "QUIZ",
+              "startChar": 11,
+              "endChar": 15,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_quiz_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s31",
+          "text": "Where did Lerato live?",
+          "audioId": "main_en",
+          "startMs": 66360,
+          "endMs": 67779,
+          "matchQuality": "aligned",
+          "sourceChunkId": 31,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s31_original_c1",
+                  "text": "Where did Lerato live?",
+                  "startChar": 0,
+                  "endChar": 22,
+                  "startMs": 66360,
+                  "endMs": 67779,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 31,
+                  "sourceStartTimeSeconds": 66.36,
+                  "sourceEndTimeSeconds": 67.779
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s31_original_c1",
+                  "text": "Where did Lerato live?",
+                  "startChar": 0,
+                  "endChar": 22,
+                  "startMs": 66360,
+                  "endMs": 67779,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 31,
+                  "sourceStartTimeSeconds": 66.36,
+                  "sourceEndTimeSeconds": 67.779
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s31_original_c1",
+                  "text": "Where did Lerato live?",
+                  "startChar": 0,
+                  "endChar": 22,
+                  "startMs": 66360,
+                  "endMs": 67779,
+                  "timingQuality": "aligned",
+                  "sourceChunkId": 31,
+                  "sourceStartTimeSeconds": 66.36,
+                  "sourceEndTimeSeconds": 67.779
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s32",
+          "text": "Find answer at the beginning o story and write.",
+          "audioId": "main_en",
+          "startMs": 68419,
+          "endMs": 71379,
+          "matchQuality": "partial",
+          "sourceChunkId": 32,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s32_original_c1",
+                  "text": "Find answer at the beginning o story and write.",
+                  "startChar": 0,
+                  "endChar": 47,
+                  "startMs": 68419,
+                  "endMs": 71379,
+                  "timingQuality": "partial",
+                  "sourceChunkId": 32,
+                  "sourceStartTimeSeconds": 68.419,
+                  "sourceEndTimeSeconds": 71.379
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s32_original_c1",
+                  "text": "Find answer at the beginning o story and write.",
+                  "startChar": 0,
+                  "endChar": 47,
+                  "startMs": 68419,
+                  "endMs": 71379,
+                  "timingQuality": "partial",
+                  "sourceChunkId": 32,
+                  "sourceStartTimeSeconds": 68.419,
+                  "sourceEndTimeSeconds": 71.379
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "원본 chunk",
+              "chunks": [
+                {
+                  "id": "s32_original_c1",
+                  "text": "Find answer at the beginning o story and write.",
+                  "startChar": 0,
+                  "endChar": 47,
+                  "startMs": 68419,
+                  "endMs": 71379,
+                  "timingQuality": "partial",
+                  "sourceChunkId": 32,
+                  "sourceStartTimeSeconds": 68.419,
+                  "sourceEndTimeSeconds": 71.379
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s32_w_beginning_1",
+              "type": "vocab",
+              "wordId": "w_beginning",
+              "text": "beginning",
+              "startChar": 19,
+              "endChar": 28,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_beginning_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    }
+  ],
+  "vocabulary": [
+    {
+      "id": "w_match",
+      "word": "match",
+      "lemma": "match",
+      "partOfSpeech": "noun",
+      "meaningKo": "경기",
+      "simpleKo": "경기",
+      "easyEnglish": "a sports game",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_match_basic"
+      ]
+    },
+    {
+      "id": "w_practice",
+      "word": "practice",
+      "lemma": "practice",
+      "partOfSpeech": "verb",
+      "meaningKo": "연습하다",
+      "simpleKo": "연습하다",
+      "easyEnglish": "to try to get better at doing something",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_practice_basic"
+      ]
+    },
+    {
+      "id": "w_suddenly",
+      "word": "suddenly",
+      "lemma": "suddenly",
+      "partOfSpeech": "adverb",
+      "meaningKo": "갑자기",
+      "simpleKo": "갑자기",
+      "easyEnglish": "happening at once",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_suddenly_basic"
+      ]
+    },
+    {
+      "id": "w_neighbor",
+      "word": "neighbor",
+      "lemma": "neighbor",
+      "partOfSpeech": "noun",
+      "meaningKo": "이웃",
+      "simpleKo": "이웃",
+      "easyEnglish": "the person who lives near you",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_neighbor_basic"
+      ]
+    },
+    {
+      "id": "w_thief",
+      "word": "thief",
+      "lemma": "thief",
+      "partOfSpeech": "noun",
+      "meaningKo": "도둑",
+      "simpleKo": "도둑",
+      "easyEnglish": "a person who takes things from others",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_thief_basic"
+      ]
+    },
+    {
+      "id": "w_adult",
+      "word": "adult",
+      "lemma": "adult",
+      "partOfSpeech": "noun",
+      "meaningKo": "어른",
+      "simpleKo": "어른",
+      "easyEnglish": "a man or a woman; not a child",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_adult_basic"
+      ]
+    },
+    {
+      "id": "w_save",
+      "word": "save",
+      "lemma": "save",
+      "partOfSpeech": "verb",
+      "meaningKo": "구하다",
+      "simpleKo": "구하다",
+      "easyEnglish": "to stop something bad from happening",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_save_basic"
+      ]
+    },
+    {
+      "id": "w_save",
+      "word": "saved",
+      "lemma": "save",
+      "partOfSpeech": "verb",
+      "meaningKo": "구했다",
+      "simpleKo": "구했다",
+      "easyEnglish": "stopped something bad from happening",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_save_basic"
+      ]
+    },
+    {
+      "id": "w_hero",
+      "word": "hero",
+      "lemma": "hero",
+      "partOfSpeech": "noun",
+      "meaningKo": "영웅",
+      "simpleKo": "영웅",
+      "easyEnglish": "someone who does amazing things",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_hero_basic"
+      ]
+    },
+    {
+      "id": "w_hero",
+      "word": "heroes",
+      "lemma": "hero",
+      "partOfSpeech": "noun",
+      "meaningKo": "영웅들",
+      "simpleKo": "영웅들",
+      "easyEnglish": "people who do amazing things",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_hero_basic"
+      ]
+    },
+    {
+      "id": "w_village",
+      "word": "village",
+      "lemma": "village",
+      "partOfSpeech": "noun",
+      "meaningKo": "마을",
+      "simpleKo": "마을",
+      "easyEnglish": "a small town",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_village_basic"
+      ]
+    },
+    {
+      "id": "w_villager",
+      "word": "villagers",
+      "lemma": "villager",
+      "partOfSpeech": "noun",
+      "meaningKo": "마을 사람들",
+      "simpleKo": "마을 사람들",
+      "easyEnglish": "people who live in a village",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_villager_basic"
+      ]
+    },
+    {
+      "id": "w_vuvuzela",
+      "word": "vuvuzela",
+      "lemma": "vuvuzela",
+      "partOfSpeech": "noun",
+      "meaningKo": "부부젤라",
+      "simpleKo": "부부젤라",
+      "easyEnglish": "a long horn that makes a loud sound",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_vuvuzela_basic"
+      ]
+    },
+    {
+      "id": "w_imagine",
+      "word": "imagine",
+      "lemma": "imagine",
+      "partOfSpeech": "verb",
+      "meaningKo": "상상하다",
+      "simpleKo": "상상하다",
+      "easyEnglish": "to make a picture in your mind",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_imagine_basic"
+      ]
+    },
+    {
+      "id": "w_breathe",
+      "word": "breathe",
+      "lemma": "breathe",
+      "partOfSpeech": "verb",
+      "meaningKo": "숨 쉬다",
+      "simpleKo": "숨 쉬다",
+      "easyEnglish": "to take air in and out",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_breathe_basic"
+      ]
+    },
+    {
+      "id": "w_blow",
+      "word": "blow",
+      "lemma": "blow",
+      "partOfSpeech": "verb",
+      "meaningKo": "불다",
+      "simpleKo": "불다",
+      "easyEnglish": "to push air out of your mouth",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_blow_basic"
+      ]
+    },
+    {
+      "id": "w_narrow",
+      "word": "narrow",
+      "lemma": "narrow",
+      "partOfSpeech": "adjective",
+      "meaningKo": "좁은",
+      "simpleKo": "좁은",
+      "easyEnglish": "not wide",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_narrow_basic"
+      ]
+    },
+    {
+      "id": "w_cheek",
+      "word": "cheeks",
+      "lemma": "cheek",
+      "partOfSpeech": "noun",
+      "meaningKo": "볼",
+      "simpleKo": "볼",
+      "easyEnglish": "the soft parts of your face",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_cheek_basic"
+      ]
+    },
+    {
+      "id": "w_quiz",
+      "word": "quiz",
+      "lemma": "quiz",
+      "partOfSpeech": "noun",
+      "meaningKo": "퀴즈",
+      "simpleKo": "퀴즈",
+      "easyEnglish": "a short test",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_quiz_basic"
+      ]
+    },
+    {
+      "id": "w_beginning",
+      "word": "beginning",
+      "lemma": "beginning",
+      "partOfSpeech": "noun",
+      "meaningKo": "처음",
+      "simpleKo": "처음",
+      "easyEnglish": "the first part",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_beginning_basic"
+      ]
+    }
+  ],
+  "explanations": [
+    {
+      "id": "exp_w_match_basic",
+      "targetType": "vocab",
+      "targetId": "w_match",
+      "title": "match 뜻",
+      "easyEnglish": "a sports game",
+      "textKo": "match: 경기. a sports game"
+    },
+    {
+      "id": "exp_w_practice_basic",
+      "targetType": "vocab",
+      "targetId": "w_practice",
+      "title": "practice 뜻",
+      "easyEnglish": "to try to get better at doing something",
+      "textKo": "practice: 연습하다. to try to get better at doing something"
+    },
+    {
+      "id": "exp_w_suddenly_basic",
+      "targetType": "vocab",
+      "targetId": "w_suddenly",
+      "title": "suddenly 뜻",
+      "easyEnglish": "happening at once",
+      "textKo": "suddenly: 갑자기. happening at once"
+    },
+    {
+      "id": "exp_w_neighbor_basic",
+      "targetType": "vocab",
+      "targetId": "w_neighbor",
+      "title": "neighbor 뜻",
+      "easyEnglish": "the person who lives near you",
+      "textKo": "neighbor: 이웃. the person who lives near you"
+    },
+    {
+      "id": "exp_w_thief_basic",
+      "targetType": "vocab",
+      "targetId": "w_thief",
+      "title": "thief 뜻",
+      "easyEnglish": "a person who takes things from others",
+      "textKo": "thief: 도둑. a person who takes things from others"
+    },
+    {
+      "id": "exp_w_adult_basic",
+      "targetType": "vocab",
+      "targetId": "w_adult",
+      "title": "adult 뜻",
+      "easyEnglish": "a man or a woman; not a child",
+      "textKo": "adult: 어른. a man or a woman; not a child"
+    },
+    {
+      "id": "exp_w_save_basic",
+      "targetType": "vocab",
+      "targetId": "w_save",
+      "title": "save 뜻",
+      "easyEnglish": "to stop something bad from happening",
+      "textKo": "save: 구하다. to stop something bad from happening"
+    },
+    {
+      "id": "exp_w_save_basic",
+      "targetType": "vocab",
+      "targetId": "w_save",
+      "title": "saved 뜻",
+      "easyEnglish": "stopped something bad from happening",
+      "textKo": "saved: 구했다. stopped something bad from happening"
+    },
+    {
+      "id": "exp_w_hero_basic",
+      "targetType": "vocab",
+      "targetId": "w_hero",
+      "title": "hero 뜻",
+      "easyEnglish": "someone who does amazing things",
+      "textKo": "hero: 영웅. someone who does amazing things"
+    },
+    {
+      "id": "exp_w_hero_basic",
+      "targetType": "vocab",
+      "targetId": "w_hero",
+      "title": "heroes 뜻",
+      "easyEnglish": "people who do amazing things",
+      "textKo": "heroes: 영웅들. people who do amazing things"
+    },
+    {
+      "id": "exp_w_village_basic",
+      "targetType": "vocab",
+      "targetId": "w_village",
+      "title": "village 뜻",
+      "easyEnglish": "a small town",
+      "textKo": "village: 마을. a small town"
+    },
+    {
+      "id": "exp_w_villager_basic",
+      "targetType": "vocab",
+      "targetId": "w_villager",
+      "title": "villagers 뜻",
+      "easyEnglish": "people who live in a village",
+      "textKo": "villagers: 마을 사람들. people who live in a village"
+    },
+    {
+      "id": "exp_w_vuvuzela_basic",
+      "targetType": "vocab",
+      "targetId": "w_vuvuzela",
+      "title": "vuvuzela 뜻",
+      "easyEnglish": "a long horn that makes a loud sound",
+      "textKo": "vuvuzela: 부부젤라. a long horn that makes a loud sound"
+    },
+    {
+      "id": "exp_w_imagine_basic",
+      "targetType": "vocab",
+      "targetId": "w_imagine",
+      "title": "imagine 뜻",
+      "easyEnglish": "to make a picture in your mind",
+      "textKo": "imagine: 상상하다. to make a picture in your mind"
+    },
+    {
+      "id": "exp_w_breathe_basic",
+      "targetType": "vocab",
+      "targetId": "w_breathe",
+      "title": "breathe 뜻",
+      "easyEnglish": "to take air in and out",
+      "textKo": "breathe: 숨 쉬다. to take air in and out"
+    },
+    {
+      "id": "exp_w_blow_basic",
+      "targetType": "vocab",
+      "targetId": "w_blow",
+      "title": "blow 뜻",
+      "easyEnglish": "to push air out of your mouth",
+      "textKo": "blow: 불다. to push air out of your mouth"
+    },
+    {
+      "id": "exp_w_narrow_basic",
+      "targetType": "vocab",
+      "targetId": "w_narrow",
+      "title": "narrow 뜻",
+      "easyEnglish": "not wide",
+      "textKo": "narrow: 좁은. not wide"
+    },
+    {
+      "id": "exp_w_cheek_basic",
+      "targetType": "vocab",
+      "targetId": "w_cheek",
+      "title": "cheeks 뜻",
+      "easyEnglish": "the soft parts of your face",
+      "textKo": "cheeks: 볼. the soft parts of your face"
+    },
+    {
+      "id": "exp_w_quiz_basic",
+      "targetType": "vocab",
+      "targetId": "w_quiz",
+      "title": "quiz 뜻",
+      "easyEnglish": "a short test",
+      "textKo": "quiz: 퀴즈. a short test"
+    },
+    {
+      "id": "exp_w_beginning_basic",
+      "targetType": "vocab",
+      "targetId": "w_beginning",
+      "title": "beginning 뜻",
+      "easyEnglish": "the first part",
+      "textKo": "beginning: 처음. the first part"
+    }
+  ],
+  "source": {
+    "sourceDir": "C:\\Users\\SAMSUNG\\Documents\\Codex\\2026-05-30\\json-py-py-gpt\\lessons\\20260530_175616",
+    "sourceLesson": "lesson.json",
+    "chunkBasis": "source lesson.json chunks copied as-is",
+    "originalChunkCount": 32,
+    "note": "No word timestamp re-splitting was used for playback boundaries."
+  }
+}

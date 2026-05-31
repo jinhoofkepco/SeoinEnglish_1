@@ -1,0 +1,4636 @@
+{
+  "schemaVersion": 1,
+  "id": "gamemaster_promise",
+  "title": "A Vow I Can Keep",
+  "subtitle": "GameMaster at the Park",
+  "level": "A1",
+  "language": "en",
+  "defaultAudioId": "main_en",
+  "defaultChunkSetId": "short",
+  "audioAssets": [
+    {
+      "id": "main_en",
+      "file": "audio.mp3",
+      "role": "main_narration",
+      "language": "en",
+      "durationMs": 141800
+    }
+  ],
+  "chunkProfiles": [
+    {
+      "id": "natural",
+      "label": "자연스럽게",
+      "description": "continuous playback",
+      "pauseBehavior": "none"
+    },
+    {
+      "id": "short",
+      "label": "짧게",
+      "description": "3~4 words per chunk",
+      "pauseBehavior": "after_each_chunk"
+    },
+    {
+      "id": "long",
+      "label": "길게",
+      "description": "larger chunks",
+      "pauseBehavior": "after_each_chunk"
+    },
+    {
+      "id": "sentence",
+      "label": "문장",
+      "description": "one sentence at a time",
+      "pauseBehavior": "after_each_sentence"
+    }
+  ],
+  "paragraphs": [
+    {
+      "id": "p1",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s1",
+          "text": "My best friend Paul and I were excited to go to the park after school.",
+          "audioId": "main_en",
+          "startMs": 160,
+          "endMs": 4940,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s1_short_c1",
+                  "text": "My best friend Paul",
+                  "startChar": 0,
+                  "endChar": 19,
+                  "startMs": 160,
+                  "endMs": 1280,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s1_short_c2",
+                  "text": "and I were excited",
+                  "startChar": 20,
+                  "endChar": 38,
+                  "startMs": 1300,
+                  "endMs": 2429,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s1_short_c3",
+                  "text": "to go to the",
+                  "startChar": 39,
+                  "endChar": 51,
+                  "startMs": 2480,
+                  "endMs": 3000,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s1_short_c4",
+                  "text": "park after school.",
+                  "startChar": 52,
+                  "endChar": 70,
+                  "startMs": 3040,
+                  "endMs": 4940,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s1_long_c1",
+                  "text": "My best friend Paul and I were excited",
+                  "startChar": 0,
+                  "endChar": 38,
+                  "startMs": 160,
+                  "endMs": 2429,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s1_long_c2",
+                  "text": "to go to the park after school.",
+                  "startChar": 39,
+                  "endChar": 70,
+                  "startMs": 2480,
+                  "endMs": 4940,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s1_sentence_c1",
+                  "text": "My best friend Paul and I were excited to go to the park after school.",
+                  "startChar": 0,
+                  "endChar": 70,
+                  "startMs": 160,
+                  "endMs": 4940,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s1_w_friend_1",
+              "type": "vocab",
+              "wordId": "w_friend",
+              "text": "friend",
+              "startChar": 8,
+              "endChar": 14,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_friend_basic"
+              ]
+            },
+            {
+              "id": "ann_s1_w_excited_1",
+              "type": "vocab",
+              "wordId": "w_excited",
+              "text": "excited",
+              "startChar": 31,
+              "endChar": 38,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_excited_basic"
+              ]
+            },
+            {
+              "id": "ann_s1_w_park_1",
+              "type": "vocab",
+              "wordId": "w_park",
+              "text": "park",
+              "startChar": 52,
+              "endChar": 56,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_park_basic"
+              ]
+            },
+            {
+              "id": "ann_s1_w_school_1",
+              "type": "vocab",
+              "wordId": "w_school",
+              "text": "school",
+              "startChar": 63,
+              "endChar": 70,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_school_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s2",
+          "text": "The park had a new fort.",
+          "audioId": "main_en",
+          "startMs": 4950,
+          "endMs": 7180,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s2_short_c1",
+                  "text": "The park had a",
+                  "startChar": 0,
+                  "endChar": 14,
+                  "startMs": 4950,
+                  "endMs": 5720,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s2_short_c2",
+                  "text": "new fort.",
+                  "startChar": 15,
+                  "endChar": 24,
+                  "startMs": 5780,
+                  "endMs": 7180,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s2_long_c1",
+                  "text": "The park had a new fort.",
+                  "startChar": 0,
+                  "endChar": 24,
+                  "startMs": 4950,
+                  "endMs": 7180,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s2_sentence_c1",
+                  "text": "The park had a new fort.",
+                  "startChar": 0,
+                  "endChar": 24,
+                  "startMs": 4950,
+                  "endMs": 7180,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s2_w_park_1",
+              "type": "vocab",
+              "wordId": "w_park",
+              "text": "park",
+              "startChar": 4,
+              "endChar": 8,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_park_basic"
+              ]
+            },
+            {
+              "id": "ann_s2_w_fort_1",
+              "type": "vocab",
+              "wordId": "w_fort",
+              "text": "fort",
+              "startChar": 19,
+              "endChar": 24,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_fort_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s3",
+          "text": "The parks department let the kids choose what kind of equipment to build, and the fort got the most votes.",
+          "audioId": "main_en",
+          "startMs": 7210,
+          "endMs": 15020,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s3_short_c1",
+                  "text": "The parks department let",
+                  "startChar": 0,
+                  "endChar": 24,
+                  "startMs": 7210,
+                  "endMs": 8560,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s3_short_c2",
+                  "text": "the kids choose what",
+                  "startChar": 25,
+                  "endChar": 45,
+                  "startMs": 8600,
+                  "endMs": 9690,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s3_short_c3",
+                  "text": "kind of equipment to",
+                  "startChar": 46,
+                  "endChar": 66,
+                  "startMs": 9740,
+                  "endMs": 10760,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s3_short_c4",
+                  "text": "build, and the fort",
+                  "startChar": 67,
+                  "endChar": 86,
+                  "startMs": 10780,
+                  "endMs": 12540,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s3_short_c5",
+                  "text": "got the most votes.",
+                  "startChar": 87,
+                  "endChar": 106,
+                  "startMs": 12580,
+                  "endMs": 15020,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s3_long_c1",
+                  "text": "The parks department let the kids choose what",
+                  "startChar": 0,
+                  "endChar": 45,
+                  "startMs": 7210,
+                  "endMs": 9690,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s3_long_c2",
+                  "text": "kind of equipment to build, and the fort",
+                  "startChar": 46,
+                  "endChar": 86,
+                  "startMs": 9740,
+                  "endMs": 12540,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s3_long_c3",
+                  "text": "got the most votes.",
+                  "startChar": 87,
+                  "endChar": 106,
+                  "startMs": 12580,
+                  "endMs": 15020,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s3_sentence_c1",
+                  "text": "The parks department let the kids choose what kind of equipment to build, and the fort got the most votes.",
+                  "startChar": 0,
+                  "endChar": 106,
+                  "startMs": 7210,
+                  "endMs": 15020,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s3_w_department_1",
+              "type": "vocab",
+              "wordId": "w_department",
+              "text": "department",
+              "startChar": 10,
+              "endChar": 20,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_department_basic"
+              ]
+            },
+            {
+              "id": "ann_s3_w_choose_1",
+              "type": "vocab",
+              "wordId": "w_choose",
+              "text": "choose",
+              "startChar": 34,
+              "endChar": 40,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_choose_basic"
+              ]
+            },
+            {
+              "id": "ann_s3_w_equipment_1",
+              "type": "vocab",
+              "wordId": "w_equipment",
+              "text": "equipment",
+              "startChar": 54,
+              "endChar": 63,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_equipment_basic"
+              ]
+            },
+            {
+              "id": "ann_s3_w_build_1",
+              "type": "vocab",
+              "wordId": "w_build",
+              "text": "build",
+              "startChar": 67,
+              "endChar": 73,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_build_basic"
+              ]
+            },
+            {
+              "id": "ann_s3_w_fort_1",
+              "type": "vocab",
+              "wordId": "w_fort",
+              "text": "fort",
+              "startChar": 82,
+              "endChar": 86,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_fort_basic"
+              ]
+            },
+            {
+              "id": "ann_s3_w_votes_1",
+              "type": "vocab",
+              "wordId": "w_votes",
+              "text": "votes",
+              "startChar": 100,
+              "endChar": 106,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_votes_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s4",
+          "text": "After school, Mom and I met Paul and his dad at the park.",
+          "audioId": "main_en",
+          "startMs": 15160,
+          "endMs": 18550,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s4_short_c1",
+                  "text": "After school, Mom and",
+                  "startChar": 0,
+                  "endChar": 21,
+                  "startMs": 15160,
+                  "endMs": 16440,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s4_short_c2",
+                  "text": "I met Paul and",
+                  "startChar": 22,
+                  "endChar": 36,
+                  "startMs": 16540,
+                  "endMs": 17380,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s4_short_c3",
+                  "text": "his dad at the",
+                  "startChar": 37,
+                  "endChar": 51,
+                  "startMs": 17420,
+                  "endMs": 18160,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s4_short_c4",
+                  "text": "park.",
+                  "startChar": 52,
+                  "endChar": 57,
+                  "startMs": 18200,
+                  "endMs": 18550,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s4_long_c1",
+                  "text": "After school, Mom and I met Paul and",
+                  "startChar": 0,
+                  "endChar": 36,
+                  "startMs": 15160,
+                  "endMs": 17380,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s4_long_c2",
+                  "text": "his dad at the park.",
+                  "startChar": 37,
+                  "endChar": 57,
+                  "startMs": 17420,
+                  "endMs": 18550,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s4_sentence_c1",
+                  "text": "After school, Mom and I met Paul and his dad at the park.",
+                  "startChar": 0,
+                  "endChar": 57,
+                  "startMs": 15160,
+                  "endMs": 18550,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s4_w_school_1",
+              "type": "vocab",
+              "wordId": "w_school",
+              "text": "school",
+              "startChar": 6,
+              "endChar": 13,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_school_basic"
+              ]
+            },
+            {
+              "id": "ann_s4_w_park_1",
+              "type": "vocab",
+              "wordId": "w_park",
+              "text": "park",
+              "startChar": 52,
+              "endChar": 57,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_park_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s5",
+          "text": "Paul and I raced to the top of the tower.",
+          "audioId": "main_en",
+          "startMs": 19280,
+          "endMs": 21640,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s5_short_c1",
+                  "text": "Paul and I raced",
+                  "startChar": 0,
+                  "endChar": 16,
+                  "startMs": 19280,
+                  "endMs": 20330,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s5_short_c2",
+                  "text": "to the top of",
+                  "startChar": 17,
+                  "endChar": 30,
+                  "startMs": 20360,
+                  "endMs": 20980,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s5_short_c3",
+                  "text": "the tower.",
+                  "startChar": 31,
+                  "endChar": 41,
+                  "startMs": 21060,
+                  "endMs": 21640,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s5_long_c1",
+                  "text": "Paul and I raced to the top of",
+                  "startChar": 0,
+                  "endChar": 30,
+                  "startMs": 19280,
+                  "endMs": 20980,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s5_long_c2",
+                  "text": "the tower.",
+                  "startChar": 31,
+                  "endChar": 41,
+                  "startMs": 21060,
+                  "endMs": 21640,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s5_sentence_c1",
+                  "text": "Paul and I raced to the top of the tower.",
+                  "startChar": 0,
+                  "endChar": 41,
+                  "startMs": 19280,
+                  "endMs": 21640,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s5_w_raced_1",
+              "type": "vocab",
+              "wordId": "w_raced",
+              "text": "raced",
+              "startChar": 11,
+              "endChar": 16,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_raced_basic"
+              ]
+            },
+            {
+              "id": "ann_s5_w_tower_1",
+              "type": "vocab",
+              "wordId": "w_tower",
+              "text": "tower",
+              "startChar": 35,
+              "endChar": 41,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_tower_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s6",
+          "text": "\"I win!",
+          "audioId": "main_en",
+          "startMs": 22600,
+          "endMs": 23220,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s6_short_c1",
+                  "text": "\"I win!",
+                  "startChar": 0,
+                  "endChar": 7,
+                  "startMs": 22600,
+                  "endMs": 23220,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s6_long_c1",
+                  "text": "\"I win!",
+                  "startChar": 0,
+                  "endChar": 7,
+                  "startMs": 22600,
+                  "endMs": 23220,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s6_sentence_c1",
+                  "text": "\"I win!",
+                  "startChar": 0,
+                  "endChar": 7,
+                  "startMs": 22600,
+                  "endMs": 23220,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s7",
+          "text": "I'm the champion,\" I shouted.",
+          "audioId": "main_en",
+          "startMs": 23620,
+          "endMs": 25500,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s7_short_c1",
+                  "text": "I'm the champion,\" I",
+                  "startChar": 0,
+                  "endChar": 20,
+                  "startMs": 23620,
+                  "endMs": 25040,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s7_short_c2",
+                  "text": "shouted.",
+                  "startChar": 21,
+                  "endChar": 29,
+                  "startMs": 25080,
+                  "endMs": 25500,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s7_long_c1",
+                  "text": "I'm the champion,\" I shouted.",
+                  "startChar": 0,
+                  "endChar": 29,
+                  "startMs": 23620,
+                  "endMs": 25500,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s7_sentence_c1",
+                  "text": "I'm the champion,\" I shouted.",
+                  "startChar": 0,
+                  "endChar": 29,
+                  "startMs": 23620,
+                  "endMs": 25500,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s7_w_champion_1",
+              "type": "vocab",
+              "wordId": "w_champion",
+              "text": "champion",
+              "startChar": 8,
+              "endChar": 18,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_champion_basic"
+              ]
+            },
+            {
+              "id": "ann_s7_w_shouted_1",
+              "type": "vocab",
+              "wordId": "w_shouted",
+              "text": "shouted",
+              "startChar": 21,
+              "endChar": 29,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_shouted_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s8",
+          "text": "\"Look, Paul, someone left the newest Game Master here.",
+          "audioId": "main_en",
+          "startMs": 26100,
+          "endMs": 29279,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s8_short_c1",
+                  "text": "\"Look, Paul, someone left",
+                  "startChar": 0,
+                  "endChar": 25,
+                  "startMs": 26100,
+                  "endMs": 27540,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s8_short_c2",
+                  "text": "the newest Game Master",
+                  "startChar": 26,
+                  "endChar": 48,
+                  "startMs": 27640,
+                  "endMs": 28900,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s8_short_c3",
+                  "text": "here.",
+                  "startChar": 49,
+                  "endChar": 54,
+                  "startMs": 29020,
+                  "endMs": 29279,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s8_long_c1",
+                  "text": "\"Look, Paul, someone left the newest Game Master",
+                  "startChar": 0,
+                  "endChar": 48,
+                  "startMs": 26100,
+                  "endMs": 28900,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s8_long_c2",
+                  "text": "here.",
+                  "startChar": 49,
+                  "endChar": 54,
+                  "startMs": 29020,
+                  "endMs": 29279,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s8_sentence_c1",
+                  "text": "\"Look, Paul, someone left the newest Game Master here.",
+                  "startChar": 0,
+                  "endChar": 54,
+                  "startMs": 26100,
+                  "endMs": 29279,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s8_w_someone_1",
+              "type": "vocab",
+              "wordId": "w_someone",
+              "text": "someone",
+              "startChar": 13,
+              "endChar": 20,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_someone_basic"
+              ]
+            },
+            {
+              "id": "ann_s8_w_newest_1",
+              "type": "vocab",
+              "wordId": "w_newest",
+              "text": "newest",
+              "startChar": 30,
+              "endChar": 36,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_newest_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s9",
+          "text": "It's mine now.\"",
+          "audioId": "main_en",
+          "startMs": 29680,
+          "endMs": 30620,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s9_short_c1",
+                  "text": "It's mine now.\"",
+                  "startChar": 0,
+                  "endChar": 15,
+                  "startMs": 29680,
+                  "endMs": 30620,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s9_long_c1",
+                  "text": "It's mine now.\"",
+                  "startChar": 0,
+                  "endChar": 15,
+                  "startMs": 29680,
+                  "endMs": 30620,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s9_sentence_c1",
+                  "text": "It's mine now.\"",
+                  "startChar": 0,
+                  "endChar": 15,
+                  "startMs": 29680,
+                  "endMs": 30620,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s10",
+          "text": "Paul raised his eyebrows and looked thoughtful.",
+          "audioId": "main_en",
+          "startMs": 31320,
+          "endMs": 33800,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s10_short_c1",
+                  "text": "Paul raised his eyebrows",
+                  "startChar": 0,
+                  "endChar": 24,
+                  "startMs": 31320,
+                  "endMs": 32720,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s10_short_c2",
+                  "text": "and looked thoughtful.",
+                  "startChar": 25,
+                  "endChar": 47,
+                  "startMs": 32759,
+                  "endMs": 33800,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s10_long_c1",
+                  "text": "Paul raised his eyebrows and looked thoughtful.",
+                  "startChar": 0,
+                  "endChar": 47,
+                  "startMs": 31320,
+                  "endMs": 33800,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s10_sentence_c1",
+                  "text": "Paul raised his eyebrows and looked thoughtful.",
+                  "startChar": 0,
+                  "endChar": 47,
+                  "startMs": 31320,
+                  "endMs": 33800,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s10_w_raised_1",
+              "type": "vocab",
+              "wordId": "w_raised",
+              "text": "raised",
+              "startChar": 5,
+              "endChar": 11,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_raised_basic"
+              ]
+            },
+            {
+              "id": "ann_s10_w_eyebrows_1",
+              "type": "vocab",
+              "wordId": "w_eyebrows",
+              "text": "eyebrows",
+              "startChar": 16,
+              "endChar": 24,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_eyebrows_basic"
+              ]
+            },
+            {
+              "id": "ann_s10_w_thoughtful_1",
+              "type": "vocab",
+              "wordId": "w_thoughtful",
+              "text": "thoughtful",
+              "startChar": 36,
+              "endChar": 47,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_thoughtful_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s11",
+          "text": "\"Wyatt, you cannot keep that Game Master,\" he said.",
+          "audioId": "main_en",
+          "startMs": 34600,
+          "endMs": 38230,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s11_short_c1",
+                  "text": "\"Wyatt, you cannot keep",
+                  "startChar": 0,
+                  "endChar": 23,
+                  "startMs": 34600,
+                  "endMs": 36280,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s11_short_c2",
+                  "text": "that Game Master,\" he",
+                  "startChar": 24,
+                  "endChar": 45,
+                  "startMs": 36360,
+                  "endMs": 37940,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s11_short_c3",
+                  "text": "said.",
+                  "startChar": 46,
+                  "endChar": 51,
+                  "startMs": 37980,
+                  "endMs": 38230,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s11_long_c1",
+                  "text": "\"Wyatt, you cannot keep that Game Master,\" he",
+                  "startChar": 0,
+                  "endChar": 45,
+                  "startMs": 34600,
+                  "endMs": 37940,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s11_long_c2",
+                  "text": "said.",
+                  "startChar": 46,
+                  "endChar": 51,
+                  "startMs": 37980,
+                  "endMs": 38230,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s11_sentence_c1",
+                  "text": "\"Wyatt, you cannot keep that Game Master,\" he said.",
+                  "startChar": 0,
+                  "endChar": 51,
+                  "startMs": 34600,
+                  "endMs": 38230,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s12",
+          "text": "\"You have a responsibility to return it.",
+          "audioId": "main_en",
+          "startMs": 38840,
+          "endMs": 41200,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s12_short_c1",
+                  "text": "\"You have a responsibility",
+                  "startChar": 0,
+                  "endChar": 26,
+                  "startMs": 38840,
+                  "endMs": 40460,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s12_short_c2",
+                  "text": "to return it.",
+                  "startChar": 27,
+                  "endChar": 40,
+                  "startMs": 40500,
+                  "endMs": 41200,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s12_long_c1",
+                  "text": "\"You have a responsibility to return it.",
+                  "startChar": 0,
+                  "endChar": 40,
+                  "startMs": 38840,
+                  "endMs": 41200,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s12_sentence_c1",
+                  "text": "\"You have a responsibility to return it.",
+                  "startChar": 0,
+                  "endChar": 40,
+                  "startMs": 38840,
+                  "endMs": 41200,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s12_w_responsibility_1",
+              "type": "vocab",
+              "wordId": "w_responsibility",
+              "text": "responsibility",
+              "startChar": 12,
+              "endChar": 26,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_responsibility_basic"
+              ]
+            },
+            {
+              "id": "ann_s12_w_return_1",
+              "type": "vocab",
+              "wordId": "w_return",
+              "text": "return",
+              "startChar": 30,
+              "endChar": 36,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_return_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s13",
+          "text": "It is your duty.\"",
+          "audioId": "main_en",
+          "startMs": 41840,
+          "endMs": 42640,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s13_short_c1",
+                  "text": "It is your duty.\"",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 41840,
+                  "endMs": 42640,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s13_long_c1",
+                  "text": "It is your duty.\"",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 41840,
+                  "endMs": 42640,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s13_sentence_c1",
+                  "text": "It is your duty.\"",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 41840,
+                  "endMs": 42640,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s13_w_duty_1",
+              "type": "vocab",
+              "wordId": "w_duty",
+              "text": "duty",
+              "startChar": 11,
+              "endChar": 17,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_duty_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s14",
+          "text": "I asked, \"Haven't you ever heard the saying, 'Finders keepers, losers weepers'?",
+          "audioId": "main_en",
+          "startMs": 43180,
+          "endMs": 48520,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s14_short_c1",
+                  "text": "I asked, \"Haven't you",
+                  "startChar": 0,
+                  "endChar": 21,
+                  "startMs": 43180,
+                  "endMs": 44680,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s14_short_c2",
+                  "text": "ever heard the saying,",
+                  "startChar": 22,
+                  "endChar": 44,
+                  "startMs": 44760,
+                  "endMs": 45760,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s14_short_c3",
+                  "text": "'Finders keepers, losers weepers'?",
+                  "startChar": 45,
+                  "endChar": 79,
+                  "startMs": 46160,
+                  "endMs": 48520,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s14_long_c1",
+                  "text": "I asked, \"Haven't you ever heard the saying,",
+                  "startChar": 0,
+                  "endChar": 44,
+                  "startMs": 43180,
+                  "endMs": 45760,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s14_long_c2",
+                  "text": "'Finders keepers, losers weepers'?",
+                  "startChar": 45,
+                  "endChar": 79,
+                  "startMs": 46160,
+                  "endMs": 48520,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s14_sentence_c1",
+                  "text": "I asked, \"Haven't you ever heard the saying, 'Finders keepers, losers weepers'?",
+                  "startChar": 0,
+                  "endChar": 79,
+                  "startMs": 43180,
+                  "endMs": 48520,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s14_w_saying_1",
+              "type": "vocab",
+              "wordId": "w_saying",
+              "text": "saying",
+              "startChar": 37,
+              "endChar": 44,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_saying_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s15",
+          "text": "I have rights.",
+          "audioId": "main_en",
+          "startMs": 49220,
+          "endMs": 49920,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s15_short_c1",
+                  "text": "I have rights.",
+                  "startChar": 0,
+                  "endChar": 14,
+                  "startMs": 49220,
+                  "endMs": 49920,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s15_long_c1",
+                  "text": "I have rights.",
+                  "startChar": 0,
+                  "endChar": 14,
+                  "startMs": 49220,
+                  "endMs": 49920,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s15_sentence_c1",
+                  "text": "I have rights.",
+                  "startChar": 0,
+                  "endChar": 14,
+                  "startMs": 49220,
+                  "endMs": 49920,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s15_w_rights_1",
+              "type": "vocab",
+              "wordId": "w_rights",
+              "text": "rights",
+              "startChar": 7,
+              "endChar": 14,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_rights_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s16",
+          "text": "I found it, so I am claiming it.\"",
+          "audioId": "main_en",
+          "startMs": 50700,
+          "endMs": 53300,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s16_short_c1",
+                  "text": "I found it, so",
+                  "startChar": 0,
+                  "endChar": 14,
+                  "startMs": 50700,
+                  "endMs": 52160,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s16_short_c2",
+                  "text": "I am claiming it.\"",
+                  "startChar": 15,
+                  "endChar": 33,
+                  "startMs": 52520,
+                  "endMs": 53300,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s16_long_c1",
+                  "text": "I found it, so I am claiming it.\"",
+                  "startChar": 0,
+                  "endChar": 33,
+                  "startMs": 50700,
+                  "endMs": 53300,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s16_sentence_c1",
+                  "text": "I found it, so I am claiming it.\"",
+                  "startChar": 0,
+                  "endChar": 33,
+                  "startMs": 50700,
+                  "endMs": 53300,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s16_w_claiming_1",
+              "type": "vocab",
+              "wordId": "w_claiming",
+              "text": "claiming",
+              "startChar": 20,
+              "endChar": 28,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_claiming_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s17",
+          "text": "\"You can do whatever you want, Wyatt, but you know it's wrong to keep it,\" Paul said.",
+          "audioId": "main_en",
+          "startMs": 54030,
+          "endMs": 59200,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s17_short_c1",
+                  "text": "\"You can do whatever",
+                  "startChar": 0,
+                  "endChar": 20,
+                  "startMs": 54030,
+                  "endMs": 55060,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s17_short_c2",
+                  "text": "you want, Wyatt, but",
+                  "startChar": 21,
+                  "endChar": 41,
+                  "startMs": 55120,
+                  "endMs": 56580,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s17_short_c3",
+                  "text": "you know it's wrong",
+                  "startChar": 42,
+                  "endChar": 61,
+                  "startMs": 56660,
+                  "endMs": 57480,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s17_short_c4",
+                  "text": "to keep it,\" Paul",
+                  "startChar": 62,
+                  "endChar": 79,
+                  "startMs": 57580,
+                  "endMs": 58840,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s17_short_c5",
+                  "text": "said.",
+                  "startChar": 80,
+                  "endChar": 85,
+                  "startMs": 58920,
+                  "endMs": 59200,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s17_long_c1",
+                  "text": "\"You can do whatever you want, Wyatt, but",
+                  "startChar": 0,
+                  "endChar": 41,
+                  "startMs": 54030,
+                  "endMs": 56580,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s17_long_c2",
+                  "text": "you know it's wrong to keep it,\" Paul",
+                  "startChar": 42,
+                  "endChar": 79,
+                  "startMs": 56660,
+                  "endMs": 58840,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s17_long_c3",
+                  "text": "said.",
+                  "startChar": 80,
+                  "endChar": 85,
+                  "startMs": 58920,
+                  "endMs": 59200,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s17_sentence_c1",
+                  "text": "\"You can do whatever you want, Wyatt, but you know it's wrong to keep it,\" Paul said.",
+                  "startChar": 0,
+                  "endChar": 85,
+                  "startMs": 54030,
+                  "endMs": 59200,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s17_w_wrong_1",
+              "type": "vocab",
+              "wordId": "w_wrong",
+              "text": "wrong",
+              "startChar": 56,
+              "endChar": 61,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_wrong_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s18",
+          "text": "Then he added, \"Whenever there are issues like this at school, you're the one who helps solve the problems.",
+          "audioId": "main_en",
+          "startMs": 60080,
+          "endMs": 66380,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s18_short_c1",
+                  "text": "Then he added, \"Whenever",
+                  "startChar": 0,
+                  "endChar": 24,
+                  "startMs": 60080,
+                  "endMs": 61820,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s18_short_c2",
+                  "text": "there are issues like",
+                  "startChar": 25,
+                  "endChar": 46,
+                  "startMs": 61920,
+                  "endMs": 62940,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s18_short_c3",
+                  "text": "this at school, you're",
+                  "startChar": 47,
+                  "endChar": 69,
+                  "startMs": 62980,
+                  "endMs": 64360,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s18_short_c4",
+                  "text": "the one who helps",
+                  "startChar": 70,
+                  "endChar": 87,
+                  "startMs": 64420,
+                  "endMs": 65220,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s18_short_c5",
+                  "text": "solve the problems.",
+                  "startChar": 88,
+                  "endChar": 107,
+                  "startMs": 65300,
+                  "endMs": 66380,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s18_long_c1",
+                  "text": "Then he added, \"Whenever there are issues like",
+                  "startChar": 0,
+                  "endChar": 46,
+                  "startMs": 60080,
+                  "endMs": 62940,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s18_long_c2",
+                  "text": "this at school, you're the one who helps",
+                  "startChar": 47,
+                  "endChar": 87,
+                  "startMs": 62980,
+                  "endMs": 65220,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s18_long_c3",
+                  "text": "solve the problems.",
+                  "startChar": 88,
+                  "endChar": 107,
+                  "startMs": 65300,
+                  "endMs": 66380,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s18_sentence_c1",
+                  "text": "Then he added, \"Whenever there are issues like this at school, you're the one who helps solve the problems.",
+                  "startChar": 0,
+                  "endChar": 107,
+                  "startMs": 60080,
+                  "endMs": 66380,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s18_w_issues_1",
+              "type": "vocab",
+              "wordId": "w_issues",
+              "text": "issues",
+              "startChar": 35,
+              "endChar": 41,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_issues_basic"
+              ]
+            },
+            {
+              "id": "ann_s18_w_school_1",
+              "type": "vocab",
+              "wordId": "w_school",
+              "text": "school",
+              "startChar": 55,
+              "endChar": 62,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_school_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s19",
+          "text": "Now you aren't taking your own advice.\"",
+          "audioId": "main_en",
+          "startMs": 67180,
+          "endMs": 69240,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s19_short_c1",
+                  "text": "Now you aren't taking",
+                  "startChar": 0,
+                  "endChar": 21,
+                  "startMs": 67180,
+                  "endMs": 68180,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s19_short_c2",
+                  "text": "your own advice.\"",
+                  "startChar": 22,
+                  "endChar": 39,
+                  "startMs": 68240,
+                  "endMs": 69240,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s19_long_c1",
+                  "text": "Now you aren't taking your own advice.\"",
+                  "startChar": 0,
+                  "endChar": 39,
+                  "startMs": 67180,
+                  "endMs": 69240,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s19_sentence_c1",
+                  "text": "Now you aren't taking your own advice.\"",
+                  "startChar": 0,
+                  "endChar": 39,
+                  "startMs": 67180,
+                  "endMs": 69240,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s19_w_advice_1",
+              "type": "vocab",
+              "wordId": "w_advice",
+              "text": "advice",
+              "startChar": 31,
+              "endChar": 39,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_advice_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s20",
+          "text": "Then Paul added, \"I volunteered my thoughts.",
+          "audioId": "main_en",
+          "startMs": 69860,
+          "endMs": 73160,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s20_short_c1",
+                  "text": "Then Paul added, \"I",
+                  "startChar": 0,
+                  "endChar": 19,
+                  "startMs": 69860,
+                  "endMs": 71780,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s20_short_c2",
+                  "text": "volunteered my thoughts.",
+                  "startChar": 20,
+                  "endChar": 44,
+                  "startMs": 71820,
+                  "endMs": 73160,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s20_long_c1",
+                  "text": "Then Paul added, \"I volunteered my thoughts.",
+                  "startChar": 0,
+                  "endChar": 44,
+                  "startMs": 69860,
+                  "endMs": 73160,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s20_sentence_c1",
+                  "text": "Then Paul added, \"I volunteered my thoughts.",
+                  "startChar": 0,
+                  "endChar": 44,
+                  "startMs": 69860,
+                  "endMs": 73160,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s20_w_volunteered_1",
+              "type": "vocab",
+              "wordId": "w_volunteered",
+              "text": "volunteered",
+              "startChar": 20,
+              "endChar": 31,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_volunteered_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s21",
+          "text": "If you don't want to take the help I offered, there's nothing I can do.\"",
+          "audioId": "main_en",
+          "startMs": 73760,
+          "endMs": 77620,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s21_short_c1",
+                  "text": "If you don't want",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 73760,
+                  "endMs": 74380,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s21_short_c2",
+                  "text": "to take the help",
+                  "startChar": 18,
+                  "endChar": 34,
+                  "startMs": 74420,
+                  "endMs": 75220,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s21_short_c3",
+                  "text": "I offered, there's nothing",
+                  "startChar": 35,
+                  "endChar": 61,
+                  "startMs": 75300,
+                  "endMs": 76820,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s21_short_c4",
+                  "text": "I can do.\"",
+                  "startChar": 62,
+                  "endChar": 72,
+                  "startMs": 76960,
+                  "endMs": 77620,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s21_long_c1",
+                  "text": "If you don't want to take the help",
+                  "startChar": 0,
+                  "endChar": 34,
+                  "startMs": 73760,
+                  "endMs": 75220,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s21_long_c2",
+                  "text": "I offered, there's nothing I can do.\"",
+                  "startChar": 35,
+                  "endChar": 72,
+                  "startMs": 75300,
+                  "endMs": 77620,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s21_sentence_c1",
+                  "text": "If you don't want to take the help I offered, there's nothing I can do.\"",
+                  "startChar": 0,
+                  "endChar": 72,
+                  "startMs": 73760,
+                  "endMs": 77620,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s21_w_offered_1",
+              "type": "vocab",
+              "wordId": "w_offered",
+              "text": "offered",
+              "startChar": 37,
+              "endChar": 45,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_offered_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p11",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s22",
+          "text": "Paul was right.",
+          "audioId": "main_en",
+          "startMs": 78540,
+          "endMs": 79340,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s22_short_c1",
+                  "text": "Paul was right.",
+                  "startChar": 0,
+                  "endChar": 15,
+                  "startMs": 78540,
+                  "endMs": 79340,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s22_long_c1",
+                  "text": "Paul was right.",
+                  "startChar": 0,
+                  "endChar": 15,
+                  "startMs": 78540,
+                  "endMs": 79340,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s22_sentence_c1",
+                  "text": "Paul was right.",
+                  "startChar": 0,
+                  "endChar": 15,
+                  "startMs": 78540,
+                  "endMs": 79340,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s23",
+          "text": "I couldn't keep the game because it wasn't mine.",
+          "audioId": "main_en",
+          "startMs": 79940,
+          "endMs": 82540,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s23_short_c1",
+                  "text": "I couldn't keep the",
+                  "startChar": 0,
+                  "endChar": 19,
+                  "startMs": 79940,
+                  "endMs": 80740,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s23_short_c2",
+                  "text": "game because it wasn't",
+                  "startChar": 20,
+                  "endChar": 42,
+                  "startMs": 80860,
+                  "endMs": 82060,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s23_short_c3",
+                  "text": "mine.",
+                  "startChar": 43,
+                  "endChar": 48,
+                  "startMs": 82080,
+                  "endMs": 82540,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s23_long_c1",
+                  "text": "I couldn't keep the game because it wasn't",
+                  "startChar": 0,
+                  "endChar": 42,
+                  "startMs": 79940,
+                  "endMs": 82060,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s23_long_c2",
+                  "text": "mine.",
+                  "startChar": 43,
+                  "endChar": 48,
+                  "startMs": 82080,
+                  "endMs": 82540,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s23_sentence_c1",
+                  "text": "I couldn't keep the game because it wasn't mine.",
+                  "startChar": 0,
+                  "endChar": 48,
+                  "startMs": 79940,
+                  "endMs": 82540,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s24",
+          "text": "The person who lost it would be upset.",
+          "audioId": "main_en",
+          "startMs": 83110,
+          "endMs": 85420,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s24_short_c1",
+                  "text": "The person who lost",
+                  "startChar": 0,
+                  "endChar": 19,
+                  "startMs": 83110,
+                  "endMs": 84280,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s24_short_c2",
+                  "text": "it would be upset.",
+                  "startChar": 20,
+                  "endChar": 38,
+                  "startMs": 84360,
+                  "endMs": 85420,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s24_long_c1",
+                  "text": "The person who lost it would be upset.",
+                  "startChar": 0,
+                  "endChar": 38,
+                  "startMs": 83110,
+                  "endMs": 85420,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s24_sentence_c1",
+                  "text": "The person who lost it would be upset.",
+                  "startChar": 0,
+                  "endChar": 38,
+                  "startMs": 83110,
+                  "endMs": 85420,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p12",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s25",
+          "text": "I cleared my throat and said in my best deep voice, \"I've determined that you're right.\"",
+          "audioId": "main_en",
+          "startMs": 86180,
+          "endMs": 92200,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s25_short_c1",
+                  "text": "I cleared my throat",
+                  "startChar": 0,
+                  "endChar": 19,
+                  "startMs": 86180,
+                  "endMs": 87420,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s25_short_c2",
+                  "text": "and said in my",
+                  "startChar": 20,
+                  "endChar": 34,
+                  "startMs": 87460,
+                  "endMs": 88150,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s25_short_c3",
+                  "text": "best deep voice, \"I've",
+                  "startChar": 35,
+                  "endChar": 57,
+                  "startMs": 88320,
+                  "endMs": 90680,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s25_short_c4",
+                  "text": "determined that you're right.\"",
+                  "startChar": 58,
+                  "endChar": 88,
+                  "startMs": 90720,
+                  "endMs": 92200,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s25_long_c1",
+                  "text": "I cleared my throat and said in my",
+                  "startChar": 0,
+                  "endChar": 34,
+                  "startMs": 86180,
+                  "endMs": 88150,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s25_long_c2",
+                  "text": "best deep voice, \"I've determined that you're right.\"",
+                  "startChar": 35,
+                  "endChar": 88,
+                  "startMs": 88320,
+                  "endMs": 92200,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s25_sentence_c1",
+                  "text": "I cleared my throat and said in my best deep voice, \"I've determined that you're right.\"",
+                  "startChar": 0,
+                  "endChar": 88,
+                  "startMs": 86180,
+                  "endMs": 92200,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s25_w_determined_1",
+              "type": "vocab",
+              "wordId": "w_determined",
+              "text": "determined",
+              "startChar": 58,
+              "endChar": 68,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_determined_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p13",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s26",
+          "text": "\"I'm delighted you decided to do the right thing,\" said Paul.",
+          "audioId": "main_en",
+          "startMs": 93390,
+          "endMs": 96820,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s26_short_c1",
+                  "text": "\"I'm delighted you decided",
+                  "startChar": 0,
+                  "endChar": 26,
+                  "startMs": 93390,
+                  "endMs": 94910,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s26_short_c2",
+                  "text": "to do the right",
+                  "startChar": 27,
+                  "endChar": 42,
+                  "startMs": 94910,
+                  "endMs": 95690,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s26_short_c3",
+                  "text": "thing,\" said Paul.",
+                  "startChar": 43,
+                  "endChar": 61,
+                  "startMs": 95760,
+                  "endMs": 96820,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s26_long_c1",
+                  "text": "\"I'm delighted you decided to do the right",
+                  "startChar": 0,
+                  "endChar": 42,
+                  "startMs": 93390,
+                  "endMs": 95690,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s26_long_c2",
+                  "text": "thing,\" said Paul.",
+                  "startChar": 43,
+                  "endChar": 61,
+                  "startMs": 95760,
+                  "endMs": 96820,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s26_sentence_c1",
+                  "text": "\"I'm delighted you decided to do the right thing,\" said Paul.",
+                  "startChar": 0,
+                  "endChar": 61,
+                  "startMs": 93390,
+                  "endMs": 96820,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s26_w_delighted_1",
+              "type": "vocab",
+              "wordId": "w_delighted",
+              "text": "delighted",
+              "startChar": 5,
+              "endChar": 14,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_delighted_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p14",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s27",
+          "text": "We told my mother what happened.",
+          "audioId": "main_en",
+          "startMs": 97580,
+          "endMs": 99940,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s27_short_c1",
+                  "text": "We told my mother",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 97580,
+                  "endMs": 98500,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s27_short_c2",
+                  "text": "what happened.",
+                  "startChar": 18,
+                  "endChar": 32,
+                  "startMs": 98540,
+                  "endMs": 99940,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s27_long_c1",
+                  "text": "We told my mother what happened.",
+                  "startChar": 0,
+                  "endChar": 32,
+                  "startMs": 97580,
+                  "endMs": 99940,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s27_sentence_c1",
+                  "text": "We told my mother what happened.",
+                  "startChar": 0,
+                  "endChar": 32,
+                  "startMs": 97580,
+                  "endMs": 99940,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s28",
+          "text": "She walked around the park with us, so we could try to find the owner of the game.",
+          "audioId": "main_en",
+          "startMs": 100080,
+          "endMs": 104680,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s28_short_c1",
+                  "text": "She walked around the",
+                  "startChar": 0,
+                  "endChar": 21,
+                  "startMs": 100080,
+                  "endMs": 101100,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s28_short_c2",
+                  "text": "park with us, so",
+                  "startChar": 22,
+                  "endChar": 38,
+                  "startMs": 101140,
+                  "endMs": 102100,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s28_short_c3",
+                  "text": "we could try to",
+                  "startChar": 39,
+                  "endChar": 54,
+                  "startMs": 102140,
+                  "endMs": 102940,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s28_short_c4",
+                  "text": "find the owner of",
+                  "startChar": 55,
+                  "endChar": 72,
+                  "startMs": 102980,
+                  "endMs": 103830,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s28_short_c5",
+                  "text": "the game.",
+                  "startChar": 73,
+                  "endChar": 82,
+                  "startMs": 103860,
+                  "endMs": 104680,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s28_long_c1",
+                  "text": "She walked around the park with us, so",
+                  "startChar": 0,
+                  "endChar": 38,
+                  "startMs": 100080,
+                  "endMs": 102100,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s28_long_c2",
+                  "text": "we could try to find the owner of",
+                  "startChar": 39,
+                  "endChar": 72,
+                  "startMs": 102140,
+                  "endMs": 103830,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s28_long_c3",
+                  "text": "the game.",
+                  "startChar": 73,
+                  "endChar": 82,
+                  "startMs": 103860,
+                  "endMs": 104680,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s28_sentence_c1",
+                  "text": "She walked around the park with us, so we could try to find the owner of the game.",
+                  "startChar": 0,
+                  "endChar": 82,
+                  "startMs": 100080,
+                  "endMs": 104680,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s28_w_park_1",
+              "type": "vocab",
+              "wordId": "w_park",
+              "text": "park",
+              "startChar": 22,
+              "endChar": 26,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_park_basic"
+              ]
+            },
+            {
+              "id": "ann_s28_w_owner_1",
+              "type": "vocab",
+              "wordId": "w_owner",
+              "text": "owner",
+              "startChar": 64,
+              "endChar": 69,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_owner_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s29",
+          "text": "Soon we saw a boy and his mom looking for something.",
+          "audioId": "main_en",
+          "startMs": 104760,
+          "endMs": 108220,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s29_short_c1",
+                  "text": "Soon we saw a",
+                  "startChar": 0,
+                  "endChar": 13,
+                  "startMs": 104760,
+                  "endMs": 105580,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s29_short_c2",
+                  "text": "boy and his mom",
+                  "startChar": 14,
+                  "endChar": 29,
+                  "startMs": 105600,
+                  "endMs": 106500,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s29_short_c3",
+                  "text": "looking for something.",
+                  "startChar": 30,
+                  "endChar": 52,
+                  "startMs": 106560,
+                  "endMs": 108220,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s29_long_c1",
+                  "text": "Soon we saw a boy and his mom",
+                  "startChar": 0,
+                  "endChar": 29,
+                  "startMs": 104760,
+                  "endMs": 106500,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s29_long_c2",
+                  "text": "looking for something.",
+                  "startChar": 30,
+                  "endChar": 52,
+                  "startMs": 106560,
+                  "endMs": 108220,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s29_sentence_c1",
+                  "text": "Soon we saw a boy and his mom looking for something.",
+                  "startChar": 0,
+                  "endChar": 52,
+                  "startMs": 104760,
+                  "endMs": 108220,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s30",
+          "text": "He looked hopeless, and he burst into tears when we asked him if the game was his.",
+          "audioId": "main_en",
+          "startMs": 108280,
+          "endMs": 113040,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s30_short_c1",
+                  "text": "He looked hopeless, and",
+                  "startChar": 0,
+                  "endChar": 23,
+                  "startMs": 108280,
+                  "endMs": 109570,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s30_short_c2",
+                  "text": "he burst into tears",
+                  "startChar": 24,
+                  "endChar": 43,
+                  "startMs": 109600,
+                  "endMs": 110910,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s30_short_c3",
+                  "text": "when we asked him",
+                  "startChar": 44,
+                  "endChar": 61,
+                  "startMs": 110920,
+                  "endMs": 111800,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s30_short_c4",
+                  "text": "if the game was",
+                  "startChar": 62,
+                  "endChar": 77,
+                  "startMs": 111860,
+                  "endMs": 112570,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s30_short_c5",
+                  "text": "his.",
+                  "startChar": 78,
+                  "endChar": 82,
+                  "startMs": 112620,
+                  "endMs": 113040,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s30_long_c1",
+                  "text": "He looked hopeless, and he burst into tears",
+                  "startChar": 0,
+                  "endChar": 43,
+                  "startMs": 108280,
+                  "endMs": 110910,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s30_long_c2",
+                  "text": "when we asked him if the game was",
+                  "startChar": 44,
+                  "endChar": 77,
+                  "startMs": 110920,
+                  "endMs": 112570,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s30_long_c3",
+                  "text": "his.",
+                  "startChar": 78,
+                  "endChar": 82,
+                  "startMs": 112620,
+                  "endMs": 113040,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s30_sentence_c1",
+                  "text": "He looked hopeless, and he burst into tears when we asked him if the game was his.",
+                  "startChar": 0,
+                  "endChar": 82,
+                  "startMs": 108280,
+                  "endMs": 113040,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s30_w_hopeless_1",
+              "type": "vocab",
+              "wordId": "w_hopeless",
+              "text": "hopeless",
+              "startChar": 10,
+              "endChar": 19,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_hopeless_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p15",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s31",
+          "text": "\"Yes,\" he wailed.",
+          "audioId": "main_en",
+          "startMs": 113930,
+          "endMs": 115440,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s31_short_c1",
+                  "text": "\"Yes,\" he wailed.",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 113930,
+                  "endMs": 115440,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s31_long_c1",
+                  "text": "\"Yes,\" he wailed.",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 113930,
+                  "endMs": 115440,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s31_sentence_c1",
+                  "text": "\"Yes,\" he wailed.",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 113930,
+                  "endMs": 115440,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s31_w_wailed_1",
+              "type": "vocab",
+              "wordId": "w_wailed",
+              "text": "wailed",
+              "startChar": 10,
+              "endChar": 17,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_wailed_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s32",
+          "text": "\"I lost my Game Master a little while ago.",
+          "audioId": "main_en",
+          "startMs": 115920,
+          "endMs": 119040,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s32_short_c1",
+                  "text": "\"I lost my Game",
+                  "startChar": 0,
+                  "endChar": 15,
+                  "startMs": 115920,
+                  "endMs": 116860,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s32_short_c2",
+                  "text": "Master a little while",
+                  "startChar": 16,
+                  "endChar": 37,
+                  "startMs": 116980,
+                  "endMs": 118180,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s32_short_c3",
+                  "text": "ago.",
+                  "startChar": 38,
+                  "endChar": 42,
+                  "startMs": 118240,
+                  "endMs": 119040,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s32_long_c1",
+                  "text": "\"I lost my Game Master a little while",
+                  "startChar": 0,
+                  "endChar": 37,
+                  "startMs": 115920,
+                  "endMs": 118180,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s32_long_c2",
+                  "text": "ago.",
+                  "startChar": 38,
+                  "endChar": 42,
+                  "startMs": 118240,
+                  "endMs": 119040,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s32_sentence_c1",
+                  "text": "\"I lost my Game Master a little while ago.",
+                  "startChar": 0,
+                  "endChar": 42,
+                  "startMs": 115920,
+                  "endMs": 119040,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s33",
+          "text": "I should have been more careful.\"",
+          "audioId": "main_en",
+          "startMs": 119100,
+          "endMs": 120690,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s33_short_c1",
+                  "text": "I should have been",
+                  "startChar": 0,
+                  "endChar": 18,
+                  "startMs": 119100,
+                  "endMs": 119730,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s33_short_c2",
+                  "text": "more careful.\"",
+                  "startChar": 19,
+                  "endChar": 33,
+                  "startMs": 119760,
+                  "endMs": 120690,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s33_long_c1",
+                  "text": "I should have been more careful.\"",
+                  "startChar": 0,
+                  "endChar": 33,
+                  "startMs": 119100,
+                  "endMs": 120690,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s33_sentence_c1",
+                  "text": "I should have been more careful.\"",
+                  "startChar": 0,
+                  "endChar": 33,
+                  "startMs": 119100,
+                  "endMs": 120690,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s33_w_careful_1",
+              "type": "vocab",
+              "wordId": "w_careful",
+              "text": "careful",
+              "startChar": 24,
+              "endChar": 33,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_careful_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p16",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s34",
+          "text": "Afterward, Mom and I walked home.",
+          "audioId": "main_en",
+          "startMs": 121800,
+          "endMs": 123750,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s34_short_c1",
+                  "text": "Afterward, Mom and I",
+                  "startChar": 0,
+                  "endChar": 20,
+                  "startMs": 121800,
+                  "endMs": 123150,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s34_short_c2",
+                  "text": "walked home.",
+                  "startChar": 21,
+                  "endChar": 33,
+                  "startMs": 123180,
+                  "endMs": 123750,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s34_long_c1",
+                  "text": "Afterward, Mom and I walked home.",
+                  "startChar": 0,
+                  "endChar": 33,
+                  "startMs": 121800,
+                  "endMs": 123750,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s34_sentence_c1",
+                  "text": "Afterward, Mom and I walked home.",
+                  "startChar": 0,
+                  "endChar": 33,
+                  "startMs": 121800,
+                  "endMs": 123750,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s35",
+          "text": "I was glad I returned the toy to the boy, so I made a promise to myself to always try to do the right thing.",
+          "audioId": "main_en",
+          "startMs": 124260,
+          "endMs": 130640,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s35_short_c1",
+                  "text": "I was glad I",
+                  "startChar": 0,
+                  "endChar": 12,
+                  "startMs": 124260,
+                  "endMs": 124890,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s35_short_c2",
+                  "text": "returned the toy to",
+                  "startChar": 13,
+                  "endChar": 32,
+                  "startMs": 124920,
+                  "endMs": 125740,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s35_short_c3",
+                  "text": "the boy, so I",
+                  "startChar": 33,
+                  "endChar": 46,
+                  "startMs": 125780,
+                  "endMs": 127350,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s35_short_c4",
+                  "text": "made a promise to",
+                  "startChar": 47,
+                  "endChar": 64,
+                  "startMs": 127380,
+                  "endMs": 128199,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s35_short_c5",
+                  "text": "myself to always try",
+                  "startChar": 65,
+                  "endChar": 85,
+                  "startMs": 128220,
+                  "endMs": 129560,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s35_short_c6",
+                  "text": "to do the right",
+                  "startChar": 86,
+                  "endChar": 101,
+                  "startMs": 129600,
+                  "endMs": 130310,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s35_short_c7",
+                  "text": "thing.",
+                  "startChar": 102,
+                  "endChar": 108,
+                  "startMs": 130360,
+                  "endMs": 130640,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s35_long_c1",
+                  "text": "I was glad I returned the toy to",
+                  "startChar": 0,
+                  "endChar": 32,
+                  "startMs": 124260,
+                  "endMs": 125740,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s35_long_c2",
+                  "text": "the boy, so I made a promise to",
+                  "startChar": 33,
+                  "endChar": 64,
+                  "startMs": 125780,
+                  "endMs": 128199,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s35_long_c3",
+                  "text": "myself to always try to do the right",
+                  "startChar": 65,
+                  "endChar": 101,
+                  "startMs": 128220,
+                  "endMs": 130310,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s35_long_c4",
+                  "text": "thing.",
+                  "startChar": 102,
+                  "endChar": 108,
+                  "startMs": 130360,
+                  "endMs": 130640,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s35_sentence_c1",
+                  "text": "I was glad I returned the toy to the boy, so I made a promise to myself to always try to do the right thing.",
+                  "startChar": 0,
+                  "endChar": 108,
+                  "startMs": 124260,
+                  "endMs": 130640,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s35_w_returned_1",
+              "type": "vocab",
+              "wordId": "w_returned",
+              "text": "returned",
+              "startChar": 13,
+              "endChar": 21,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_returned_basic"
+              ]
+            },
+            {
+              "id": "ann_s35_w_promise_1",
+              "type": "vocab",
+              "wordId": "w_promise",
+              "text": "promise",
+              "startChar": 54,
+              "endChar": 61,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_promise_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p17",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s36",
+          "text": "Now, that is a vow I can keep.",
+          "audioId": "main_en",
+          "startMs": 131320,
+          "endMs": 133600,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s36_short_c1",
+                  "text": "Now, that is a",
+                  "startChar": 0,
+                  "endChar": 14,
+                  "startMs": 131320,
+                  "endMs": 132400,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s36_short_c2",
+                  "text": "vow I can keep.",
+                  "startChar": 15,
+                  "endChar": 30,
+                  "startMs": 132440,
+                  "endMs": 133600,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s36_long_c1",
+                  "text": "Now, that is a vow I can keep.",
+                  "startChar": 0,
+                  "endChar": 30,
+                  "startMs": 131320,
+                  "endMs": 133600,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s36_sentence_c1",
+                  "text": "Now, that is a vow I can keep.",
+                  "startChar": 0,
+                  "endChar": 30,
+                  "startMs": 131320,
+                  "endMs": 133600,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s36_w_vow_1",
+              "type": "vocab",
+              "wordId": "w_vow",
+              "text": "vow",
+              "startChar": 15,
+              "endChar": 18,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_vow_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p18",
+      "type": "quiz",
+      "sentences": [
+        {
+          "id": "s37",
+          "text": "Make connections.",
+          "audioId": "main_en",
+          "startMs": 134980,
+          "endMs": 136380,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s37_short_c1",
+                  "text": "Make connections.",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 134980,
+                  "endMs": 136380,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s37_long_c1",
+                  "text": "Make connections.",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 134980,
+                  "endMs": 136380,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s37_sentence_c1",
+                  "text": "Make connections.",
+                  "startChar": 0,
+                  "endChar": 17,
+                  "startMs": 134980,
+                  "endMs": 136380,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s38",
+          "text": "How are Paul and Wyatt good citizens?",
+          "audioId": "main_en",
+          "startMs": 136960,
+          "endMs": 139880,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s38_short_c1",
+                  "text": "How are Paul and",
+                  "startChar": 0,
+                  "endChar": 16,
+                  "startMs": 136960,
+                  "endMs": 137989,
+                  "timingQuality": "word_aligned"
+                },
+                {
+                  "id": "s38_short_c2",
+                  "text": "Wyatt good citizens?",
+                  "startChar": 17,
+                  "endChar": 37,
+                  "startMs": 138120,
+                  "endMs": 139880,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s38_long_c1",
+                  "text": "How are Paul and Wyatt good citizens?",
+                  "startChar": 0,
+                  "endChar": 37,
+                  "startMs": 136960,
+                  "endMs": 139880,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s38_sentence_c1",
+                  "text": "How are Paul and Wyatt good citizens?",
+                  "startChar": 0,
+                  "endChar": 37,
+                  "startMs": 136960,
+                  "endMs": 139880,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s38_w_citizens_1",
+              "type": "vocab",
+              "wordId": "w_citizens",
+              "text": "citizens",
+              "startChar": 28,
+              "endChar": 37,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_citizens_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p19",
+      "type": "quiz",
+      "sentences": [
+        {
+          "id": "s39",
+          "text": "Essential question.",
+          "audioId": "main_en",
+          "startMs": 140620,
+          "endMs": 141800,
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s39_short_c1",
+                  "text": "Essential question.",
+                  "startChar": 0,
+                  "endChar": 19,
+                  "startMs": 140620,
+                  "endMs": 141800,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s39_long_c1",
+                  "text": "Essential question.",
+                  "startChar": 0,
+                  "endChar": 19,
+                  "startMs": 140620,
+                  "endMs": 141800,
+                  "timingQuality": "word_aligned"
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "문장",
+              "chunks": [
+                {
+                  "id": "s39_sentence_c1",
+                  "text": "Essential question.",
+                  "startChar": 0,
+                  "endChar": 19,
+                  "startMs": 140620,
+                  "endMs": 141800,
+                  "timingQuality": "sentence"
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        }
+      ]
+    }
+  ],
+  "vocabulary": [
+    {
+      "id": "w_friend",
+      "word": "friend",
+      "lemma": "friend",
+      "partOfSpeech": "noun",
+      "meaningKo": "친구",
+      "simpleKo": "친구",
+      "easyEnglish": "A person you like and know well.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_friend_basic"
+      ]
+    },
+    {
+      "id": "w_excited",
+      "word": "excited",
+      "lemma": "excited",
+      "partOfSpeech": "adjective",
+      "meaningKo": "신난",
+      "simpleKo": "신난",
+      "easyEnglish": "Very happy about something that will happen.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_excited_basic"
+      ]
+    },
+    {
+      "id": "w_school",
+      "word": "school",
+      "lemma": "school",
+      "partOfSpeech": "noun",
+      "meaningKo": "학교",
+      "simpleKo": "학교",
+      "easyEnglish": "A place where children learn.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_school_basic"
+      ]
+    },
+    {
+      "id": "w_park",
+      "word": "park",
+      "lemma": "park",
+      "partOfSpeech": "noun",
+      "meaningKo": "공원",
+      "simpleKo": "공원",
+      "easyEnglish": "A place outside where people can play or rest.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_park_basic"
+      ]
+    },
+    {
+      "id": "w_fort",
+      "word": "fort",
+      "lemma": "fort",
+      "partOfSpeech": "noun",
+      "meaningKo": "놀이 요새",
+      "simpleKo": "놀이 요새",
+      "easyEnglish": "A small strong place or play structure.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_fort_basic"
+      ]
+    },
+    {
+      "id": "w_department",
+      "word": "department",
+      "lemma": "department",
+      "partOfSpeech": "noun",
+      "meaningKo": "부서",
+      "simpleKo": "부서",
+      "easyEnglish": "A group that does a special job.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_department_basic"
+      ]
+    },
+    {
+      "id": "w_choose",
+      "word": "choose",
+      "lemma": "choose",
+      "partOfSpeech": "verb",
+      "meaningKo": "고르다",
+      "simpleKo": "고르다",
+      "easyEnglish": "To pick one thing from two or more things.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_choose_basic"
+      ]
+    },
+    {
+      "id": "w_equipment",
+      "word": "equipment",
+      "lemma": "equipment",
+      "partOfSpeech": "noun",
+      "meaningKo": "장비",
+      "simpleKo": "장비",
+      "easyEnglish": "Things people use for an activity.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_equipment_basic"
+      ]
+    },
+    {
+      "id": "w_build",
+      "word": "build",
+      "lemma": "build",
+      "partOfSpeech": "verb",
+      "meaningKo": "만들다",
+      "simpleKo": "만들다",
+      "easyEnglish": "To make something by putting parts together.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_build_basic"
+      ]
+    },
+    {
+      "id": "w_votes",
+      "word": "votes",
+      "lemma": "vote",
+      "partOfSpeech": "noun",
+      "meaningKo": "표",
+      "simpleKo": "표",
+      "easyEnglish": "Choices people make by voting.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_votes_basic"
+      ]
+    },
+    {
+      "id": "w_raced",
+      "word": "raced",
+      "lemma": "race",
+      "partOfSpeech": "verb",
+      "meaningKo": "경주했다",
+      "simpleKo": "경주했다",
+      "easyEnglish": "Ran fast to try to win.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_raced_basic"
+      ]
+    },
+    {
+      "id": "w_tower",
+      "word": "tower",
+      "lemma": "tower",
+      "partOfSpeech": "noun",
+      "meaningKo": "탑",
+      "simpleKo": "탑",
+      "easyEnglish": "A tall part of a building or playground.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_tower_basic"
+      ]
+    },
+    {
+      "id": "w_champion",
+      "word": "champion",
+      "lemma": "champion",
+      "partOfSpeech": "noun",
+      "meaningKo": "우승자",
+      "simpleKo": "우승자",
+      "easyEnglish": "A person who wins.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_champion_basic"
+      ]
+    },
+    {
+      "id": "w_shouted",
+      "word": "shouted",
+      "lemma": "shout",
+      "partOfSpeech": "verb",
+      "meaningKo": "외쳤다",
+      "simpleKo": "외쳤다",
+      "easyEnglish": "Said something in a loud voice.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_shouted_basic"
+      ]
+    },
+    {
+      "id": "w_someone",
+      "word": "someone",
+      "lemma": "someone",
+      "partOfSpeech": "pronoun",
+      "meaningKo": "누군가",
+      "simpleKo": "누군가",
+      "easyEnglish": "A person, but we do not know who.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_someone_basic"
+      ]
+    },
+    {
+      "id": "w_newest",
+      "word": "newest",
+      "lemma": "new",
+      "partOfSpeech": "adjective",
+      "meaningKo": "가장 새로운",
+      "simpleKo": "가장 새로운",
+      "easyEnglish": "The most new.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_newest_basic"
+      ]
+    },
+    {
+      "id": "w_raised",
+      "word": "raised",
+      "lemma": "raise",
+      "partOfSpeech": "verb",
+      "meaningKo": "올렸다",
+      "simpleKo": "올렸다",
+      "easyEnglish": "Moved something up.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_raised_basic"
+      ]
+    },
+    {
+      "id": "w_eyebrows",
+      "word": "eyebrows",
+      "lemma": "eyebrow",
+      "partOfSpeech": "noun",
+      "meaningKo": "눈썹",
+      "simpleKo": "눈썹",
+      "easyEnglish": "The hair above your eyes.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_eyebrows_basic"
+      ]
+    },
+    {
+      "id": "w_thoughtful",
+      "word": "thoughtful",
+      "lemma": "thoughtful",
+      "partOfSpeech": "adjective",
+      "meaningKo": "생각이 깊은",
+      "simpleKo": "생각이 깊은",
+      "easyEnglish": "Thinking carefully.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_thoughtful_basic"
+      ]
+    },
+    {
+      "id": "w_responsibility",
+      "word": "responsibility",
+      "lemma": "responsibility",
+      "partOfSpeech": "noun",
+      "meaningKo": "책임",
+      "simpleKo": "책임",
+      "easyEnglish": "Something you should do.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_responsibility_basic"
+      ]
+    },
+    {
+      "id": "w_return",
+      "word": "return",
+      "lemma": "return",
+      "partOfSpeech": "verb",
+      "meaningKo": "돌려주다",
+      "simpleKo": "돌려주다",
+      "easyEnglish": "To give something back.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_return_basic"
+      ]
+    },
+    {
+      "id": "w_duty",
+      "word": "duty",
+      "lemma": "duty",
+      "partOfSpeech": "noun",
+      "meaningKo": "의무",
+      "simpleKo": "의무",
+      "easyEnglish": "Something you should do because it is right.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_duty_basic"
+      ]
+    },
+    {
+      "id": "w_saying",
+      "word": "saying",
+      "lemma": "saying",
+      "partOfSpeech": "noun",
+      "meaningKo": "속담",
+      "simpleKo": "속담",
+      "easyEnglish": "A short sentence people often say.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_saying_basic"
+      ]
+    },
+    {
+      "id": "w_rights",
+      "word": "rights",
+      "lemma": "right",
+      "partOfSpeech": "noun",
+      "meaningKo": "권리",
+      "simpleKo": "권리",
+      "easyEnglish": "Things you are allowed to do or have.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_rights_basic"
+      ]
+    },
+    {
+      "id": "w_claiming",
+      "word": "claiming",
+      "lemma": "claim",
+      "partOfSpeech": "verb",
+      "meaningKo": "주장하는",
+      "simpleKo": "주장하는",
+      "easyEnglish": "Saying something is yours.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_claiming_basic"
+      ]
+    },
+    {
+      "id": "w_wrong",
+      "word": "wrong",
+      "lemma": "wrong",
+      "partOfSpeech": "adjective",
+      "meaningKo": "옳지 않은",
+      "simpleKo": "옳지 않은",
+      "easyEnglish": "Not right or not fair.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_wrong_basic"
+      ]
+    },
+    {
+      "id": "w_issues",
+      "word": "issues",
+      "lemma": "issue",
+      "partOfSpeech": "noun",
+      "meaningKo": "문제",
+      "simpleKo": "문제",
+      "easyEnglish": "Problems or things to solve.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_issues_basic"
+      ]
+    },
+    {
+      "id": "w_advice",
+      "word": "advice",
+      "lemma": "advice",
+      "partOfSpeech": "noun",
+      "meaningKo": "조언",
+      "simpleKo": "조언",
+      "easyEnglish": "Helpful ideas about what to do.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_advice_basic"
+      ]
+    },
+    {
+      "id": "w_volunteered",
+      "word": "volunteered",
+      "lemma": "volunteer",
+      "partOfSpeech": "verb",
+      "meaningKo": "자진해서 말했다",
+      "simpleKo": "자진해서 말했다",
+      "easyEnglish": "Offered to do or say something.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_volunteered_basic"
+      ]
+    },
+    {
+      "id": "w_offered",
+      "word": "offered",
+      "lemma": "offer",
+      "partOfSpeech": "verb",
+      "meaningKo": "제안했다",
+      "simpleKo": "제안했다",
+      "easyEnglish": "Said you would give or do something.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_offered_basic"
+      ]
+    },
+    {
+      "id": "w_determined",
+      "word": "determined",
+      "lemma": "determine",
+      "partOfSpeech": "verb",
+      "meaningKo": "결정했다",
+      "simpleKo": "결정했다",
+      "easyEnglish": "Decided after thinking.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_determined_basic"
+      ]
+    },
+    {
+      "id": "w_delighted",
+      "word": "delighted",
+      "lemma": "delighted",
+      "partOfSpeech": "adjective",
+      "meaningKo": "기쁜",
+      "simpleKo": "기쁜",
+      "easyEnglish": "Very happy.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_delighted_basic"
+      ]
+    },
+    {
+      "id": "w_owner",
+      "word": "owner",
+      "lemma": "owner",
+      "partOfSpeech": "noun",
+      "meaningKo": "주인",
+      "simpleKo": "주인",
+      "easyEnglish": "The person something belongs to.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_owner_basic"
+      ]
+    },
+    {
+      "id": "w_hopeless",
+      "word": "hopeless",
+      "lemma": "hopeless",
+      "partOfSpeech": "adjective",
+      "meaningKo": "절망한",
+      "simpleKo": "절망한",
+      "easyEnglish": "Very sad because there seems to be no hope.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_hopeless_basic"
+      ]
+    },
+    {
+      "id": "w_wailed",
+      "word": "wailed",
+      "lemma": "wail",
+      "partOfSpeech": "verb",
+      "meaningKo": "울부짖었다",
+      "simpleKo": "울부짖었다",
+      "easyEnglish": "Cried or said something loudly and sadly.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_wailed_basic"
+      ]
+    },
+    {
+      "id": "w_careful",
+      "word": "careful",
+      "lemma": "careful",
+      "partOfSpeech": "adjective",
+      "meaningKo": "조심하는",
+      "simpleKo": "조심하는",
+      "easyEnglish": "Trying not to make a mistake.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_careful_basic"
+      ]
+    },
+    {
+      "id": "w_returned",
+      "word": "returned",
+      "lemma": "return",
+      "partOfSpeech": "verb",
+      "meaningKo": "돌려주었다",
+      "simpleKo": "돌려주었다",
+      "easyEnglish": "Gave something back.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_returned_basic"
+      ]
+    },
+    {
+      "id": "w_promise",
+      "word": "promise",
+      "lemma": "promise",
+      "partOfSpeech": "noun",
+      "meaningKo": "약속",
+      "simpleKo": "약속",
+      "easyEnglish": "A serious statement that you will do something.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_promise_basic"
+      ]
+    },
+    {
+      "id": "w_vow",
+      "word": "vow",
+      "lemma": "vow",
+      "partOfSpeech": "noun",
+      "meaningKo": "맹세",
+      "simpleKo": "맹세",
+      "easyEnglish": "A strong promise.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_vow_basic"
+      ]
+    },
+    {
+      "id": "w_citizens",
+      "word": "citizens",
+      "lemma": "citizen",
+      "partOfSpeech": "noun",
+      "meaningKo": "시민",
+      "simpleKo": "시민",
+      "easyEnglish": "People who belong to a community.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_citizens_basic"
+      ]
+    }
+  ],
+  "explanations": [
+    {
+      "id": "exp_w_friend_basic",
+      "targetType": "vocab",
+      "targetId": "w_friend",
+      "title": "friend 뜻",
+      "easyEnglish": "A person you like and know well.",
+      "textKo": "friend는 '친구'라는 뜻이에요. A person you like and know well."
+    },
+    {
+      "id": "exp_w_excited_basic",
+      "targetType": "vocab",
+      "targetId": "w_excited",
+      "title": "excited 뜻",
+      "easyEnglish": "Very happy about something that will happen.",
+      "textKo": "excited는 '신난'라는 뜻이에요. Very happy about something that will happen."
+    },
+    {
+      "id": "exp_w_school_basic",
+      "targetType": "vocab",
+      "targetId": "w_school",
+      "title": "school 뜻",
+      "easyEnglish": "A place where children learn.",
+      "textKo": "school는 '학교'라는 뜻이에요. A place where children learn."
+    },
+    {
+      "id": "exp_w_park_basic",
+      "targetType": "vocab",
+      "targetId": "w_park",
+      "title": "park 뜻",
+      "easyEnglish": "A place outside where people can play or rest.",
+      "textKo": "park는 '공원'라는 뜻이에요. A place outside where people can play or rest."
+    },
+    {
+      "id": "exp_w_fort_basic",
+      "targetType": "vocab",
+      "targetId": "w_fort",
+      "title": "fort 뜻",
+      "easyEnglish": "A small strong place or play structure.",
+      "textKo": "fort는 '놀이 요새'라는 뜻이에요. A small strong place or play structure."
+    },
+    {
+      "id": "exp_w_department_basic",
+      "targetType": "vocab",
+      "targetId": "w_department",
+      "title": "department 뜻",
+      "easyEnglish": "A group that does a special job.",
+      "textKo": "department는 '부서'라는 뜻이에요. A group that does a special job."
+    },
+    {
+      "id": "exp_w_choose_basic",
+      "targetType": "vocab",
+      "targetId": "w_choose",
+      "title": "choose 뜻",
+      "easyEnglish": "To pick one thing from two or more things.",
+      "textKo": "choose는 '고르다'라는 뜻이에요. To pick one thing from two or more things."
+    },
+    {
+      "id": "exp_w_equipment_basic",
+      "targetType": "vocab",
+      "targetId": "w_equipment",
+      "title": "equipment 뜻",
+      "easyEnglish": "Things people use for an activity.",
+      "textKo": "equipment는 '장비'라는 뜻이에요. Things people use for an activity."
+    },
+    {
+      "id": "exp_w_build_basic",
+      "targetType": "vocab",
+      "targetId": "w_build",
+      "title": "build 뜻",
+      "easyEnglish": "To make something by putting parts together.",
+      "textKo": "build는 '만들다'라는 뜻이에요. To make something by putting parts together."
+    },
+    {
+      "id": "exp_w_votes_basic",
+      "targetType": "vocab",
+      "targetId": "w_votes",
+      "title": "votes 뜻",
+      "easyEnglish": "Choices people make by voting.",
+      "textKo": "votes는 '표'라는 뜻이에요. Choices people make by voting."
+    },
+    {
+      "id": "exp_w_raced_basic",
+      "targetType": "vocab",
+      "targetId": "w_raced",
+      "title": "raced 뜻",
+      "easyEnglish": "Ran fast to try to win.",
+      "textKo": "raced는 '경주했다'라는 뜻이에요. Ran fast to try to win."
+    },
+    {
+      "id": "exp_w_tower_basic",
+      "targetType": "vocab",
+      "targetId": "w_tower",
+      "title": "tower 뜻",
+      "easyEnglish": "A tall part of a building or playground.",
+      "textKo": "tower는 '탑'라는 뜻이에요. A tall part of a building or playground."
+    },
+    {
+      "id": "exp_w_champion_basic",
+      "targetType": "vocab",
+      "targetId": "w_champion",
+      "title": "champion 뜻",
+      "easyEnglish": "A person who wins.",
+      "textKo": "champion는 '우승자'라는 뜻이에요. A person who wins."
+    },
+    {
+      "id": "exp_w_shouted_basic",
+      "targetType": "vocab",
+      "targetId": "w_shouted",
+      "title": "shouted 뜻",
+      "easyEnglish": "Said something in a loud voice.",
+      "textKo": "shouted는 '외쳤다'라는 뜻이에요. Said something in a loud voice."
+    },
+    {
+      "id": "exp_w_someone_basic",
+      "targetType": "vocab",
+      "targetId": "w_someone",
+      "title": "someone 뜻",
+      "easyEnglish": "A person, but we do not know who.",
+      "textKo": "someone는 '누군가'라는 뜻이에요. A person, but we do not know who."
+    },
+    {
+      "id": "exp_w_newest_basic",
+      "targetType": "vocab",
+      "targetId": "w_newest",
+      "title": "newest 뜻",
+      "easyEnglish": "The most new.",
+      "textKo": "newest는 '가장 새로운'라는 뜻이에요. The most new."
+    },
+    {
+      "id": "exp_w_raised_basic",
+      "targetType": "vocab",
+      "targetId": "w_raised",
+      "title": "raised 뜻",
+      "easyEnglish": "Moved something up.",
+      "textKo": "raised는 '올렸다'라는 뜻이에요. Moved something up."
+    },
+    {
+      "id": "exp_w_eyebrows_basic",
+      "targetType": "vocab",
+      "targetId": "w_eyebrows",
+      "title": "eyebrows 뜻",
+      "easyEnglish": "The hair above your eyes.",
+      "textKo": "eyebrows는 '눈썹'라는 뜻이에요. The hair above your eyes."
+    },
+    {
+      "id": "exp_w_thoughtful_basic",
+      "targetType": "vocab",
+      "targetId": "w_thoughtful",
+      "title": "thoughtful 뜻",
+      "easyEnglish": "Thinking carefully.",
+      "textKo": "thoughtful는 '생각이 깊은'라는 뜻이에요. Thinking carefully."
+    },
+    {
+      "id": "exp_w_responsibility_basic",
+      "targetType": "vocab",
+      "targetId": "w_responsibility",
+      "title": "responsibility 뜻",
+      "easyEnglish": "Something you should do.",
+      "textKo": "responsibility는 '책임'라는 뜻이에요. Something you should do."
+    },
+    {
+      "id": "exp_w_return_basic",
+      "targetType": "vocab",
+      "targetId": "w_return",
+      "title": "return 뜻",
+      "easyEnglish": "To give something back.",
+      "textKo": "return는 '돌려주다'라는 뜻이에요. To give something back."
+    },
+    {
+      "id": "exp_w_duty_basic",
+      "targetType": "vocab",
+      "targetId": "w_duty",
+      "title": "duty 뜻",
+      "easyEnglish": "Something you should do because it is right.",
+      "textKo": "duty는 '의무'라는 뜻이에요. Something you should do because it is right."
+    },
+    {
+      "id": "exp_w_saying_basic",
+      "targetType": "vocab",
+      "targetId": "w_saying",
+      "title": "saying 뜻",
+      "easyEnglish": "A short sentence people often say.",
+      "textKo": "saying는 '속담'라는 뜻이에요. A short sentence people often say."
+    },
+    {
+      "id": "exp_w_rights_basic",
+      "targetType": "vocab",
+      "targetId": "w_rights",
+      "title": "rights 뜻",
+      "easyEnglish": "Things you are allowed to do or have.",
+      "textKo": "rights는 '권리'라는 뜻이에요. Things you are allowed to do or have."
+    },
+    {
+      "id": "exp_w_claiming_basic",
+      "targetType": "vocab",
+      "targetId": "w_claiming",
+      "title": "claiming 뜻",
+      "easyEnglish": "Saying something is yours.",
+      "textKo": "claiming는 '주장하는'라는 뜻이에요. Saying something is yours."
+    },
+    {
+      "id": "exp_w_wrong_basic",
+      "targetType": "vocab",
+      "targetId": "w_wrong",
+      "title": "wrong 뜻",
+      "easyEnglish": "Not right or not fair.",
+      "textKo": "wrong는 '옳지 않은'라는 뜻이에요. Not right or not fair."
+    },
+    {
+      "id": "exp_w_issues_basic",
+      "targetType": "vocab",
+      "targetId": "w_issues",
+      "title": "issues 뜻",
+      "easyEnglish": "Problems or things to solve.",
+      "textKo": "issues는 '문제'라는 뜻이에요. Problems or things to solve."
+    },
+    {
+      "id": "exp_w_advice_basic",
+      "targetType": "vocab",
+      "targetId": "w_advice",
+      "title": "advice 뜻",
+      "easyEnglish": "Helpful ideas about what to do.",
+      "textKo": "advice는 '조언'라는 뜻이에요. Helpful ideas about what to do."
+    },
+    {
+      "id": "exp_w_volunteered_basic",
+      "targetType": "vocab",
+      "targetId": "w_volunteered",
+      "title": "volunteered 뜻",
+      "easyEnglish": "Offered to do or say something.",
+      "textKo": "volunteered는 '자진해서 말했다'라는 뜻이에요. Offered to do or say something."
+    },
+    {
+      "id": "exp_w_offered_basic",
+      "targetType": "vocab",
+      "targetId": "w_offered",
+      "title": "offered 뜻",
+      "easyEnglish": "Said you would give or do something.",
+      "textKo": "offered는 '제안했다'라는 뜻이에요. Said you would give or do something."
+    },
+    {
+      "id": "exp_w_determined_basic",
+      "targetType": "vocab",
+      "targetId": "w_determined",
+      "title": "determined 뜻",
+      "easyEnglish": "Decided after thinking.",
+      "textKo": "determined는 '결정했다'라는 뜻이에요. Decided after thinking."
+    },
+    {
+      "id": "exp_w_delighted_basic",
+      "targetType": "vocab",
+      "targetId": "w_delighted",
+      "title": "delighted 뜻",
+      "easyEnglish": "Very happy.",
+      "textKo": "delighted는 '기쁜'라는 뜻이에요. Very happy."
+    },
+    {
+      "id": "exp_w_owner_basic",
+      "targetType": "vocab",
+      "targetId": "w_owner",
+      "title": "owner 뜻",
+      "easyEnglish": "The person something belongs to.",
+      "textKo": "owner는 '주인'라는 뜻이에요. The person something belongs to."
+    },
+    {
+      "id": "exp_w_hopeless_basic",
+      "targetType": "vocab",
+      "targetId": "w_hopeless",
+      "title": "hopeless 뜻",
+      "easyEnglish": "Very sad because there seems to be no hope.",
+      "textKo": "hopeless는 '절망한'라는 뜻이에요. Very sad because there seems to be no hope."
+    },
+    {
+      "id": "exp_w_wailed_basic",
+      "targetType": "vocab",
+      "targetId": "w_wailed",
+      "title": "wailed 뜻",
+      "easyEnglish": "Cried or said something loudly and sadly.",
+      "textKo": "wailed는 '울부짖었다'라는 뜻이에요. Cried or said something loudly and sadly."
+    },
+    {
+      "id": "exp_w_careful_basic",
+      "targetType": "vocab",
+      "targetId": "w_careful",
+      "title": "careful 뜻",
+      "easyEnglish": "Trying not to make a mistake.",
+      "textKo": "careful는 '조심하는'라는 뜻이에요. Trying not to make a mistake."
+    },
+    {
+      "id": "exp_w_returned_basic",
+      "targetType": "vocab",
+      "targetId": "w_returned",
+      "title": "returned 뜻",
+      "easyEnglish": "Gave something back.",
+      "textKo": "returned는 '돌려주었다'라는 뜻이에요. Gave something back."
+    },
+    {
+      "id": "exp_w_promise_basic",
+      "targetType": "vocab",
+      "targetId": "w_promise",
+      "title": "promise 뜻",
+      "easyEnglish": "A serious statement that you will do something.",
+      "textKo": "promise는 '약속'라는 뜻이에요. A serious statement that you will do something."
+    },
+    {
+      "id": "exp_w_vow_basic",
+      "targetType": "vocab",
+      "targetId": "w_vow",
+      "title": "vow 뜻",
+      "easyEnglish": "A strong promise.",
+      "textKo": "vow는 '맹세'라는 뜻이에요. A strong promise."
+    },
+    {
+      "id": "exp_w_citizens_basic",
+      "targetType": "vocab",
+      "targetId": "w_citizens",
+      "title": "citizens 뜻",
+      "easyEnglish": "People who belong to a community.",
+      "textKo": "citizens는 '시민'라는 뜻이에요. People who belong to a community."
+    }
+  ]
+}

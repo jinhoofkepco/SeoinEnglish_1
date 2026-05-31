@@ -1,0 +1,3051 @@
+{
+  "schemaVersion": 1,
+  "id": "lesson_001",
+  "title": "Three Types of Matter",
+  "subtitle": "",
+  "level": "A1",
+  "language": "en",
+  "defaultAudioId": "main_en",
+  "defaultChunkSetId": "short",
+  "audioAssets": [
+    {
+      "id": "main_en",
+      "file": "audio.mp3",
+      "role": "main_narration",
+      "language": "en"
+    }
+  ],
+  "chunkProfiles": [
+    {
+      "id": "short",
+      "label": "짧게",
+      "description": "small meaning-based chunks",
+      "pauseBehavior": "after_each_chunk"
+    },
+    {
+      "id": "long",
+      "label": "길게",
+      "description": "larger meaning-based chunks",
+      "pauseBehavior": "after_each_chunk"
+    },
+    {
+      "id": "natural",
+      "label": "자연스럽게",
+      "description": "continuous playback",
+      "pauseBehavior": "none"
+    }
+  ],
+  "paragraphs": [
+    {
+      "id": "p1",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s1",
+          "text": "NEW WORDS",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s1_short_c1",
+                  "text": "NEW WORDS",
+                  "startChar": 0,
+                  "endChar": 9
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s1_long_c1",
+                  "text": "NEW WORDS",
+                  "startChar": 0,
+                  "endChar": 9
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s1_w_words_1",
+              "type": "vocab",
+              "wordId": "w_words",
+              "text": "WORDS",
+              "startChar": 4,
+              "endChar": 9,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_words_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s2",
+          "text": "take up phrase to fill up\nThe clothes take up room in the drawer.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s2_short_c1",
+                  "text": "take up phrase to",
+                  "startChar": 0,
+                  "endChar": 17
+                },
+                {
+                  "id": "s2_short_c2",
+                  "text": "fill up\nThe clothes",
+                  "startChar": 18,
+                  "endChar": 37
+                },
+                {
+                  "id": "s2_short_c3",
+                  "text": "take up room in",
+                  "startChar": 38,
+                  "endChar": 53
+                },
+                {
+                  "id": "s2_short_c4",
+                  "text": "the drawer.",
+                  "startChar": 54,
+                  "endChar": 65
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s2_long_c1",
+                  "text": "take up phrase to fill up\nThe clothes take",
+                  "startChar": 0,
+                  "endChar": 42
+                },
+                {
+                  "id": "s2_long_c2",
+                  "text": "up room in the drawer.",
+                  "startChar": 43,
+                  "endChar": 65
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s2_w_phrase_1",
+              "type": "vocab",
+              "wordId": "w_phrase",
+              "text": "phrase",
+              "startChar": 8,
+              "endChar": 14,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_phrase_basic"
+              ]
+            },
+            {
+              "id": "ann_s2_w_clothes_1",
+              "type": "vocab",
+              "wordId": "w_clothes",
+              "text": "clothes",
+              "startChar": 30,
+              "endChar": 37,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_clothes_basic"
+              ]
+            },
+            {
+              "id": "ann_s2_w_drawer_1",
+              "type": "vocab",
+              "wordId": "w_drawer",
+              "text": "drawer",
+              "startChar": 58,
+              "endChar": 64,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_drawer_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s3",
+          "text": "matter n.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s3_short_c1",
+                  "text": "matter n.",
+                  "startChar": 0,
+                  "endChar": 9
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s3_long_c1",
+                  "text": "matter n.",
+                  "startChar": 0,
+                  "endChar": 9
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s3_w_matter_1",
+              "type": "vocab",
+              "wordId": "w_matter",
+              "text": "matter",
+              "startChar": 0,
+              "endChar": 6,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_matter_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s4",
+          "text": "solids, liquids, and gases\nRock is made of hard matter.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s4_short_c1",
+                  "text": "solids, liquids,",
+                  "startChar": 0,
+                  "endChar": 16
+                },
+                {
+                  "id": "s4_short_c2",
+                  "text": "and gases\nRock is",
+                  "startChar": 17,
+                  "endChar": 34
+                },
+                {
+                  "id": "s4_short_c3",
+                  "text": "made of hard matter.",
+                  "startChar": 35,
+                  "endChar": 55
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s4_long_c1",
+                  "text": "solids, liquids, and gases\nRock is made of hard",
+                  "startChar": 0,
+                  "endChar": 47
+                },
+                {
+                  "id": "s4_long_c2",
+                  "text": "matter.",
+                  "startChar": 48,
+                  "endChar": 55
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s4_w_solids_1",
+              "type": "vocab",
+              "wordId": "w_solids",
+              "text": "solids",
+              "startChar": 0,
+              "endChar": 6,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_solids_basic"
+              ]
+            },
+            {
+              "id": "ann_s4_w_liquids_1",
+              "type": "vocab",
+              "wordId": "w_liquids",
+              "text": "liquids",
+              "startChar": 8,
+              "endChar": 15,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_liquids_basic"
+              ]
+            },
+            {
+              "id": "ann_s4_w_gases_1",
+              "type": "vocab",
+              "wordId": "w_gases",
+              "text": "gases",
+              "startChar": 21,
+              "endChar": 26,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_gases_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p4",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s5",
+          "text": "state n.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s5_short_c1",
+                  "text": "state n.",
+                  "startChar": 0,
+                  "endChar": 8
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s5_long_c1",
+                  "text": "state n.",
+                  "startChar": 0,
+                  "endChar": 8
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s5_w_state_1",
+              "type": "vocab",
+              "wordId": "w_state",
+              "text": "state",
+              "startChar": 0,
+              "endChar": 5,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_state_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s6",
+          "text": "a condition of a thing\nIce is the solid state of water.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s6_short_c1",
+                  "text": "a condition of a",
+                  "startChar": 0,
+                  "endChar": 16
+                },
+                {
+                  "id": "s6_short_c2",
+                  "text": "thing\nIce is the",
+                  "startChar": 17,
+                  "endChar": 33
+                },
+                {
+                  "id": "s6_short_c3",
+                  "text": "solid state of water.",
+                  "startChar": 34,
+                  "endChar": 55
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s6_long_c1",
+                  "text": "a condition of a thing\nIce is the solid",
+                  "startChar": 0,
+                  "endChar": 39
+                },
+                {
+                  "id": "s6_long_c2",
+                  "text": "state of water.",
+                  "startChar": 40,
+                  "endChar": 55
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s6_w_condition_1",
+              "type": "vocab",
+              "wordId": "w_condition",
+              "text": "condition",
+              "startChar": 2,
+              "endChar": 11,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_condition_basic"
+              ]
+            },
+            {
+              "id": "ann_s6_w_thing_1",
+              "type": "vocab",
+              "wordId": "w_thing",
+              "text": "thing",
+              "startChar": 17,
+              "endChar": 22,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_thing_basic"
+              ]
+            },
+            {
+              "id": "ann_s6_w_solid_1",
+              "type": "vocab",
+              "wordId": "w_solid",
+              "text": "solid",
+              "startChar": 34,
+              "endChar": 39,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_solid_basic"
+              ]
+            },
+            {
+              "id": "ann_s6_w_water_1",
+              "type": "vocab",
+              "wordId": "w_water",
+              "text": "water",
+              "startChar": 49,
+              "endChar": 54,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_water_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p5",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s7",
+          "text": "solid n.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s7_short_c1",
+                  "text": "solid n.",
+                  "startChar": 0,
+                  "endChar": 8
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s7_long_c1",
+                  "text": "solid n.",
+                  "startChar": 0,
+                  "endChar": 8
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s8",
+          "text": "a thing that has 3D qualities\nThis solid is a rock.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s8_short_c1",
+                  "text": "a thing that has",
+                  "startChar": 0,
+                  "endChar": 16
+                },
+                {
+                  "id": "s8_short_c2",
+                  "text": "3D qualities\nThis solid",
+                  "startChar": 17,
+                  "endChar": 40
+                },
+                {
+                  "id": "s8_short_c3",
+                  "text": "is a rock.",
+                  "startChar": 41,
+                  "endChar": 51
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s8_long_c1",
+                  "text": "a thing that has 3D qualities\nThis solid is",
+                  "startChar": 0,
+                  "endChar": 43
+                },
+                {
+                  "id": "s8_long_c2",
+                  "text": "a rock.",
+                  "startChar": 44,
+                  "endChar": 51
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s8_w_qualities_1",
+              "type": "vocab",
+              "wordId": "w_qualities",
+              "text": "qualities",
+              "startChar": 20,
+              "endChar": 29,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_qualities_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p6",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s9",
+          "text": "mass n.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s9_short_c1",
+                  "text": "mass n.",
+                  "startChar": 0,
+                  "endChar": 7
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s9_long_c1",
+                  "text": "mass n.",
+                  "startChar": 0,
+                  "endChar": 7
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s10",
+          "text": "an amount or volume of matter\nThe mass of snow is very heavy.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s10_short_c1",
+                  "text": "an amount or volume",
+                  "startChar": 0,
+                  "endChar": 19
+                },
+                {
+                  "id": "s10_short_c2",
+                  "text": "of matter\nThe mass",
+                  "startChar": 20,
+                  "endChar": 38
+                },
+                {
+                  "id": "s10_short_c3",
+                  "text": "of snow is very",
+                  "startChar": 39,
+                  "endChar": 54
+                },
+                {
+                  "id": "s10_short_c4",
+                  "text": "heavy.",
+                  "startChar": 55,
+                  "endChar": 61
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s10_long_c1",
+                  "text": "an amount or volume of matter\nThe mass of",
+                  "startChar": 0,
+                  "endChar": 41
+                },
+                {
+                  "id": "s10_long_c2",
+                  "text": "snow is very heavy.",
+                  "startChar": 42,
+                  "endChar": 61
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s10_w_amount_1",
+              "type": "vocab",
+              "wordId": "w_amount",
+              "text": "amount",
+              "startChar": 3,
+              "endChar": 9,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_amount_basic"
+              ]
+            },
+            {
+              "id": "ann_s10_w_volume_1",
+              "type": "vocab",
+              "wordId": "w_volume",
+              "text": "volume",
+              "startChar": 13,
+              "endChar": 19,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_volume_basic"
+              ]
+            },
+            {
+              "id": "ann_s10_w_heavy_1",
+              "type": "vocab",
+              "wordId": "w_heavy",
+              "text": "heavy",
+              "startChar": 55,
+              "endChar": 60,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_heavy_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p7",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s11",
+          "text": "liquid n.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s11_short_c1",
+                  "text": "liquid n.",
+                  "startChar": 0,
+                  "endChar": 9
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s11_long_c1",
+                  "text": "liquid n.",
+                  "startChar": 0,
+                  "endChar": 9
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s11_w_liquid_1",
+              "type": "vocab",
+              "wordId": "w_liquid",
+              "text": "liquid",
+              "startChar": 0,
+              "endChar": 6,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_liquid_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s12",
+          "text": "a thing that is able to move, such as water, milk, etc.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s12_short_c1",
+                  "text": "a thing that is",
+                  "startChar": 0,
+                  "endChar": 15
+                },
+                {
+                  "id": "s12_short_c2",
+                  "text": "able to move,",
+                  "startChar": 16,
+                  "endChar": 29
+                },
+                {
+                  "id": "s12_short_c3",
+                  "text": "such as water,",
+                  "startChar": 30,
+                  "endChar": 44
+                },
+                {
+                  "id": "s12_short_c4",
+                  "text": "milk, etc.",
+                  "startChar": 45,
+                  "endChar": 55
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s12_long_c1",
+                  "text": "a thing that is able to move,",
+                  "startChar": 0,
+                  "endChar": 29
+                },
+                {
+                  "id": "s12_long_c2",
+                  "text": "such as water, milk, etc.",
+                  "startChar": 30,
+                  "endChar": 55
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s13",
+          "text": "Juice is a liquid.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s13_short_c1",
+                  "text": "Juice is a liquid.",
+                  "startChar": 0,
+                  "endChar": 18
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s13_long_c1",
+                  "text": "Juice is a liquid.",
+                  "startChar": 0,
+                  "endChar": 18
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s13_w_juice_1",
+              "type": "vocab",
+              "wordId": "w_juice",
+              "text": "Juice",
+              "startChar": 0,
+              "endChar": 5,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_juice_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p8",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s14",
+          "text": "container n.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s14_short_c1",
+                  "text": "container n.",
+                  "startChar": 0,
+                  "endChar": 12
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s14_long_c1",
+                  "text": "container n.",
+                  "startChar": 0,
+                  "endChar": 12
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s14_w_container_1",
+              "type": "vocab",
+              "wordId": "w_container",
+              "text": "container",
+              "startChar": 0,
+              "endChar": 9,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_container_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s15",
+          "text": "a thing that holds, such as a jar, glass, bowl, etc.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s15_short_c1",
+                  "text": "a thing that holds,",
+                  "startChar": 0,
+                  "endChar": 19
+                },
+                {
+                  "id": "s15_short_c2",
+                  "text": "such as a jar,",
+                  "startChar": 20,
+                  "endChar": 34
+                },
+                {
+                  "id": "s15_short_c3",
+                  "text": "glass, bowl,",
+                  "startChar": 35,
+                  "endChar": 47
+                },
+                {
+                  "id": "s15_short_c4",
+                  "text": "etc.",
+                  "startChar": 48,
+                  "endChar": 52
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s15_long_c1",
+                  "text": "a thing that holds, such as a jar,",
+                  "startChar": 0,
+                  "endChar": 34
+                },
+                {
+                  "id": "s15_long_c2",
+                  "text": "glass, bowl, etc.",
+                  "startChar": 35,
+                  "endChar": 52
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s15_w_holds_1",
+              "type": "vocab",
+              "wordId": "w_holds",
+              "text": "holds",
+              "startChar": 13,
+              "endChar": 18,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_holds_basic"
+              ]
+            },
+            {
+              "id": "ann_s15_w_glass_1",
+              "type": "vocab",
+              "wordId": "w_glass",
+              "text": "glass",
+              "startChar": 35,
+              "endChar": 40,
+              "highlightStyle": "known_vocab",
+              "explanationIds": [
+                "exp_w_glass_basic"
+              ]
+            }
+          ],
+          "explanationIds": []
+        },
+        {
+          "id": "s16",
+          "text": "Put the extra food in a container.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s16_short_c1",
+                  "text": "Put the extra food",
+                  "startChar": 0,
+                  "endChar": 18
+                },
+                {
+                  "id": "s16_short_c2",
+                  "text": "in a container.",
+                  "startChar": 19,
+                  "endChar": 34
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s16_long_c1",
+                  "text": "Put the extra food in a container.",
+                  "startChar": 0,
+                  "endChar": 34
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p9",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s17",
+          "text": "spread v.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s17_short_c1",
+                  "text": "spread v.",
+                  "startChar": 0,
+                  "endChar": 9
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s17_long_c1",
+                  "text": "spread v.",
+                  "startChar": 0,
+                  "endChar": 9
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s18",
+          "text": "to move out or over a place\n“Spread out so you have room, children,” she said.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s18_short_c1",
+                  "text": "to move out or",
+                  "startChar": 0,
+                  "endChar": 14
+                },
+                {
+                  "id": "s18_short_c2",
+                  "text": "over a place\n“Spread",
+                  "startChar": 15,
+                  "endChar": 35
+                },
+                {
+                  "id": "s18_short_c3",
+                  "text": "out so you have",
+                  "startChar": 36,
+                  "endChar": 51
+                },
+                {
+                  "id": "s18_short_c4",
+                  "text": "room, children,” she said.",
+                  "startChar": 52,
+                  "endChar": 78
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s18_long_c1",
+                  "text": "to move out or over a place\n“Spread out",
+                  "startChar": 0,
+                  "endChar": 39
+                },
+                {
+                  "id": "s18_long_c2",
+                  "text": "so you have room, children,” she said.",
+                  "startChar": 40,
+                  "endChar": 78
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p10",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s19",
+          "text": "Three Types of Matter",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s19_short_c1",
+                  "text": "Three Types of Matter",
+                  "startChar": 0,
+                  "endChar": 21
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s19_long_c1",
+                  "text": "Three Types of Matter",
+                  "startChar": 0,
+                  "endChar": 21
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p11",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s20",
+          "text": "All things are made of matter.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s20_short_c1",
+                  "text": "All things are made",
+                  "startChar": 0,
+                  "endChar": 19
+                },
+                {
+                  "id": "s20_short_c2",
+                  "text": "of matter.",
+                  "startChar": 20,
+                  "endChar": 30
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s20_long_c1",
+                  "text": "All things are made of matter.",
+                  "startChar": 0,
+                  "endChar": 30
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": [
+            "exp_s20_structure"
+          ]
+        },
+        {
+          "id": "s21",
+          "text": "Matter is anything that takes up space.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s21_short_c1",
+                  "text": "Matter is anything that",
+                  "startChar": 0,
+                  "endChar": 23
+                },
+                {
+                  "id": "s21_short_c2",
+                  "text": "takes up space.",
+                  "startChar": 24,
+                  "endChar": 39
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s21_long_c1",
+                  "text": "Matter is anything that takes up space.",
+                  "startChar": 0,
+                  "endChar": 39
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": [
+            "exp_s21_structure"
+          ]
+        },
+        {
+          "id": "s22",
+          "text": "Look around at the things in your classroom.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s22_short_c1",
+                  "text": "Look around at the",
+                  "startChar": 0,
+                  "endChar": 18
+                },
+                {
+                  "id": "s22_short_c2",
+                  "text": "things in your classroom.",
+                  "startChar": 19,
+                  "endChar": 44
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s22_long_c1",
+                  "text": "Look around at the things in your classroom.",
+                  "startChar": 0,
+                  "endChar": 44
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s23",
+          "text": "They are all made of matter.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s23_short_c1",
+                  "text": "They are all made",
+                  "startChar": 0,
+                  "endChar": 17
+                },
+                {
+                  "id": "s23_short_c2",
+                  "text": "of matter.",
+                  "startChar": 18,
+                  "endChar": 28
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s23_long_c1",
+                  "text": "They are all made of matter.",
+                  "startChar": 0,
+                  "endChar": 28
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s24",
+          "text": "You are made of matter, too.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s24_short_c1",
+                  "text": "You are made of",
+                  "startChar": 0,
+                  "endChar": 15
+                },
+                {
+                  "id": "s24_short_c2",
+                  "text": "matter, too.",
+                  "startChar": 16,
+                  "endChar": 28
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s24_long_c1",
+                  "text": "You are made of matter,",
+                  "startChar": 0,
+                  "endChar": 23
+                },
+                {
+                  "id": "s24_long_c2",
+                  "text": "too.",
+                  "startChar": 24,
+                  "endChar": 28
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s25",
+          "text": "Matter appears in three different states: solid, liquid, and gas.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s25_short_c1",
+                  "text": "Matter appears in three",
+                  "startChar": 0,
+                  "endChar": 23
+                },
+                {
+                  "id": "s25_short_c2",
+                  "text": "different states:",
+                  "startChar": 24,
+                  "endChar": 41
+                },
+                {
+                  "id": "s25_short_c3",
+                  "text": "solid, liquid,",
+                  "startChar": 42,
+                  "endChar": 56
+                },
+                {
+                  "id": "s25_short_c4",
+                  "text": "and gas.",
+                  "startChar": 57,
+                  "endChar": 65
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s25_long_c1",
+                  "text": "Matter appears in three different states:",
+                  "startChar": 0,
+                  "endChar": 41
+                },
+                {
+                  "id": "s25_long_c2",
+                  "text": "solid, liquid, and gas.",
+                  "startChar": 42,
+                  "endChar": 65
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": [
+            "exp_s25_structure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p12",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s26",
+          "text": "Like all matter, solids take up space and have mass.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s26_short_c1",
+                  "text": "Like all matter,",
+                  "startChar": 0,
+                  "endChar": 16
+                },
+                {
+                  "id": "s26_short_c2",
+                  "text": "solids take up space",
+                  "startChar": 17,
+                  "endChar": 37
+                },
+                {
+                  "id": "s26_short_c3",
+                  "text": "and have mass.",
+                  "startChar": 38,
+                  "endChar": 52
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s26_long_c1",
+                  "text": "Like all matter, solids take up space and have",
+                  "startChar": 0,
+                  "endChar": 46
+                },
+                {
+                  "id": "s26_long_c2",
+                  "text": "mass.",
+                  "startChar": 47,
+                  "endChar": 52
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": [
+            "exp_s26_structure"
+          ]
+        },
+        {
+          "id": "s27",
+          "text": "Only solid matter has a shape of its own.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s27_short_c1",
+                  "text": "Only solid matter has",
+                  "startChar": 0,
+                  "endChar": 21
+                },
+                {
+                  "id": "s27_short_c2",
+                  "text": "a shape of its",
+                  "startChar": 22,
+                  "endChar": 36
+                },
+                {
+                  "id": "s27_short_c3",
+                  "text": "own.",
+                  "startChar": 37,
+                  "endChar": 41
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s27_long_c1",
+                  "text": "Only solid matter has a shape of its own.",
+                  "startChar": 0,
+                  "endChar": 41
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s28",
+          "text": "A pencil and an eraser are both solids.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s28_short_c1",
+                  "text": "A pencil and an",
+                  "startChar": 0,
+                  "endChar": 15
+                },
+                {
+                  "id": "s28_short_c2",
+                  "text": "eraser are both solids.",
+                  "startChar": 16,
+                  "endChar": 39
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s28_long_c1",
+                  "text": "A pencil and an eraser are both solids.",
+                  "startChar": 0,
+                  "endChar": 39
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s29",
+          "text": "Look around you and find things that are solids.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s29_short_c1",
+                  "text": "Look around you and",
+                  "startChar": 0,
+                  "endChar": 19
+                },
+                {
+                  "id": "s29_short_c2",
+                  "text": "find things that are",
+                  "startChar": 20,
+                  "endChar": 40
+                },
+                {
+                  "id": "s29_short_c3",
+                  "text": "solids.",
+                  "startChar": 41,
+                  "endChar": 48
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s29_long_c1",
+                  "text": "Look around you and find things that are solids.",
+                  "startChar": 0,
+                  "endChar": 48
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        }
+      ]
+    },
+    {
+      "id": "p13",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s30",
+          "text": "Liquid is another state of matter.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s30_short_c1",
+                  "text": "Liquid is another state",
+                  "startChar": 0,
+                  "endChar": 23
+                },
+                {
+                  "id": "s30_short_c2",
+                  "text": "of matter.",
+                  "startChar": 24,
+                  "endChar": 34
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s30_long_c1",
+                  "text": "Liquid is another state of matter.",
+                  "startChar": 0,
+                  "endChar": 34
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s31",
+          "text": "It takes up space and has mass.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s31_short_c1",
+                  "text": "It takes up space",
+                  "startChar": 0,
+                  "endChar": 17
+                },
+                {
+                  "id": "s31_short_c2",
+                  "text": "and has mass.",
+                  "startChar": 18,
+                  "endChar": 31
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s31_long_c1",
+                  "text": "It takes up space and has mass.",
+                  "startChar": 0,
+                  "endChar": 31
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s32",
+          "text": "However, it can change shape but not by itself.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s32_short_c1",
+                  "text": "However, it can change",
+                  "startChar": 0,
+                  "endChar": 22
+                },
+                {
+                  "id": "s32_short_c2",
+                  "text": "shape but not by",
+                  "startChar": 23,
+                  "endChar": 39
+                },
+                {
+                  "id": "s32_short_c3",
+                  "text": "itself.",
+                  "startChar": 40,
+                  "endChar": 47
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s32_long_c1",
+                  "text": "However, it can change shape but not by itself.",
+                  "startChar": 0,
+                  "endChar": 47
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": [
+            "exp_s32_structure"
+          ]
+        },
+        {
+          "id": "s33",
+          "text": "In fact, liquids take the shape of the container they are in.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s33_short_c1",
+                  "text": "In fact,",
+                  "startChar": 0,
+                  "endChar": 8
+                },
+                {
+                  "id": "s33_short_c2",
+                  "text": "liquids take the shape",
+                  "startChar": 9,
+                  "endChar": 31
+                },
+                {
+                  "id": "s33_short_c3",
+                  "text": "of the container they",
+                  "startChar": 32,
+                  "endChar": 53
+                },
+                {
+                  "id": "s33_short_c4",
+                  "text": "are in.",
+                  "startChar": 54,
+                  "endChar": 61
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s33_long_c1",
+                  "text": "In fact, liquids take the shape of the container",
+                  "startChar": 0,
+                  "endChar": 48
+                },
+                {
+                  "id": "s33_long_c2",
+                  "text": "they are in.",
+                  "startChar": 49,
+                  "endChar": 61
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": [
+            "exp_s33_structure"
+          ]
+        },
+        {
+          "id": "s34",
+          "text": "The containers could be a glass, cup, bowl, or vase.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s34_short_c1",
+                  "text": "The containers could be",
+                  "startChar": 0,
+                  "endChar": 23
+                },
+                {
+                  "id": "s34_short_c2",
+                  "text": "a glass,",
+                  "startChar": 24,
+                  "endChar": 32
+                },
+                {
+                  "id": "s34_short_c3",
+                  "text": "cup, bowl,",
+                  "startChar": 33,
+                  "endChar": 43
+                },
+                {
+                  "id": "s34_short_c4",
+                  "text": "or vase.",
+                  "startChar": 44,
+                  "endChar": 52
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s34_long_c1",
+                  "text": "The containers could be a glass,",
+                  "startChar": 0,
+                  "endChar": 32
+                },
+                {
+                  "id": "s34_long_c2",
+                  "text": "cup, bowl, or vase.",
+                  "startChar": 33,
+                  "endChar": 52
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s35",
+          "text": "Milk, juice, and water are all liquids.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s35_short_c1",
+                  "text": "Milk, juice,",
+                  "startChar": 0,
+                  "endChar": 12
+                },
+                {
+                  "id": "s35_short_c2",
+                  "text": "and water are all",
+                  "startChar": 13,
+                  "endChar": 30
+                },
+                {
+                  "id": "s35_short_c3",
+                  "text": "liquids.",
+                  "startChar": 31,
+                  "endChar": 39
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s35_long_c1",
+                  "text": "Milk, juice, and water are all liquids.",
+                  "startChar": 0,
+                  "endChar": 39
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s36",
+          "text": "If you pour a liquid from a tall glass into a round pot, what shape will it take?",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s36_short_c1",
+                  "text": "If you pour a",
+                  "startChar": 0,
+                  "endChar": 13
+                },
+                {
+                  "id": "s36_short_c2",
+                  "text": "liquid from a tall",
+                  "startChar": 14,
+                  "endChar": 32
+                },
+                {
+                  "id": "s36_short_c3",
+                  "text": "glass into a round",
+                  "startChar": 33,
+                  "endChar": 51
+                },
+                {
+                  "id": "s36_short_c4",
+                  "text": "pot, what shape will",
+                  "startChar": 52,
+                  "endChar": 72
+                },
+                {
+                  "id": "s36_short_c5",
+                  "text": "it take?",
+                  "startChar": 73,
+                  "endChar": 81
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s36_long_c1",
+                  "text": "If you pour a liquid from a tall glass",
+                  "startChar": 0,
+                  "endChar": 38
+                },
+                {
+                  "id": "s36_long_c2",
+                  "text": "into a round pot, what shape will it take?",
+                  "startChar": 39,
+                  "endChar": 81
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": [
+            "exp_s36_structure"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "p14",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s37",
+          "text": "The third state of matter is gas.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s37_short_c1",
+                  "text": "The third state of",
+                  "startChar": 0,
+                  "endChar": 18
+                },
+                {
+                  "id": "s37_short_c2",
+                  "text": "matter is gas.",
+                  "startChar": 19,
+                  "endChar": 33
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s37_long_c1",
+                  "text": "The third state of matter is gas.",
+                  "startChar": 0,
+                  "endChar": 33
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s38",
+          "text": "It takes up space and has mass, but it does not have a shape of its own.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s38_short_c1",
+                  "text": "It takes up space",
+                  "startChar": 0,
+                  "endChar": 17
+                },
+                {
+                  "id": "s38_short_c2",
+                  "text": "and has mass,",
+                  "startChar": 18,
+                  "endChar": 31
+                },
+                {
+                  "id": "s38_short_c3",
+                  "text": "but it does not",
+                  "startChar": 32,
+                  "endChar": 47
+                },
+                {
+                  "id": "s38_short_c4",
+                  "text": "have a shape of",
+                  "startChar": 48,
+                  "endChar": 63
+                },
+                {
+                  "id": "s38_short_c5",
+                  "text": "its own.",
+                  "startChar": 64,
+                  "endChar": 72
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s38_long_c1",
+                  "text": "It takes up space and has mass,",
+                  "startChar": 0,
+                  "endChar": 31
+                },
+                {
+                  "id": "s38_long_c2",
+                  "text": "but it does not have a shape of its",
+                  "startChar": 32,
+                  "endChar": 67
+                },
+                {
+                  "id": "s38_long_c3",
+                  "text": "own.",
+                  "startChar": 68,
+                  "endChar": 72
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": [
+            "exp_s38_structure"
+          ]
+        },
+        {
+          "id": "s39",
+          "text": "Gas changes shape and size when it spreads out.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s39_short_c1",
+                  "text": "Gas changes shape and",
+                  "startChar": 0,
+                  "endChar": 21
+                },
+                {
+                  "id": "s39_short_c2",
+                  "text": "size when it spreads",
+                  "startChar": 22,
+                  "endChar": 42
+                },
+                {
+                  "id": "s39_short_c3",
+                  "text": "out.",
+                  "startChar": 43,
+                  "endChar": 47
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s39_long_c1",
+                  "text": "Gas changes shape and size when it spreads out.",
+                  "startChar": 0,
+                  "endChar": 47
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s40",
+          "text": "Air is made up of gases.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s40_short_c1",
+                  "text": "Air is made up",
+                  "startChar": 0,
+                  "endChar": 14
+                },
+                {
+                  "id": "s40_short_c2",
+                  "text": "of gases.",
+                  "startChar": 15,
+                  "endChar": 24
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s40_long_c1",
+                  "text": "Air is made up of gases.",
+                  "startChar": 0,
+                  "endChar": 24
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s41",
+          "text": "You cannot see or taste it, but you can sometimes smell it.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s41_short_c1",
+                  "text": "You cannot see or",
+                  "startChar": 0,
+                  "endChar": 17
+                },
+                {
+                  "id": "s41_short_c2",
+                  "text": "taste it,",
+                  "startChar": 18,
+                  "endChar": 27
+                },
+                {
+                  "id": "s41_short_c3",
+                  "text": "but you can sometimes",
+                  "startChar": 28,
+                  "endChar": 49
+                },
+                {
+                  "id": "s41_short_c4",
+                  "text": "smell it.",
+                  "startChar": 50,
+                  "endChar": 59
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s41_long_c1",
+                  "text": "You cannot see or taste it,",
+                  "startChar": 0,
+                  "endChar": 27
+                },
+                {
+                  "id": "s41_long_c2",
+                  "text": "but you can sometimes smell it.",
+                  "startChar": 28,
+                  "endChar": 59
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s42",
+          "text": "Air is everywhere.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s42_short_c1",
+                  "text": "Air is everywhere.",
+                  "startChar": 0,
+                  "endChar": 18
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s42_long_c1",
+                  "text": "Air is everywhere.",
+                  "startChar": 0,
+                  "endChar": 18
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s43",
+          "text": "It can fill up a balloon.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s43_short_c1",
+                  "text": "It can fill up",
+                  "startChar": 0,
+                  "endChar": 14
+                },
+                {
+                  "id": "s43_short_c2",
+                  "text": "a balloon.",
+                  "startChar": 15,
+                  "endChar": 25
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s43_long_c1",
+                  "text": "It can fill up a balloon.",
+                  "startChar": 0,
+                  "endChar": 25
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s44",
+          "text": "What will happen to the air in a balloon if it pops?",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s44_short_c1",
+                  "text": "What will happen to",
+                  "startChar": 0,
+                  "endChar": 19
+                },
+                {
+                  "id": "s44_short_c2",
+                  "text": "the air in a",
+                  "startChar": 20,
+                  "endChar": 32
+                },
+                {
+                  "id": "s44_short_c3",
+                  "text": "balloon if it pops?",
+                  "startChar": 33,
+                  "endChar": 52
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s44_long_c1",
+                  "text": "What will happen to the air in a balloon",
+                  "startChar": 0,
+                  "endChar": 40
+                },
+                {
+                  "id": "s44_long_c2",
+                  "text": "if it pops?",
+                  "startChar": 41,
+                  "endChar": 52
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": [
+            "exp_s44_structure"
+          ]
+        }
+      ]
+    }
+  ],
+  "vocabulary": [
+    {
+      "id": "w_words",
+      "word": "WORDS",
+      "lemma": "word",
+      "partOfSpeech": "noun",
+      "meaningKo": "단어들",
+      "simpleKo": "읽고 배우는 말이나 글의 조각들이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_words_basic"
+      ]
+    },
+    {
+      "id": "w_phrase",
+      "word": "phrase",
+      "lemma": "phrase",
+      "partOfSpeech": "noun",
+      "meaningKo": "구, 짧은 표현",
+      "simpleKo": "몇 개의 단어가 함께 쓰인 짧은 말이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_phrase_basic"
+      ]
+    },
+    {
+      "id": "w_clothes",
+      "word": "clothes",
+      "lemma": "clothes",
+      "partOfSpeech": "noun",
+      "meaningKo": "옷",
+      "simpleKo": "사람이 몸에 입는 것들이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_clothes_basic"
+      ]
+    },
+    {
+      "id": "w_drawer",
+      "word": "drawer",
+      "lemma": "drawer",
+      "partOfSpeech": "noun",
+      "meaningKo": "서랍",
+      "simpleKo": "물건을 넣어 두는 공간이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_drawer_basic"
+      ]
+    },
+    {
+      "id": "w_matter",
+      "word": "matter",
+      "lemma": "matter",
+      "partOfSpeech": "noun",
+      "meaningKo": "물질",
+      "simpleKo": "고체, 액체, 기체처럼 공간을 차지하는 것이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_matter_basic"
+      ]
+    },
+    {
+      "id": "w_solids",
+      "word": "solids",
+      "lemma": "solid",
+      "partOfSpeech": "noun",
+      "meaningKo": "고체들",
+      "simpleKo": "자기 모양이 있는 물질들이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_solids_basic"
+      ]
+    },
+    {
+      "id": "w_liquids",
+      "word": "liquids",
+      "lemma": "liquid",
+      "partOfSpeech": "noun",
+      "meaningKo": "액체들",
+      "simpleKo": "물이나 우유처럼 흐를 수 있는 물질들이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_liquids_basic"
+      ]
+    },
+    {
+      "id": "w_gases",
+      "word": "gases",
+      "lemma": "gas",
+      "partOfSpeech": "noun",
+      "meaningKo": "기체들",
+      "simpleKo": "공기처럼 보이지 않을 수도 있고 퍼져 나가는 물질들이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_gases_basic"
+      ]
+    },
+    {
+      "id": "w_state",
+      "word": "state",
+      "lemma": "state",
+      "partOfSpeech": "noun",
+      "meaningKo": "상태",
+      "simpleKo": "어떤 것이 어떤 모습이나 조건에 있는지를 말해요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_state_basic"
+      ]
+    },
+    {
+      "id": "w_condition",
+      "word": "condition",
+      "lemma": "condition",
+      "partOfSpeech": "noun",
+      "meaningKo": "상태, 조건",
+      "simpleKo": "어떤 것이 어떤 상태에 있는지를 말해요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_condition_basic"
+      ]
+    },
+    {
+      "id": "w_thing",
+      "word": "thing",
+      "lemma": "thing",
+      "partOfSpeech": "noun",
+      "meaningKo": "것, 물건",
+      "simpleKo": "사람, 물건, 상태처럼 이름을 말할 수 있는 어떤 것이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_thing_basic"
+      ]
+    },
+    {
+      "id": "w_solid",
+      "word": "solid",
+      "lemma": "solid",
+      "partOfSpeech": "noun/adjective",
+      "meaningKo": "고체, 고체의",
+      "simpleKo": "자기 모양이 있는 물질이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_solid_basic"
+      ]
+    },
+    {
+      "id": "w_water",
+      "word": "water",
+      "lemma": "water",
+      "partOfSpeech": "noun",
+      "meaningKo": "물",
+      "simpleKo": "마실 수 있고 흐를 수 있는 액체예요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_water_basic"
+      ]
+    },
+    {
+      "id": "w_qualities",
+      "word": "qualities",
+      "lemma": "quality",
+      "partOfSpeech": "noun",
+      "meaningKo": "특징들, 성질들",
+      "simpleKo": "어떤 것이 가지고 있는 특징들이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_qualities_basic"
+      ]
+    },
+    {
+      "id": "w_amount",
+      "word": "amount",
+      "lemma": "amount",
+      "partOfSpeech": "noun",
+      "meaningKo": "양",
+      "simpleKo": "얼마나 많이 있는지를 말하는 양이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_amount_basic"
+      ]
+    },
+    {
+      "id": "w_volume",
+      "word": "volume",
+      "lemma": "volume",
+      "partOfSpeech": "noun",
+      "meaningKo": "부피, 양",
+      "simpleKo": "물질이 차지하는 크기나 양이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_volume_basic"
+      ]
+    },
+    {
+      "id": "w_heavy",
+      "word": "heavy",
+      "lemma": "heavy",
+      "partOfSpeech": "adjective",
+      "meaningKo": "무거운",
+      "simpleKo": "무게가 많이 나가는 상태예요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_heavy_basic"
+      ]
+    },
+    {
+      "id": "w_liquid",
+      "word": "liquid",
+      "lemma": "liquid",
+      "partOfSpeech": "noun/adjective",
+      "meaningKo": "액체, 액체의",
+      "simpleKo": "물이나 우유처럼 움직이고 흐를 수 있는 물질이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_liquid_basic"
+      ]
+    },
+    {
+      "id": "w_juice",
+      "word": "Juice",
+      "lemma": "juice",
+      "partOfSpeech": "noun",
+      "meaningKo": "주스",
+      "simpleKo": "마실 수 있는 액체예요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_juice_basic"
+      ]
+    },
+    {
+      "id": "w_container",
+      "word": "container",
+      "lemma": "container",
+      "partOfSpeech": "noun",
+      "meaningKo": "그릇, 용기",
+      "simpleKo": "물건이나 음식을 담는 것이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_container_basic"
+      ]
+    },
+    {
+      "id": "w_holds",
+      "word": "holds",
+      "lemma": "hold",
+      "partOfSpeech": "verb",
+      "meaningKo": "담다, 가지고 있다",
+      "simpleKo": "무언가를 안에 넣거나 담고 있는 것을 말해요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_holds_basic"
+      ]
+    },
+    {
+      "id": "w_glass",
+      "word": "glass",
+      "lemma": "glass",
+      "partOfSpeech": "noun",
+      "meaningKo": "유리잔",
+      "simpleKo": "액체를 담을 수 있는 컵 같은 물건이에요.",
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "explanationIds": [
+        "exp_w_glass_basic"
+      ]
+    }
+  ],
+  "explanations": [
+    {
+      "id": "exp_w_words_basic",
+      "targetType": "vocab",
+      "targetId": "w_words",
+      "title": "WORDS 뜻",
+      "easyEnglish": "Words are things we say, read, or write. In this lesson, words help us learn about matter.",
+      "textKo": "WORDS는 여러 개의 단어들이라는 뜻이에요. 이 글에서는 새로운 단어들을 먼저 배우고, 그 단어들로 물질을 설명해요. 단어를 알면 글의 내용을 더 쉽게 이해할 수 있어요.",
+      "examples": [
+        "These are new words.",
+        "The words help us learn about matter."
+      ]
+    },
+    {
+      "id": "exp_w_phrase_basic",
+      "targetType": "vocab",
+      "targetId": "w_phrase",
+      "title": "phrase 뜻",
+      "easyEnglish": "A phrase is a small group of words. In the word list, take up is a phrase that means to fill up.",
+      "textKo": "phrase는 몇 개의 단어가 함께 쓰인 짧은 표현이에요. 글에서는 take up이 phrase로 나와요. 이 phrase는 공간을 채운다는 뜻으로 설명되어 있어요.",
+      "examples": [
+        "Take up is a phrase.",
+        "A phrase can have more than one word."
+      ]
+    },
+    {
+      "id": "exp_w_clothes_basic",
+      "targetType": "vocab",
+      "targetId": "w_clothes",
+      "title": "clothes 뜻",
+      "easyEnglish": "Clothes are things people wear. In the sentence, the clothes take up room in the drawer.",
+      "textKo": "clothes는 옷이라는 뜻이에요. 예문에서는 옷이 서랍 안의 공간을 차지한다고 말해요. 옷은 한 벌만 말할 때보다 여러 옷을 함께 말할 때 자주 쓰여요.",
+      "examples": [
+        "The clothes take up room in the drawer.",
+        "Clothes can take up room."
+      ]
+    },
+    {
+      "id": "exp_w_drawer_basic",
+      "targetType": "vocab",
+      "targetId": "w_drawer",
+      "title": "drawer 뜻",
+      "easyEnglish": "A drawer is a place that can hold things. In the sentence, the clothes are in the drawer.",
+      "textKo": "drawer는 서랍이라는 뜻이에요. 예문에서는 옷이 서랍 안의 공간을 차지해요. drawer는 옷이나 다른 물건을 넣어 두는 곳으로 이해하면 쉬워요.",
+      "examples": [
+        "The clothes take up room in the drawer.",
+        "The clothes are in the drawer."
+      ]
+    },
+    {
+      "id": "exp_w_matter_basic",
+      "targetType": "vocab",
+      "targetId": "w_matter",
+      "title": "matter 뜻",
+      "easyEnglish": "Matter is what things are made of. Matter takes up space and has mass.",
+      "textKo": "matter는 물질이라는 뜻이에요. 글에서는 모든 것이 matter로 만들어졌다고 말해요. matter는 공간을 차지하고 질량을 가진 것으로 설명돼요.",
+      "examples": [
+        "All things are made of matter.",
+        "Matter is anything that takes up space."
+      ]
+    },
+    {
+      "id": "exp_w_solids_basic",
+      "targetType": "vocab",
+      "targetId": "w_solids",
+      "title": "solids 뜻",
+      "easyEnglish": "Solids are a type of matter. Solids take up space, have mass, and have their own shape.",
+      "textKo": "solids는 고체들이라는 뜻이에요. 글에서는 고체가 공간을 차지하고 질량을 가진다고 말해요. 또한 고체는 자기만의 모양을 가지고 있어요.",
+      "examples": [
+        "A pencil and an eraser are both solids.",
+        "Look around you and find things that are solids."
+      ]
+    },
+    {
+      "id": "exp_w_liquids_basic",
+      "targetType": "vocab",
+      "targetId": "w_liquids",
+      "title": "liquids 뜻",
+      "easyEnglish": "Liquids are a type of matter. Liquids can change shape and take the shape of their container.",
+      "textKo": "liquids는 액체들이라는 뜻이에요. 글에서는 우유, 주스, 물이 모두 liquids라고 말해요. 액체는 자기 혼자 정해진 모양을 가지기보다 담긴 container의 모양을 따라가요.",
+      "examples": [
+        "Milk, juice, and water are all liquids.",
+        "Liquids take the shape of the container they are in."
+      ]
+    },
+    {
+      "id": "exp_w_gases_basic",
+      "targetType": "vocab",
+      "targetId": "w_gases",
+      "title": "gases 뜻",
+      "easyEnglish": "Gases are a type of matter. Gases do not have their own shape and can spread out.",
+      "textKo": "gases는 기체들이라는 뜻이에요. 글에서는 공기가 gases로 만들어졌다고 말해요. 기체는 자기만의 모양이 없고 퍼져 나가며 모양과 크기가 바뀔 수 있어요.",
+      "examples": [
+        "Air is made up of gases.",
+        "Solids, liquids, and gases are kinds of matter."
+      ]
+    },
+    {
+      "id": "exp_w_state_basic",
+      "targetType": "vocab",
+      "targetId": "w_state",
+      "title": "state 뜻",
+      "easyEnglish": "A state is a condition of a thing. Matter has three states: solid, liquid, and gas.",
+      "textKo": "state는 상태라는 뜻이에요. 글에서는 matter가 세 가지 state로 나타난다고 말해요. 그 세 가지 상태는 solid, liquid, gas예요.",
+      "examples": [
+        "Ice is the solid state of water.",
+        "Liquid is another state of matter."
+      ]
+    },
+    {
+      "id": "exp_w_condition_basic",
+      "targetType": "vocab",
+      "targetId": "w_condition",
+      "title": "condition 뜻",
+      "easyEnglish": "A condition tells how a thing is. In the list, state means a condition of a thing.",
+      "textKo": "condition은 어떤 것의 상태나 모습을 말해요. 단어 목록에서는 state를 a condition of a thing이라고 설명해요. 그래서 condition을 알면 state의 뜻도 더 쉽게 이해할 수 있어요.",
+      "examples": [
+        "State means a condition of a thing.",
+        "A condition tells how a thing is."
+      ]
+    },
+    {
+      "id": "exp_w_thing_basic",
+      "targetType": "vocab",
+      "targetId": "w_thing",
+      "title": "thing 뜻",
+      "easyEnglish": "A thing is something we can talk about. In this passage, a state is a condition of a thing.",
+      "textKo": "thing은 어떤 것 또는 물건이라는 뜻이에요. 이 글에서는 state를 설명할 때 “a condition of a thing”이라고 말해요. 즉, 어떤 것의 상태를 말할 때 thing이라는 단어를 쓸 수 있어요.",
+      "examples": [
+        "State is a condition of a thing.",
+        "A solid is a thing that has 3D qualities."
+      ]
+    },
+    {
+      "id": "exp_w_solid_basic",
+      "targetType": "vocab",
+      "targetId": "w_solid",
+      "title": "solid 뜻",
+      "easyEnglish": "A solid is a type of matter. A solid takes up space, has mass, and has a shape of its own.",
+      "textKo": "solid는 고체라는 뜻이에요. 글에서는 solid matter가 자기만의 모양을 가진다고 설명해요. 연필과 지우개는 글에 나온 solid의 예예요.",
+      "examples": [
+        "Ice is the solid state of water.",
+        "This solid is a rock."
+      ]
+    },
+    {
+      "id": "exp_w_water_basic",
+      "targetType": "vocab",
+      "targetId": "w_water",
+      "title": "water 뜻",
+      "easyEnglish": "Water is a liquid in this passage. Water can be named with milk and juice as a liquid.",
+      "textKo": "water는 물이라는 뜻이에요. 글에서는 물이 milk, juice와 함께 liquids라고 나와요. 또 얼음은 물의 solid state라고 설명돼요.",
+      "examples": [
+        "Ice is the solid state of water.",
+        "Milk, juice, and water are all liquids."
+      ]
+    },
+    {
+      "id": "exp_w_qualities_basic",
+      "targetType": "vocab",
+      "targetId": "w_qualities",
+      "title": "qualities 뜻",
+      "easyEnglish": "Qualities are features of a thing. In the word list, a solid is described as a thing that has 3D qualities.",
+      "textKo": "qualities는 어떤 것이 가진 특징이나 성질들이라는 뜻이에요. 단어 목록에서는 solid를 “3D qualities”를 가진 것이라고 설명해요. 그래서 qualities는 어떤 것이 어떤 특징을 가지고 있는지 말할 때 쓰여요.",
+      "examples": [
+        "A solid is a thing that has 3D qualities.",
+        "This solid is a rock."
+      ]
+    },
+    {
+      "id": "exp_w_amount_basic",
+      "targetType": "vocab",
+      "targetId": "w_amount",
+      "title": "amount 뜻",
+      "easyEnglish": "An amount tells how much matter there is. In the word list, mass is an amount or volume of matter.",
+      "textKo": "amount는 양이라는 뜻이에요. 글의 단어 설명에서는 mass가 matter의 amount 또는 volume이라고 나와요. 즉, amount는 물질이 얼마나 있는지를 말할 때 도움이 되는 단어예요.",
+      "examples": [
+        "Mass is an amount or volume of matter.",
+        "The mass of snow is very heavy."
+      ]
+    },
+    {
+      "id": "exp_w_volume_basic",
+      "targetType": "vocab",
+      "targetId": "w_volume",
+      "title": "volume 뜻",
+      "easyEnglish": "Volume tells how much space matter has. In the word list, mass is described as an amount or volume of matter.",
+      "textKo": "volume은 부피나 양이라는 뜻이에요. 단어 목록에서는 mass를 matter의 amount or volume이라고 설명해요. 그래서 volume은 물질이 차지하는 양을 이해할 때 쓰이는 말이에요.",
+      "examples": [
+        "Mass is an amount or volume of matter.",
+        "Matter is anything that takes up space."
+      ]
+    },
+    {
+      "id": "exp_w_heavy_basic",
+      "targetType": "vocab",
+      "targetId": "w_heavy",
+      "title": "heavy 뜻",
+      "easyEnglish": "Heavy means having a lot of weight. In the word list, the mass of snow is very heavy.",
+      "textKo": "heavy는 무겁다는 뜻이에요. 단어 목록의 예문에서는 눈의 mass가 매우 heavy하다고 말해요. 무게가 많이 느껴질 때 heavy라고 표현할 수 있어요.",
+      "examples": [
+        "The mass of snow is very heavy.",
+        "Rock is made of hard matter."
+      ]
+    },
+    {
+      "id": "exp_w_liquid_basic",
+      "targetType": "vocab",
+      "targetId": "w_liquid",
+      "title": "liquid 뜻",
+      "easyEnglish": "A liquid is a type of matter. A liquid can move and can take the shape of its container.",
+      "textKo": "liquid는 액체라는 뜻이에요. 글에서는 liquid가 공간을 차지하고 mass를 가진다고 말해요. 또한 liquid는 담긴 container의 모양을 따라갈 수 있어요.",
+      "examples": [
+        "Juice is a liquid.",
+        "Liquid is another state of matter."
+      ]
+    },
+    {
+      "id": "exp_w_juice_basic",
+      "targetType": "vocab",
+      "targetId": "w_juice",
+      "title": "Juice 뜻",
+      "easyEnglish": "Juice is a liquid. In the passage, juice is listed with milk and water as a liquid.",
+      "textKo": "Juice는 주스라는 뜻이에요. 단어 목록에서는 “Juice is a liquid.”라고 나와요. 글에서도 milk, juice, water가 모두 liquids라고 설명해요.",
+      "examples": [
+        "Juice is a liquid.",
+        "Milk, juice, and water are all liquids."
+      ]
+    },
+    {
+      "id": "exp_w_container_basic",
+      "targetType": "vocab",
+      "targetId": "w_container",
+      "title": "container 뜻",
+      "easyEnglish": "A container is a thing that holds something. In the passage, a liquid takes the shape of the container it is in.",
+      "textKo": "container는 용기나 그릇이라는 뜻이에요. 글에서는 액체가 들어 있는 container의 모양을 따라간다고 말해요. container의 예로 glass, cup, bowl, vase가 나와요.",
+      "examples": [
+        "Liquids take the shape of the container they are in.",
+        "Put the extra food in a container."
+      ]
+    },
+    {
+      "id": "exp_w_holds_basic",
+      "targetType": "vocab",
+      "targetId": "w_holds",
+      "title": "holds 뜻",
+      "easyEnglish": "Holds means keeps something inside or carries something. In the passage, a container holds things like food or liquid.",
+      "textKo": "holds는 무언가를 안에 담거나 가지고 있다는 뜻이에요. 글에서는 container가 jar, glass, bowl 같은 것을 말하며, 이런 것들은 무엇을 담을 수 있어요. 그래서 holds는 용기 안에 물건이나 액체가 들어 있는 모습을 설명할 때 쓸 수 있어요.",
+      "examples": [
+        "A container is a thing that holds, such as a jar, glass, bowl, etc.",
+        "A glass holds a liquid."
+      ]
+    },
+    {
+      "id": "exp_w_glass_basic",
+      "targetType": "vocab",
+      "targetId": "w_glass",
+      "title": "glass 뜻",
+      "easyEnglish": "A glass is a container. In the passage, a liquid can be poured from a tall glass.",
+      "textKo": "glass는 유리잔이라는 뜻이에요. 글에서는 액체를 tall glass에서 round pot으로 부을 수 있다고 말해요. 또 glass는 container의 한 예로 나오며, 액체를 담는 데 쓰일 수 있어요.",
+      "examples": [
+        "The containers could be a glass, cup, bowl, or vase.",
+        "If you pour a liquid from a tall glass into a round pot, what shape will it take?"
+      ]
+    },
+    {
+      "id": "exp_s20_structure",
+      "targetType": "sentence",
+      "targetId": "s20",
+      "explanationType": "structure",
+      "title": "문장 구조 설명",
+      "easyEnglish": "All things have matter in them. Matter is what things are made of.",
+      "textKo": "이 문장은 주어 All things + be동사 are + 과거분사 made + 전치사구 of matter 구조예요. are made of는 '~로 만들어져 있다'라는 수동 표현이에요. 주어가 복수라서 be동사로 are가 쓰였어요.",
+      "simplerExample": {
+        "text": "They are made of matter.",
+        "explanationKo": "이 예문도 주어 + are made of + 재료 구조예요. 무엇이 어떤 재료로 만들어졌는지 말하는 같은 문장 형태예요."
+      }
+    },
+    {
+      "id": "exp_s21_structure",
+      "targetType": "sentence",
+      "targetId": "s21",
+      "explanationType": "structure",
+      "title": "문장 구조 설명",
+      "easyEnglish": "Matter is anything. It takes up space.",
+      "textKo": "이 문장은 Matter is anything으로 기본 뜻을 먼저 말해요. 그 뒤의 that takes up space는 anything을 설명하는 부분이에요. that은 앞의 anything을 받아서 어떤 것인지 더 자세히 알려줘요.",
+      "simplerExample": {
+        "text": "Matter is anything that has mass.",
+        "explanationKo": "이 예문도 anything 뒤에 that + 동사가 와서 앞의 말을 설명해요. 무엇이 matter인지 더 자세히 알려 주는 구조가 같아요."
+      }
+    },
+    {
+      "id": "exp_s25_structure",
+      "targetType": "sentence",
+      "targetId": "s25",
+      "explanationType": "structure",
+      "title": "문장 구조 설명",
+      "easyEnglish": "Matter has three states. The states are solid, liquid, and gas.",
+      "textKo": "이 문장은 주어 Matter + 동사 appears + 전치사구 in three different states 구조예요. 콜론 뒤에는 세 가지 예시인 solid, liquid, and gas가 나와요. 콜론은 앞에서 말한 내용을 더 자세히 보여 줄 때 쓸 수 있어요.",
+      "simplerExample": {
+        "text": "Matter appears in three states: solid, liquid, and gas.",
+        "explanationKo": "이 예문도 앞에서 states를 말하고 콜론 뒤에 그 예시들을 나열해요. 긴 설명을 목록으로 쉽게 보여 주는 구조예요."
+      }
+    },
+    {
+      "id": "exp_s26_structure",
+      "targetType": "sentence",
+      "targetId": "s26",
+      "explanationType": "structure",
+      "title": "문장 구조 설명",
+      "easyEnglish": "Solids are like all matter. Solids take up space and have mass.",
+      "textKo": "문장 앞의 Like all matter는 '모든 물질처럼'이라는 뜻의 시작 표현이에요. 주어는 solids이고, 동사는 take up과 have 두 개예요. and가 두 동사를 연결해서 고체가 하는 두 가지 특징을 말해요.",
+      "simplerExample": {
+        "text": "Solids take up space and have mass.",
+        "explanationKo": "이 예문도 주어 solids 뒤에 두 동사가 and로 연결돼요. 한 주어가 두 가지 특징을 가진다는 구조가 같아요."
+      }
+    },
+    {
+      "id": "exp_s32_structure",
+      "targetType": "sentence",
+      "targetId": "s32",
+      "explanationType": "structure",
+      "title": "문장 구조 설명",
+      "easyEnglish": "Liquid can change shape. It cannot change shape by itself.",
+      "textKo": "However는 앞 내용과 다른 점을 말할 때 쓰는 연결어예요. it can change shape는 it + can + 동사원형 구조예요. but not by itself는 '하지만 혼자서는 아니다'라는 뜻으로, 앞의 change shape가 생략되어 있어요.",
+      "simplerExample": {
+        "text": "It can move, but not by itself.",
+        "explanationKo": "이 예문도 can + 동사원형 뒤에 but not by itself가 붙어요. 할 수 있는 일과 혼자서는 안 된다는 점을 함께 말하는 구조예요."
+      }
+    },
+    {
+      "id": "exp_s33_structure",
+      "targetType": "sentence",
+      "targetId": "s33",
+      "explanationType": "structure",
+      "title": "문장 구조 설명",
+      "easyEnglish": "Liquids take the shape of their container. The liquids are in the container.",
+      "textKo": "In fact는 앞 내용을 더 분명하게 설명할 때 쓰는 표현이에요. 주어는 liquids이고, 동사는 take예요. the container they are in에서 they are in은 container를 설명하며, '그들이 안에 있는 용기'라는 뜻을 만들어요.",
+      "simplerExample": {
+        "text": "Liquids take the shape of the cup they are in.",
+        "explanationKo": "이 예문도 the cup 뒤에 they are in이 와서 cup을 설명해요. 어떤 용기 안에 있는지를 뒤에서 덧붙이는 구조가 같아요."
+      }
+    },
+    {
+      "id": "exp_s36_structure",
+      "targetType": "sentence",
+      "targetId": "s36",
+      "explanationType": "structure",
+      "title": "문장 구조 설명",
+      "easyEnglish": "You pour a liquid into a round pot. What shape will the liquid take?",
+      "textKo": "이 문장은 If로 시작하는 조건절과 what으로 시작하는 질문이 함께 있어요. If you pour a liquid from a tall glass into a round pot은 '만약 ~한다면'이라는 조건을 말해요. what shape will it take는 will + 주어 + 동사원형 형태의 미래 질문이에요.",
+      "simplerExample": {
+        "text": "If you pour water into a cup, what shape will it take?",
+        "explanationKo": "이 예문도 If 조건절 뒤에 what 질문이 와요. 먼저 상황을 말하고, 그 상황에서 어떤 일이 일어날지 묻는 구조예요."
+      }
+    },
+    {
+      "id": "exp_s38_structure",
+      "targetType": "sentence",
+      "targetId": "s38",
+      "explanationType": "structure",
+      "title": "문장 구조 설명",
+      "easyEnglish": "Gas takes up space and has mass. Gas does not have its own shape.",
+      "textKo": "이 문장은 and와 but이 함께 쓰여 여러 정보를 연결해요. It takes up space and has mass는 두 가지 긍정 내용을 말해요. but it does not have a shape of its own은 앞 내용과 반대되는 중요한 차이를 말해요.",
+      "simplerExample": {
+        "text": "It has mass, but it does not have its own shape.",
+        "explanationKo": "이 예문도 but을 사용해 앞 내용과 다른 내용을 연결해요. 긍정문 뒤에 부정문이 와서 차이를 보여 주는 구조예요."
+      }
+    },
+    {
+      "id": "exp_s44_structure",
+      "targetType": "sentence",
+      "targetId": "s44",
+      "explanationType": "structure",
+      "title": "문장 구조 설명",
+      "easyEnglish": "The balloon pops. What will happen to the air?",
+      "textKo": "이 문장은 What will happen으로 시작하는 질문이에요. to the air in a balloon은 어떤 것에 일이 일어나는지 알려 주는 부분이에요. if it pops는 '만약 그것이 터지면'이라는 조건을 덧붙여요.",
+      "simplerExample": {
+        "text": "What will happen to the air if it pops?",
+        "explanationKo": "이 예문도 What will happen to + 대상 + if 조건절 구조예요. 어떤 조건에서 대상에게 무슨 일이 일어날지 묻는 문장 형태가 같아요."
+      }
+    }
+  ]
+}

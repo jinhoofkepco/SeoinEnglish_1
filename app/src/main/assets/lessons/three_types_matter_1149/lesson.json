@@ -1,0 +1,1935 @@
+{
+    "schemaVersion":  1,
+    "id":  "lesson_three_types_of_matter",
+    "title":  "Three Types of Matter",
+    "subtitle":  "",
+    "level":  "A1",
+    "language":  "en",
+    "defaultAudioId":  "main_en",
+    "defaultChunkSetId":  "short",
+    "audioAssets":  [
+                        {
+                            "id":  "main_en",
+                            "file":  "",
+                            "role":  "main_narration",
+                            "language":  "en"
+                        }
+                    ],
+    "chunkProfiles":  [
+                          {
+                              "id":  "short",
+                              "label":  "짧게",
+                              "description":  "small meaning-based chunks",
+                              "pauseBehavior":  "after_each_chunk"
+                          },
+                          {
+                              "id":  "long",
+                              "label":  "길게",
+                              "description":  "sentence-level chunks",
+                              "pauseBehavior":  "after_each_chunk"
+                          },
+                          {
+                              "id":  "natural",
+                              "label":  "자연스럽게",
+                              "description":  "continuous playback",
+                              "pauseBehavior":  "none"
+                          }
+                      ],
+    "paragraphs":  [
+                       {
+                           "id":  "p10",
+                           "type":  "title",
+                           "sentences":  [
+                                             {
+                                                 "id":  "s10",
+                                                 "text":  "Three Types of Matter",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s10_short_c1",
+                                                                                          "text":  "Three Types",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  11
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s10_short_c2",
+                                                                                          "text":  "of Matter",
+                                                                                          "startChar":  12,
+                                                                                          "endChar":  21
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s10_long_c1",
+                                                                                          "text":  "Three Types of Matter",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  21
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s10_w_matter_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_matter",
+                                                                         "text":  "Matter",
+                                                                         "startChar":  15,
+                                                                         "endChar":  21,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_matter_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             }
+                                         ]
+                       },
+                       {
+                           "id":  "p11",
+                           "type":  "story",
+                           "sentences":  [
+                                             {
+                                                 "id":  "s11",
+                                                 "text":  "All things are made of matter.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s11_short_c1",
+                                                                                          "text":  "All things",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  10
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s11_short_c2",
+                                                                                          "text":  "are made of matter.",
+                                                                                          "startChar":  11,
+                                                                                          "endChar":  30
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s11_long_c1",
+                                                                                          "text":  "All things are made of matter.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  30
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s11_w_matter_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_matter",
+                                                                         "text":  "matter",
+                                                                         "startChar":  23,
+                                                                         "endChar":  29,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_matter_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s12",
+                                                 "text":  "Matter is anything that takes up space.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s12_short_c1",
+                                                                                          "text":  "Matter",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  6
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s12_short_c2",
+                                                                                          "text":  "is anything",
+                                                                                          "startChar":  7,
+                                                                                          "endChar":  18
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s12_short_c3",
+                                                                                          "text":  "that takes up space.",
+                                                                                          "startChar":  19,
+                                                                                          "endChar":  39
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s12_long_c1",
+                                                                                          "text":  "Matter is anything that takes up space.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  39
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s12_w_matter_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_matter",
+                                                                         "text":  "Matter",
+                                                                         "startChar":  0,
+                                                                         "endChar":  6,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_matter_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s12_w_take_up_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_take_up",
+                                                                         "text":  "takes up",
+                                                                         "startChar":  24,
+                                                                         "endChar":  32,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_take_up_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s13",
+                                                 "text":  "Look around at the things in your classroom.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s13_short_c1",
+                                                                                          "text":  "Look around",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  11
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s13_short_c2",
+                                                                                          "text":  "at the things",
+                                                                                          "startChar":  12,
+                                                                                          "endChar":  25
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s13_short_c3",
+                                                                                          "text":  "in your classroom.",
+                                                                                          "startChar":  26,
+                                                                                          "endChar":  44
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s13_long_c1",
+                                                                                          "text":  "Look around at the things in your classroom.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  44
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s14",
+                                                 "text":  "They are all made of matter.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s14_short_c1",
+                                                                                          "text":  "They",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  4
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s14_short_c2",
+                                                                                          "text":  "are all",
+                                                                                          "startChar":  5,
+                                                                                          "endChar":  12
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s14_short_c3",
+                                                                                          "text":  "made of matter.",
+                                                                                          "startChar":  13,
+                                                                                          "endChar":  28
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s14_long_c1",
+                                                                                          "text":  "They are all made of matter.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  28
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s14_w_matter_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_matter",
+                                                                         "text":  "matter",
+                                                                         "startChar":  21,
+                                                                         "endChar":  27,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_matter_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s15",
+                                                 "text":  "You are made of matter, too.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s15_short_c1",
+                                                                                          "text":  "You",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  3
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s15_short_c2",
+                                                                                          "text":  "are made of matter, too.",
+                                                                                          "startChar":  4,
+                                                                                          "endChar":  28
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s15_long_c1",
+                                                                                          "text":  "You are made of matter, too.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  28
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s15_w_matter_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_matter",
+                                                                         "text":  "matter",
+                                                                         "startChar":  16,
+                                                                         "endChar":  22,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_matter_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s16",
+                                                 "text":  "Matter appears in three different states: solid, liquid, and gas.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s16_short_c1",
+                                                                                          "text":  "Matter",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  6
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s16_short_c2",
+                                                                                          "text":  "appears",
+                                                                                          "startChar":  7,
+                                                                                          "endChar":  14
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s16_short_c3",
+                                                                                          "text":  "in three different states:",
+                                                                                          "startChar":  15,
+                                                                                          "endChar":  41
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s16_short_c4",
+                                                                                          "text":  "solid, liquid, and gas.",
+                                                                                          "startChar":  42,
+                                                                                          "endChar":  65
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s16_long_c1",
+                                                                                          "text":  "Matter appears in three different states: solid, liquid, and gas.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  65
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s16_w_matter_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_matter",
+                                                                         "text":  "Matter",
+                                                                         "startChar":  0,
+                                                                         "endChar":  6,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_matter_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s16_w_state_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_state",
+                                                                         "text":  "states",
+                                                                         "startChar":  34,
+                                                                         "endChar":  40,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_state_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s16_w_solid_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_solid",
+                                                                         "text":  "solid",
+                                                                         "startChar":  42,
+                                                                         "endChar":  47,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_solid_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s16_w_liquid_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_liquid",
+                                                                         "text":  "liquid",
+                                                                         "startChar":  49,
+                                                                         "endChar":  55,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_liquid_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             }
+                                         ]
+                       },
+                       {
+                           "id":  "p12",
+                           "type":  "story",
+                           "sentences":  [
+                                             {
+                                                 "id":  "s17",
+                                                 "text":  "Like all matter, solids take up space and have mass.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s17_short_c1",
+                                                                                          "text":  "Like all matter,",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  16
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s17_short_c2",
+                                                                                          "text":  "solids",
+                                                                                          "startChar":  17,
+                                                                                          "endChar":  23
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s17_short_c3",
+                                                                                          "text":  "take up space",
+                                                                                          "startChar":  24,
+                                                                                          "endChar":  37
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s17_short_c4",
+                                                                                          "text":  "and have mass.",
+                                                                                          "startChar":  38,
+                                                                                          "endChar":  52
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s17_long_c1",
+                                                                                          "text":  "Like all matter, solids take up space and have mass.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  52
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s17_w_matter_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_matter",
+                                                                         "text":  "matter",
+                                                                         "startChar":  9,
+                                                                         "endChar":  15,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_matter_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s17_w_solid_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_solid",
+                                                                         "text":  "solids",
+                                                                         "startChar":  17,
+                                                                         "endChar":  23,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_solid_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s17_w_take_up_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_take_up",
+                                                                         "text":  "take up",
+                                                                         "startChar":  24,
+                                                                         "endChar":  31,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_take_up_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s17_w_mass_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_mass",
+                                                                         "text":  "mass",
+                                                                         "startChar":  47,
+                                                                         "endChar":  51,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_mass_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s18",
+                                                 "text":  "Only solid matter has a shape of its own.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s18_short_c1",
+                                                                                          "text":  "Only solid matter",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  17
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s18_short_c2",
+                                                                                          "text":  "has a shape",
+                                                                                          "startChar":  18,
+                                                                                          "endChar":  29
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s18_short_c3",
+                                                                                          "text":  "of its own.",
+                                                                                          "startChar":  30,
+                                                                                          "endChar":  41
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s18_long_c1",
+                                                                                          "text":  "Only solid matter has a shape of its own.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  41
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s18_w_solid_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_solid",
+                                                                         "text":  "solid",
+                                                                         "startChar":  5,
+                                                                         "endChar":  10,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_solid_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s18_w_matter_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_matter",
+                                                                         "text":  "matter",
+                                                                         "startChar":  11,
+                                                                         "endChar":  17,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_matter_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s19",
+                                                 "text":  "A pencil and an eraser are both solids.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s19_short_c1",
+                                                                                          "text":  "A pencil and an eraser",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  22
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s19_short_c2",
+                                                                                          "text":  "are both solids.",
+                                                                                          "startChar":  23,
+                                                                                          "endChar":  39
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s19_long_c1",
+                                                                                          "text":  "A pencil and an eraser are both solids.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  39
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s19_w_solid_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_solid",
+                                                                         "text":  "solids",
+                                                                         "startChar":  32,
+                                                                         "endChar":  38,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_solid_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s20",
+                                                 "text":  "Look around you and find things that are solids.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s20_short_c1",
+                                                                                          "text":  "Look around you",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  15
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s20_short_c2",
+                                                                                          "text":  "and find things",
+                                                                                          "startChar":  16,
+                                                                                          "endChar":  31
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s20_short_c3",
+                                                                                          "text":  "that are solids.",
+                                                                                          "startChar":  32,
+                                                                                          "endChar":  48
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s20_long_c1",
+                                                                                          "text":  "Look around you and find things that are solids.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  48
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s20_w_solid_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_solid",
+                                                                         "text":  "solids",
+                                                                         "startChar":  41,
+                                                                         "endChar":  47,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_solid_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             }
+                                         ]
+                       },
+                       {
+                           "id":  "p13",
+                           "type":  "story",
+                           "sentences":  [
+                                             {
+                                                 "id":  "s21",
+                                                 "text":  "Liquid is another state of matter.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s21_short_c1",
+                                                                                          "text":  "Liquid",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  6
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s21_short_c2",
+                                                                                          "text":  "is another state",
+                                                                                          "startChar":  7,
+                                                                                          "endChar":  23
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s21_short_c3",
+                                                                                          "text":  "of matter.",
+                                                                                          "startChar":  24,
+                                                                                          "endChar":  34
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s21_long_c1",
+                                                                                          "text":  "Liquid is another state of matter.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  34
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s21_w_liquid_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_liquid",
+                                                                         "text":  "Liquid",
+                                                                         "startChar":  0,
+                                                                         "endChar":  6,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_liquid_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s21_w_state_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_state",
+                                                                         "text":  "state",
+                                                                         "startChar":  18,
+                                                                         "endChar":  23,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_state_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s21_w_matter_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_matter",
+                                                                         "text":  "matter",
+                                                                         "startChar":  27,
+                                                                         "endChar":  33,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_matter_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s22",
+                                                 "text":  "It takes up space and has mass.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s22_short_c1",
+                                                                                          "text":  "It",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  2
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s22_short_c2",
+                                                                                          "text":  "takes up space",
+                                                                                          "startChar":  3,
+                                                                                          "endChar":  17
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s22_short_c3",
+                                                                                          "text":  "and has mass.",
+                                                                                          "startChar":  18,
+                                                                                          "endChar":  31
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s22_long_c1",
+                                                                                          "text":  "It takes up space and has mass.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  31
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s22_w_take_up_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_take_up",
+                                                                         "text":  "takes up",
+                                                                         "startChar":  3,
+                                                                         "endChar":  11,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_take_up_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s22_w_mass_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_mass",
+                                                                         "text":  "mass",
+                                                                         "startChar":  26,
+                                                                         "endChar":  30,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_mass_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s23",
+                                                 "text":  "However, it can change shape but not by itself.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s23_short_c1",
+                                                                                          "text":  "However,",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  8
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s23_short_c2",
+                                                                                          "text":  "it can change shape",
+                                                                                          "startChar":  9,
+                                                                                          "endChar":  28
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s23_short_c3",
+                                                                                          "text":  "but not by itself.",
+                                                                                          "startChar":  29,
+                                                                                          "endChar":  47
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s23_long_c1",
+                                                                                          "text":  "However, it can change shape but not by itself.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  47
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s24",
+                                                 "text":  "In fact, liquids take the shape of the container they are in.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s24_short_c1",
+                                                                                          "text":  "In fact,",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  8
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s24_short_c2",
+                                                                                          "text":  "liquids",
+                                                                                          "startChar":  9,
+                                                                                          "endChar":  16
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s24_short_c3",
+                                                                                          "text":  "take the shape",
+                                                                                          "startChar":  17,
+                                                                                          "endChar":  31
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s24_short_c4",
+                                                                                          "text":  "of the container",
+                                                                                          "startChar":  32,
+                                                                                          "endChar":  48
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s24_short_c5",
+                                                                                          "text":  "they are in.",
+                                                                                          "startChar":  49,
+                                                                                          "endChar":  61
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s24_long_c1",
+                                                                                          "text":  "In fact, liquids take the shape of the container they are in.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  61
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s24_w_liquid_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_liquid",
+                                                                         "text":  "liquids",
+                                                                         "startChar":  9,
+                                                                         "endChar":  16,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_liquid_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s24_w_container_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_container",
+                                                                         "text":  "container",
+                                                                         "startChar":  39,
+                                                                         "endChar":  48,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_container_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s25",
+                                                 "text":  "The containers could be a glass, cup, bowl, or vase.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s25_short_c1",
+                                                                                          "text":  "The containers",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  14
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s25_short_c2",
+                                                                                          "text":  "could be",
+                                                                                          "startChar":  15,
+                                                                                          "endChar":  23
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s25_short_c3",
+                                                                                          "text":  "a glass,",
+                                                                                          "startChar":  24,
+                                                                                          "endChar":  32
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s25_short_c4",
+                                                                                          "text":  "cup, bowl,",
+                                                                                          "startChar":  33,
+                                                                                          "endChar":  43
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s25_short_c5",
+                                                                                          "text":  "or vase.",
+                                                                                          "startChar":  44,
+                                                                                          "endChar":  52
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s25_long_c1",
+                                                                                          "text":  "The containers could be a glass, cup, bowl, or vase.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  52
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s25_w_container_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_container",
+                                                                         "text":  "containers",
+                                                                         "startChar":  4,
+                                                                         "endChar":  14,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_container_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s26",
+                                                 "text":  "Milk, juice, and water are all liquids.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s26_short_c1",
+                                                                                          "text":  "Milk, juice, and water",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  22
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s26_short_c2",
+                                                                                          "text":  "are all liquids.",
+                                                                                          "startChar":  23,
+                                                                                          "endChar":  39
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s26_long_c1",
+                                                                                          "text":  "Milk, juice, and water are all liquids.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  39
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s26_w_liquid_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_liquid",
+                                                                         "text":  "liquids",
+                                                                         "startChar":  31,
+                                                                         "endChar":  38,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_liquid_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s27",
+                                                 "text":  "If you pour a liquid from a tall glass into a round pot, what shape will it take?",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s27_short_c1",
+                                                                                          "text":  "If you pour a liquid",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  20
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s27_short_c2",
+                                                                                          "text":  "from a tall glass",
+                                                                                          "startChar":  21,
+                                                                                          "endChar":  38
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s27_short_c3",
+                                                                                          "text":  "into a round pot,",
+                                                                                          "startChar":  39,
+                                                                                          "endChar":  56
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s27_short_c4",
+                                                                                          "text":  "what shape",
+                                                                                          "startChar":  57,
+                                                                                          "endChar":  67
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s27_short_c5",
+                                                                                          "text":  "will it take?",
+                                                                                          "startChar":  68,
+                                                                                          "endChar":  81
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s27_long_c1",
+                                                                                          "text":  "If you pour a liquid from a tall glass into a round pot, what shape will it take?",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  81
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s27_w_liquid_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_liquid",
+                                                                         "text":  "liquid",
+                                                                         "startChar":  14,
+                                                                         "endChar":  20,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_liquid_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             }
+                                         ]
+                       },
+                       {
+                           "id":  "p14",
+                           "type":  "story",
+                           "sentences":  [
+                                             {
+                                                 "id":  "s28",
+                                                 "text":  "The third state of matter is gas.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s28_short_c1",
+                                                                                          "text":  "The third state",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  15
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s28_short_c2",
+                                                                                          "text":  "of matter",
+                                                                                          "startChar":  16,
+                                                                                          "endChar":  25
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s28_short_c3",
+                                                                                          "text":  "is gas.",
+                                                                                          "startChar":  26,
+                                                                                          "endChar":  33
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s28_long_c1",
+                                                                                          "text":  "The third state of matter is gas.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  33
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s28_w_state_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_state",
+                                                                         "text":  "state",
+                                                                         "startChar":  10,
+                                                                         "endChar":  15,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_state_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s28_w_matter_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_matter",
+                                                                         "text":  "matter",
+                                                                         "startChar":  19,
+                                                                         "endChar":  25,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_matter_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s29",
+                                                 "text":  "It takes up space and has mass, but it does not have a shape of its own.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s29_short_c1",
+                                                                                          "text":  "It",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  2
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s29_short_c2",
+                                                                                          "text":  "takes up space",
+                                                                                          "startChar":  3,
+                                                                                          "endChar":  17
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s29_short_c3",
+                                                                                          "text":  "and has mass,",
+                                                                                          "startChar":  18,
+                                                                                          "endChar":  31
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s29_short_c4",
+                                                                                          "text":  "but it does not have",
+                                                                                          "startChar":  32,
+                                                                                          "endChar":  52
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s29_short_c5",
+                                                                                          "text":  "a shape of its own.",
+                                                                                          "startChar":  53,
+                                                                                          "endChar":  72
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s29_long_c1",
+                                                                                          "text":  "It takes up space and has mass, but it does not have a shape of its own.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  72
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s29_w_take_up_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_take_up",
+                                                                         "text":  "takes up",
+                                                                         "startChar":  3,
+                                                                         "endChar":  11,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_take_up_basic"
+                                                                                            ]
+                                                                     },
+                                                                     {
+                                                                         "id":  "ann_s29_w_mass_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_mass",
+                                                                         "text":  "mass",
+                                                                         "startChar":  26,
+                                                                         "endChar":  30,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_mass_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s30",
+                                                 "text":  "Gas changes shape and size when it spreads out.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s30_short_c1",
+                                                                                          "text":  "Gas",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  3
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s30_short_c2",
+                                                                                          "text":  "changes shape and size",
+                                                                                          "startChar":  4,
+                                                                                          "endChar":  26
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s30_short_c3",
+                                                                                          "text":  "when it spreads out.",
+                                                                                          "startChar":  27,
+                                                                                          "endChar":  47
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s30_long_c1",
+                                                                                          "text":  "Gas changes shape and size when it spreads out.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  47
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s30_w_spread_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_spread",
+                                                                         "text":  "spreads",
+                                                                         "startChar":  35,
+                                                                         "endChar":  42,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_spread_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s31",
+                                                 "text":  "Air is made up of gases.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s31_short_c1",
+                                                                                          "text":  "Air",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  3
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s31_short_c2",
+                                                                                          "text":  "is made up of gases.",
+                                                                                          "startChar":  4,
+                                                                                          "endChar":  24
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s31_long_c1",
+                                                                                          "text":  "Air is made up of gases.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  24
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s32",
+                                                 "text":  "You cannot see or taste it, but you can sometimes smell it.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s32_short_c1",
+                                                                                          "text":  "You cannot see or taste it,",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  27
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s32_short_c2",
+                                                                                          "text":  "but you can sometimes smell it.",
+                                                                                          "startChar":  28,
+                                                                                          "endChar":  59
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s32_long_c1",
+                                                                                          "text":  "You cannot see or taste it, but you can sometimes smell it.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  59
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s33",
+                                                 "text":  "Air is everywhere.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s33_short_c1",
+                                                                                          "text":  "Air",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  3
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s33_short_c2",
+                                                                                          "text":  "is everywhere.",
+                                                                                          "startChar":  4,
+                                                                                          "endChar":  18
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s33_long_c1",
+                                                                                          "text":  "Air is everywhere.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  18
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s34",
+                                                 "text":  "It can fill up a balloon.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s34_short_c1",
+                                                                                          "text":  "It",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  2
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s34_short_c2",
+                                                                                          "text":  "can fill up",
+                                                                                          "startChar":  3,
+                                                                                          "endChar":  14
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s34_short_c3",
+                                                                                          "text":  "a balloon.",
+                                                                                          "startChar":  15,
+                                                                                          "endChar":  25
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s34_long_c1",
+                                                                                          "text":  "It can fill up a balloon.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  25
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s35",
+                                                 "text":  "What will happen to the air in a balloon if it pops?",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s35_short_c1",
+                                                                                          "text":  "What will happen",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  16
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s35_short_c2",
+                                                                                          "text":  "to the air",
+                                                                                          "startChar":  17,
+                                                                                          "endChar":  27
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s35_short_c3",
+                                                                                          "text":  "in a balloon",
+                                                                                          "startChar":  28,
+                                                                                          "endChar":  40
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s35_short_c4",
+                                                                                          "text":  "if it pops?",
+                                                                                          "startChar":  41,
+                                                                                          "endChar":  52
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s35_long_c1",
+                                                                                          "text":  "What will happen to the air in a balloon if it pops?",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  52
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             }
+                                         ]
+                       }
+                   ],
+    "vocabulary":  [
+                       {
+                           "id":  "w_take_up",
+                           "word":  "take up",
+                           "lemma":  "take up",
+                           "partOfSpeech":  "phrase",
+                           "meaningKo":  "차지하다, 채우다",
+                           "simpleKo":  "공간을 채우거나 차지한다는 뜻이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_take_up_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_matter",
+                           "word":  "matter",
+                           "lemma":  "matter",
+                           "partOfSpeech":  "noun",
+                           "meaningKo":  "물질",
+                           "simpleKo":  "고체, 액체, 기체처럼 공간을 차지하고 질량이 있는 것이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_matter_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_state",
+                           "word":  "state",
+                           "lemma":  "state",
+                           "partOfSpeech":  "noun",
+                           "meaningKo":  "상태",
+                           "simpleKo":  "어떤 것이 어떤 모습이나 조건에 있는지를 말해요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_state_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_solid",
+                           "word":  "solid",
+                           "lemma":  "solid",
+                           "partOfSpeech":  "noun",
+                           "meaningKo":  "고체",
+                           "simpleKo":  "자기만의 모양을 가지고 있는 물질이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_solid_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_mass",
+                           "word":  "mass",
+                           "lemma":  "mass",
+                           "partOfSpeech":  "noun",
+                           "meaningKo":  "질량",
+                           "simpleKo":  "물질이 얼마나 많이 있는지를 나타내는 양이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_mass_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_liquid",
+                           "word":  "liquid",
+                           "lemma":  "liquid",
+                           "partOfSpeech":  "noun",
+                           "meaningKo":  "액체",
+                           "simpleKo":  "물이나 우유처럼 흐를 수 있고 담긴 그릇의 모양을 따라가는 물질이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_liquid_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_container",
+                           "word":  "container",
+                           "lemma":  "container",
+                           "partOfSpeech":  "noun",
+                           "meaningKo":  "용기, 그릇",
+                           "simpleKo":  "물건이나 음식을 안에 담는 것이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_container_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_spread",
+                           "word":  "spread",
+                           "lemma":  "spread",
+                           "partOfSpeech":  "verb",
+                           "meaningKo":  "퍼지다, 펼치다",
+                           "simpleKo":  "밖으로 또는 넓은 곳으로 움직여 나간다는 뜻이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_spread_basic"
+                                              ]
+                       }
+                   ],
+    "explanations":  [
+                         {
+                             "id":  "exp_w_take_up_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_take_up",
+                             "title":  "take up 뜻",
+                             "easyEnglish":  "Take up means to fill up space.",
+                             "textKo":  "take up은/는 \u0027차지하다, 채우다\u0027라는 뜻이에요. 본문과 단어장에서는 \u0027to fill up\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "The clothes take up room in the drawer."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_matter_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_matter",
+                             "title":  "matter 뜻",
+                             "easyEnglish":  "Matter means solids, liquids, and gases. Matter takes up space.",
+                             "textKo":  "matter은/는 \u0027물질\u0027라는 뜻이에요. 본문과 단어장에서는 \u0027solids, liquids, and gases\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "Rock is made of hard matter."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_state_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_state",
+                             "title":  "state 뜻",
+                             "easyEnglish":  "A state is a condition of a thing. Matter has three states: solid, liquid, and gas.",
+                             "textKo":  "state은/는 \u0027상태\u0027라는 뜻이에요. 본문과 단어장에서는 \u0027a condition of a thing\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "Ice is the solid state of water."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_solid_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_solid",
+                             "title":  "solid 뜻",
+                             "easyEnglish":  "A solid is a thing that has 3D qualities. It has a shape of its own.",
+                             "textKo":  "solid은/는 \u0027고체\u0027라는 뜻이에요. 본문과 단어장에서는 \u0027a thing that has 3D qualities\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "This solid is a rock."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_mass_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_mass",
+                             "title":  "mass 뜻",
+                             "easyEnglish":  "Mass is an amount or volume of matter.",
+                             "textKo":  "mass은/는 \u0027질량\u0027라는 뜻이에요. 본문과 단어장에서는 \u0027an amount or volume of matter\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "The mass of snow is very heavy."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_liquid_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_liquid",
+                             "title":  "liquid 뜻",
+                             "easyEnglish":  "A liquid is a thing that can move, such as water or milk.",
+                             "textKo":  "liquid은/는 \u0027액체\u0027라는 뜻이에요. 본문과 단어장에서는 \u0027a thing that is able to move, such as water, milk, etc.\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "Juice is a liquid."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_container_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_container",
+                             "title":  "container 뜻",
+                             "easyEnglish":  "A container is a thing that holds something, such as a jar, glass, or bowl.",
+                             "textKo":  "container은/는 \u0027용기, 그릇\u0027라는 뜻이에요. 본문과 단어장에서는 \u0027a thing that holds, such as a jar, glass, bowl, etc.\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "Put the extra food in a container."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_spread_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_spread",
+                             "title":  "spread 뜻",
+                             "easyEnglish":  "Spread means to move out or over a place.",
+                             "textKo":  "spread은/는 \u0027퍼지다, 펼치다\u0027라는 뜻이에요. 본문과 단어장에서는 \u0027to move out or over a place\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "“Spread out so you have room, children,” she said."
+                                          ]
+                         }
+                     ]
+}

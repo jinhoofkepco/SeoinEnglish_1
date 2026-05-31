@@ -1,0 +1,1445 @@
+{
+    "schemaVersion":  1,
+    "id":  "the_color_of_royalty_tyrian_purple",
+    "title":  "The Color of Royalty",
+    "subtitle":  "Tyrian Purple",
+    "level":  "",
+    "language":  "en",
+    "defaultAudioId":  "main_en",
+    "defaultChunkSetId":  "short",
+    "audioAssets":  [
+                        {
+                            "id":  "main_en",
+                            "file":  "",
+                            "role":  "main_narration",
+                            "language":  "en"
+                        }
+                    ],
+    "chunkProfiles":  [
+                          {
+                              "id":  "short",
+                              "label":  "짧게",
+                              "description":  "small meaning-based chunks",
+                              "pauseBehavior":  "after_each_chunk"
+                          },
+                          {
+                              "id":  "long",
+                              "label":  "길게",
+                              "description":  "larger meaning-based chunks",
+                              "pauseBehavior":  "after_each_chunk"
+                          },
+                          {
+                              "id":  "natural",
+                              "label":  "자연스럽게",
+                              "description":  "continuous playback",
+                              "pauseBehavior":  "none"
+                          }
+                      ],
+    "paragraphs":  [
+                       {
+                           "id":  "p9",
+                           "type":  "title",
+                           "sentences":  [
+                                             {
+                                                 "id":  "s9",
+                                                 "text":  "The Color of Royalty",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s9_short_c1",
+                                                                                          "text":  "The Color of Royalty",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  20
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s9_long_c1",
+                                                                                          "text":  "The Color of Royalty",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  20
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             }
+                                         ]
+                       },
+                       {
+                           "id":  "p12",
+                           "type":  "story",
+                           "sentences":  [
+                                             {
+                                                 "id":  "s12",
+                                                 "text":  "Long ago, a group of people called the Phoenicians ruled the Mediterranean Sea.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s12_short_c1",
+                                                                                          "text":  "Long ago,",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  9
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s12_short_c2",
+                                                                                          "text":  "a group of people",
+                                                                                          "startChar":  10,
+                                                                                          "endChar":  27
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s12_short_c3",
+                                                                                          "text":  "called the Phoenicians",
+                                                                                          "startChar":  28,
+                                                                                          "endChar":  50
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s12_short_c4",
+                                                                                          "text":  "ruled the Mediterranean Sea.",
+                                                                                          "startChar":  51,
+                                                                                          "endChar":  79
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s12_long_c1",
+                                                                                          "text":  "Long ago, a group of people called the Phoenicians",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  50
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s12_long_c2",
+                                                                                          "text":  "ruled the Mediterranean Sea.",
+                                                                                          "startChar":  51,
+                                                                                          "endChar":  79
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s13",
+                                                 "text":  "They developed a reddish-purple natural dye.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s13_short_c1",
+                                                                                          "text":  "They developed",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  14
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s13_short_c2",
+                                                                                          "text":  "a reddish-purple natural dye.",
+                                                                                          "startChar":  15,
+                                                                                          "endChar":  44
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s13_long_c1",
+                                                                                          "text":  "They developed a reddish-purple natural dye.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  44
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s14",
+                                                 "text":  "It was made in the city of Tyre, so it was called Tyrian purple.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s14_short_c1",
+                                                                                          "text":  "It was made",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  11
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s14_short_c2",
+                                                                                          "text":  "in the city of Tyre,",
+                                                                                          "startChar":  12,
+                                                                                          "endChar":  32
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s14_short_c3",
+                                                                                          "text":  "so it was called",
+                                                                                          "startChar":  33,
+                                                                                          "endChar":  49
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s14_short_c4",
+                                                                                          "text":  "Tyrian purple.",
+                                                                                          "startChar":  50,
+                                                                                          "endChar":  64
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s14_long_c1",
+                                                                                          "text":  "It was made in the city of Tyre,",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  32
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s14_long_c2",
+                                                                                          "text":  "so it was called Tyrian purple.",
+                                                                                          "startChar":  33,
+                                                                                          "endChar":  64
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s15",
+                                                 "text":  "This dye was the rarest and most desired color in ancient times.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s15_short_c1",
+                                                                                          "text":  "This dye",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  8
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s15_short_c2",
+                                                                                          "text":  "was the rarest",
+                                                                                          "startChar":  9,
+                                                                                          "endChar":  23
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s15_short_c3",
+                                                                                          "text":  "and most desired color",
+                                                                                          "startChar":  24,
+                                                                                          "endChar":  46
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s15_short_c4",
+                                                                                          "text":  "in ancient times.",
+                                                                                          "startChar":  47,
+                                                                                          "endChar":  64
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s15_long_c1",
+                                                                                          "text":  "This dye was the rarest",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  23
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s15_long_c2",
+                                                                                          "text":  "and most desired color in ancient times.",
+                                                                                          "startChar":  24,
+                                                                                          "endChar":  64
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s15_w_desired_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_desired",
+                                                                         "text":  "desired",
+                                                                         "startChar":  33,
+                                                                         "endChar":  40,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_desired_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             }
+                                         ]
+                       },
+                       {
+                           "id":  "p13",
+                           "type":  "story",
+                           "sentences":  [
+                                             {
+                                                 "id":  "s16",
+                                                 "text":  "Making this dye was difficult.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s16_short_c1",
+                                                                                          "text":  "Making this dye",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  15
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s16_short_c2",
+                                                                                          "text":  "was difficult.",
+                                                                                          "startChar":  16,
+                                                                                          "endChar":  30
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s16_long_c1",
+                                                                                          "text":  "Making this dye was difficult.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  30
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s17",
+                                                 "text":  "To create Tyrian purple, people needed the slime of the Murex snail.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s17_short_c1",
+                                                                                          "text":  "To create Tyrian purple,",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  24
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s17_short_c2",
+                                                                                          "text":  "people needed",
+                                                                                          "startChar":  25,
+                                                                                          "endChar":  38
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s17_short_c3",
+                                                                                          "text":  "the slime",
+                                                                                          "startChar":  39,
+                                                                                          "endChar":  48
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s17_short_c4",
+                                                                                          "text":  "of the Murex snail.",
+                                                                                          "startChar":  49,
+                                                                                          "endChar":  68
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s17_long_c1",
+                                                                                          "text":  "To create Tyrian purple, people needed",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  38
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s17_long_c2",
+                                                                                          "text":  "the slime of the Murex snail.",
+                                                                                          "startChar":  39,
+                                                                                          "endChar":  68
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s17_w_slime_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_slime",
+                                                                         "text":  "slime",
+                                                                         "startChar":  43,
+                                                                         "endChar":  48,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_slime_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s18",
+                                                 "text":  "They had to find a lot of these snails and collect their slime.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s18_short_c1",
+                                                                                          "text":  "They had to find",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  16
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s18_short_c2",
+                                                                                          "text":  "a lot of these snails",
+                                                                                          "startChar":  17,
+                                                                                          "endChar":  38
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s18_short_c3",
+                                                                                          "text":  "and collect",
+                                                                                          "startChar":  39,
+                                                                                          "endChar":  50
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s18_short_c4",
+                                                                                          "text":  "their slime.",
+                                                                                          "startChar":  51,
+                                                                                          "endChar":  63
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s18_long_c1",
+                                                                                          "text":  "They had to find a lot of these snails",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  38
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s18_long_c2",
+                                                                                          "text":  "and collect their slime.",
+                                                                                          "startChar":  39,
+                                                                                          "endChar":  63
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s18_w_slime_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_slime",
+                                                                         "text":  "slime",
+                                                                         "startChar":  57,
+                                                                         "endChar":  62,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_slime_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s19",
+                                                 "text":  "Then they had to leave the slime in the sun and wait for it to turn purple.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s19_short_c1",
+                                                                                          "text":  "Then",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  4
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s19_short_c2",
+                                                                                          "text":  "they had to leave the slime",
+                                                                                          "startChar":  5,
+                                                                                          "endChar":  32
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s19_short_c3",
+                                                                                          "text":  "in the sun",
+                                                                                          "startChar":  33,
+                                                                                          "endChar":  43
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s19_short_c4",
+                                                                                          "text":  "and wait",
+                                                                                          "startChar":  44,
+                                                                                          "endChar":  52
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s19_short_c5",
+                                                                                          "text":  "for it to turn purple.",
+                                                                                          "startChar":  53,
+                                                                                          "endChar":  75
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s19_long_c1",
+                                                                                          "text":  "Then they had to leave the slime in the sun",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  43
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s19_long_c2",
+                                                                                          "text":  "and wait for it to turn purple.",
+                                                                                          "startChar":  44,
+                                                                                          "endChar":  75
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s19_w_slime_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_slime",
+                                                                         "text":  "slime",
+                                                                         "startChar":  27,
+                                                                         "endChar":  32,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_slime_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s20",
+                                                 "text":  "Around 10,000 snails were needed to make just one gram of this dye.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s20_short_c1",
+                                                                                          "text":  "Around 10,000 snails",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  20
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s20_short_c2",
+                                                                                          "text":  "were needed",
+                                                                                          "startChar":  21,
+                                                                                          "endChar":  32
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s20_short_c3",
+                                                                                          "text":  "to make",
+                                                                                          "startChar":  33,
+                                                                                          "endChar":  40
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s20_short_c4",
+                                                                                          "text":  "just one gram",
+                                                                                          "startChar":  41,
+                                                                                          "endChar":  54
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s20_short_c5",
+                                                                                          "text":  "of this dye.",
+                                                                                          "startChar":  55,
+                                                                                          "endChar":  67
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s20_long_c1",
+                                                                                          "text":  "Around 10,000 snails were needed",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  32
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s20_long_c2",
+                                                                                          "text":  "to make just one gram of this dye.",
+                                                                                          "startChar":  33,
+                                                                                          "endChar":  67
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             }
+                                         ]
+                       },
+                       {
+                           "id":  "p14",
+                           "type":  "story",
+                           "sentences":  [
+                                             {
+                                                 "id":  "s21",
+                                                 "text":  "Because it took a lot of time and effort to make, this dye was highly valued.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s21_short_c1",
+                                                                                          "text":  "Because",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  7
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s21_short_c2",
+                                                                                          "text":  "it took a lot of time and effort",
+                                                                                          "startChar":  8,
+                                                                                          "endChar":  40
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s21_short_c3",
+                                                                                          "text":  "to make,",
+                                                                                          "startChar":  41,
+                                                                                          "endChar":  49
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s21_short_c4",
+                                                                                          "text":  "this dye",
+                                                                                          "startChar":  50,
+                                                                                          "endChar":  58
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s21_short_c5",
+                                                                                          "text":  "was highly valued.",
+                                                                                          "startChar":  59,
+                                                                                          "endChar":  77
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s21_long_c1",
+                                                                                          "text":  "Because it took a lot of time and effort to make,",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  49
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s21_long_c2",
+                                                                                          "text":  "this dye was highly valued.",
+                                                                                          "startChar":  50,
+                                                                                          "endChar":  77
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s22",
+                                                 "text":  "It was worth even more than gold.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s22_short_c1",
+                                                                                          "text":  "It was worth",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  12
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s22_short_c2",
+                                                                                          "text":  "even more than gold.",
+                                                                                          "startChar":  13,
+                                                                                          "endChar":  33
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s22_long_c1",
+                                                                                          "text":  "It was worth even more than gold.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  33
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s22_w_worth_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_worth",
+                                                                         "text":  "worth",
+                                                                         "startChar":  7,
+                                                                         "endChar":  12,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_worth_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s23",
+                                                 "text":  "So it became known as purple gold.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s23_short_c1",
+                                                                                          "text":  "So",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  2
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s23_short_c2",
+                                                                                          "text":  "it became known",
+                                                                                          "startChar":  3,
+                                                                                          "endChar":  18
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s23_short_c3",
+                                                                                          "text":  "as purple gold.",
+                                                                                          "startChar":  19,
+                                                                                          "endChar":  34
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s23_long_c1",
+                                                                                          "text":  "So it became known as purple gold.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  34
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s24",
+                                                 "text":  "Only the clothing of rich and important people could be dyed with this color.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s24_short_c1",
+                                                                                          "text":  "Only the clothing",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  17
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s24_short_c2",
+                                                                                          "text":  "of rich and important people",
+                                                                                          "startChar":  18,
+                                                                                          "endChar":  46
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s24_short_c3",
+                                                                                          "text":  "could be dyed",
+                                                                                          "startChar":  47,
+                                                                                          "endChar":  60
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s24_short_c4",
+                                                                                          "text":  "with this color.",
+                                                                                          "startChar":  61,
+                                                                                          "endChar":  77
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s24_long_c1",
+                                                                                          "text":  "Only the clothing of rich and important people",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  46
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s24_long_c2",
+                                                                                          "text":  "could be dyed with this color.",
+                                                                                          "startChar":  47,
+                                                                                          "endChar":  77
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s25",
+                                                 "text":  "For example, the top officials of the Roman Empire wore robes with a purple stripe.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s25_short_c1",
+                                                                                          "text":  "For example,",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  12
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s25_short_c2",
+                                                                                          "text":  "the top officials",
+                                                                                          "startChar":  13,
+                                                                                          "endChar":  30
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s25_short_c3",
+                                                                                          "text":  "of the Roman Empire",
+                                                                                          "startChar":  31,
+                                                                                          "endChar":  50
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s25_short_c4",
+                                                                                          "text":  "wore robes",
+                                                                                          "startChar":  51,
+                                                                                          "endChar":  61
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s25_short_c5",
+                                                                                          "text":  "with a purple stripe.",
+                                                                                          "startChar":  62,
+                                                                                          "endChar":  83
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s25_long_c1",
+                                                                                          "text":  "For example, the top officials of the Roman Empire",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  50
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s25_long_c2",
+                                                                                          "text":  "wore robes with a purple stripe.",
+                                                                                          "startChar":  51,
+                                                                                          "endChar":  83
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s25_w_robes_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_robes",
+                                                                         "text":  "robes",
+                                                                         "startChar":  56,
+                                                                         "endChar":  61,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_robes_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s26",
+                                                 "text":  "As for emperors, they wore robes dyed completely in Tyrian purple to show off their power.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s26_short_c1",
+                                                                                          "text":  "As for emperors,",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  16
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s26_short_c2",
+                                                                                          "text":  "they wore robes",
+                                                                                          "startChar":  17,
+                                                                                          "endChar":  32
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s26_short_c3",
+                                                                                          "text":  "dyed completely",
+                                                                                          "startChar":  33,
+                                                                                          "endChar":  48
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s26_short_c4",
+                                                                                          "text":  "in Tyrian purple",
+                                                                                          "startChar":  49,
+                                                                                          "endChar":  65
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s26_short_c5",
+                                                                                          "text":  "to show off",
+                                                                                          "startChar":  66,
+                                                                                          "endChar":  77
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s26_short_c6",
+                                                                                          "text":  "their power.",
+                                                                                          "startChar":  78,
+                                                                                          "endChar":  90
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s26_long_c1",
+                                                                                          "text":  "As for emperors, they wore robes dyed completely in Tyrian purple",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  65
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s26_long_c2",
+                                                                                          "text":  "to show off their power.",
+                                                                                          "startChar":  66,
+                                                                                          "endChar":  90
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s26_w_robes_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_robes",
+                                                                         "text":  "robes",
+                                                                         "startChar":  27,
+                                                                         "endChar":  32,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_robes_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s27",
+                                                 "text":  "Thus, the dye was also called royal purple.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s27_short_c1",
+                                                                                          "text":  "Thus,",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  5
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s27_short_c2",
+                                                                                          "text":  "the dye",
+                                                                                          "startChar":  6,
+                                                                                          "endChar":  13
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s27_short_c3",
+                                                                                          "text":  "was also called",
+                                                                                          "startChar":  14,
+                                                                                          "endChar":  29
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s27_short_c4",
+                                                                                          "text":  "royal purple.",
+                                                                                          "startChar":  30,
+                                                                                          "endChar":  43
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s27_long_c1",
+                                                                                          "text":  "Thus, the dye was also called royal purple.",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  43
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s27_w_royal_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_royal",
+                                                                         "text":  "royal",
+                                                                         "startChar":  30,
+                                                                         "endChar":  35,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_royal_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             }
+                                         ]
+                       },
+                       {
+                           "id":  "p15",
+                           "type":  "story",
+                           "sentences":  [
+                                             {
+                                                 "id":  "s28",
+                                                 "text":  "Artists and designers today are often inspired by this color.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s28_short_c1",
+                                                                                          "text":  "Artists and designers today",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  27
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s28_short_c2",
+                                                                                          "text":  "are often inspired",
+                                                                                          "startChar":  28,
+                                                                                          "endChar":  46
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s28_short_c3",
+                                                                                          "text":  "by this color.",
+                                                                                          "startChar":  47,
+                                                                                          "endChar":  61
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s28_long_c1",
+                                                                                          "text":  "Artists and designers today are often inspired",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  46
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s28_long_c2",
+                                                                                          "text":  "by this color.",
+                                                                                          "startChar":  47,
+                                                                                          "endChar":  61
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s28_w_inspired_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_inspired",
+                                                                         "text":  "inspired",
+                                                                         "startChar":  38,
+                                                                         "endChar":  46,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_inspired_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             },
+                                             {
+                                                 "id":  "s29",
+                                                 "text":  "They use it in their works to make things look more luxurious.",
+                                                 "audioId":  "main_en",
+                                                 "chunkSets":  [
+                                                                   {
+                                                                       "id":  "short",
+                                                                       "label":  "짧게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s29_short_c1",
+                                                                                          "text":  "They use it",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  11
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s29_short_c2",
+                                                                                          "text":  "in their works",
+                                                                                          "startChar":  12,
+                                                                                          "endChar":  26
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s29_short_c3",
+                                                                                          "text":  "to make things look",
+                                                                                          "startChar":  27,
+                                                                                          "endChar":  46
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s29_short_c4",
+                                                                                          "text":  "more luxurious.",
+                                                                                          "startChar":  47,
+                                                                                          "endChar":  62
+                                                                                      }
+                                                                                  ]
+                                                                   },
+                                                                   {
+                                                                       "id":  "long",
+                                                                       "label":  "길게",
+                                                                       "chunks":  [
+                                                                                      {
+                                                                                          "id":  "s29_long_c1",
+                                                                                          "text":  "They use it in their works",
+                                                                                          "startChar":  0,
+                                                                                          "endChar":  26
+                                                                                      },
+                                                                                      {
+                                                                                          "id":  "s29_long_c2",
+                                                                                          "text":  "to make things look more luxurious.",
+                                                                                          "startChar":  27,
+                                                                                          "endChar":  62
+                                                                                      }
+                                                                                  ]
+                                                                   }
+                                                               ],
+                                                 "annotations":  [
+                                                                     {
+                                                                         "id":  "ann_s29_w_luxurious_1",
+                                                                         "type":  "vocab",
+                                                                         "wordId":  "w_luxurious",
+                                                                         "text":  "luxurious",
+                                                                         "startChar":  52,
+                                                                         "endChar":  61,
+                                                                         "highlightStyle":  "known_vocab",
+                                                                         "explanationIds":  [
+                                                                                                "exp_w_luxurious_basic"
+                                                                                            ]
+                                                                     }
+                                                                 ],
+                                                 "explanationIds":  [
+
+                                                                    ]
+                                             }
+                                         ]
+                       }
+                   ],
+    "vocabulary":  [
+                       {
+                           "id":  "w_desired",
+                           "word":  "desired",
+                           "lemma":  "desire",
+                           "partOfSpeech":  "adjective",
+                           "meaningKo":  "원하는, 갖고 싶어 하는",
+                           "simpleKo":  "많은 사람들이 가지고 싶어 하거나 원한다는 뜻이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_desired_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_slime",
+                           "word":  "slime",
+                           "lemma":  "slime",
+                           "partOfSpeech":  "noun",
+                           "meaningKo":  "점액, 끈적한 액체",
+                           "simpleKo":  "달팽이 등에 있는 끈적끈적하고 미끄러운 액체예요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_slime_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_worth",
+                           "word":  "worth",
+                           "lemma":  "worth",
+                           "partOfSpeech":  "adjective",
+                           "meaningKo":  "~의 가치가 있는",
+                           "simpleKo":  "어떤 것이 그만큼의 가치가 있다는 뜻이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_worth_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_robes",
+                           "word":  "robes",
+                           "lemma":  "robe",
+                           "partOfSpeech":  "noun",
+                           "meaningKo":  "긴 겉옷, 예복",
+                           "simpleKo":  "길고 헐렁하게 입는 특별한 옷이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_robes_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_royal",
+                           "word":  "royal",
+                           "lemma":  "royal",
+                           "partOfSpeech":  "adjective",
+                           "meaningKo":  "왕실의, 왕의",
+                           "simpleKo":  "왕, 여왕, 황제와 관련된 뜻이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_royal_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_inspired",
+                           "word":  "inspired",
+                           "lemma":  "inspire",
+                           "partOfSpeech":  "adjective",
+                           "meaningKo":  "영감을 받은",
+                           "simpleKo":  "무언가를 보고 생각이나 느낌을 얻게 된 상태예요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_inspired_basic"
+                                              ]
+                       },
+                       {
+                           "id":  "w_luxurious",
+                           "word":  "luxurious",
+                           "lemma":  "luxurious",
+                           "partOfSpeech":  "adjective",
+                           "meaningKo":  "고급스러운, 호화로운",
+                           "simpleKo":  "비싸고 아름답고 특별하게 느껴지는 모습이에요.",
+                           "highlight":  true,
+                           "highlightStyle":  "known_vocab",
+                           "explanationIds":  [
+                                                  "exp_w_luxurious_basic"
+                                              ]
+                       }
+                   ],
+    "explanations":  [
+                         {
+                             "id":  "exp_w_desired_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_desired",
+                             "title":  "desired 뜻",
+                             "easyEnglish":  "Desired means wanted by many people.",
+                             "textKo":  "desired은/는 \u0027원하는, 갖고 싶어 하는\u0027라는 뜻이에요. 본문에서는 \u0027wanted by many people\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "This dye was the rarest and most desired color in ancient times."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_slime_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_slime",
+                             "title":  "slime 뜻",
+                             "easyEnglish":  "Slime is a sticky, slippery liquid.",
+                             "textKo":  "slime은/는 \u0027점액, 끈적한 액체\u0027라는 뜻이에요. 본문에서는 \u0027a sticky, slippery liquid\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "People needed the slime of the Murex snail."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_worth_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_worth",
+                             "title":  "worth 뜻",
+                             "easyEnglish":  "Worth means having the value of something.",
+                             "textKo":  "worth은/는 \u0027~의 가치가 있는\u0027라는 뜻이에요. 본문에서는 \u0027having a value of\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "It was worth even more than gold."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_robes_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_robes",
+                             "title":  "robes 뜻",
+                             "easyEnglish":  "Robes are long, loose clothes.",
+                             "textKo":  "robes은/는 \u0027긴 겉옷, 예복\u0027라는 뜻이에요. 본문에서는 \u0027long, loose clothes\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "The top officials of the Roman Empire wore robes with a purple stripe."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_royal_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_royal",
+                             "title":  "royal 뜻",
+                             "easyEnglish":  "Royal means related to kings, queens, or emperors.",
+                             "textKo":  "royal은/는 \u0027왕실의, 왕의\u0027라는 뜻이에요. 본문에서는 \u0027related to a king, queen, or emperor\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "Thus, the dye was also called royal purple."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_inspired_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_inspired",
+                             "title":  "inspired 뜻",
+                             "easyEnglish":  "Inspired means given an idea or feeling by something.",
+                             "textKo":  "inspired은/는 \u0027영감을 받은\u0027라는 뜻이에요. 본문에서는 \u0027given an idea or feeling to do something\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "Artists and designers today are often inspired by this color."
+                                          ]
+                         },
+                         {
+                             "id":  "exp_w_luxurious_basic",
+                             "targetType":  "vocab",
+                             "targetId":  "w_luxurious",
+                             "title":  "luxurious 뜻",
+                             "easyEnglish":  "Luxurious means very expensive, beautiful, and comfortable.",
+                             "textKo":  "luxurious은/는 \u0027고급스러운, 호화로운\u0027라는 뜻이에요. 본문에서는 \u0027very comfortable, expensive, and beautiful\u0027라는 의미로 쓰였어요.",
+                             "examples":  [
+                                              "They use it in their works to make things look more luxurious."
+                                          ]
+                         }
+                     ]
+}
