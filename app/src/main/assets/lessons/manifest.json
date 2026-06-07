@@ -20,6 +20,20 @@
       "subtitle": "Tyrian Purple",
       "level": "A1",
       "path": "lessons/the_color_of_royalty_tyrian_purple/lesson.json"
+    },
+    {
+      "id": "chameleons_change_colors_vocab_reflex",
+      "title": "Chameleons Change Colors",
+      "subtitle": "Vocabulary reflex + TTS",
+      "level": "A1",
+      "path": "lessons/chameleons_change_colors_vocab_reflex/lesson.json"
+    },
+    {
+      "id": "kk_kitty_matter",
+      "title": "What's the Matter with Kitty?",
+      "subtitle": "States of matter with Cindy and Dad",
+      "level": "A2",
+      "path": "lessons/kk_kitty_matter/lesson.json"
     }
   ]
 }

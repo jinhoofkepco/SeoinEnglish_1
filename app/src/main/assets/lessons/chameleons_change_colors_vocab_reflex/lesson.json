@@ -1,0 +1,3865 @@
+{
+  "schemaVersion": 1,
+  "id": "chameleons_change_colors_vocab_reflex",
+  "title": "Chameleons Change Colors",
+  "subtitle": "Vocabulary Reflex",
+  "level": "",
+  "language": "en",
+  "worksheetDate": "2026-06-04",
+  "sourceAlignmentNoteKo": "단어는 업로드된 worksheet 이미지의 vocabulary 표를 기준으로 만들었고, 지문은 사용자가 지정한 두 문장만 포함했습니다. 현재 단어들은 지문 안에 직접 등장하지 않으므로 daily vocabulary reflex 용도로 구성했습니다.",
+  "defaultAudioId": "main_en",
+  "defaultChunkSetId": "short",
+  "audioAssets": [
+    {
+      "id": "main_en",
+      "file": "",
+      "role": "main_narration",
+      "language": "en"
+    }
+  ],
+  "imageAssets": [],
+  "chunkProfiles": [
+    {
+      "id": "short",
+      "label": "짧게",
+      "description": "small meaning-based chunks",
+      "pauseBehavior": "after_each_chunk"
+    },
+    {
+      "id": "long",
+      "label": "길게",
+      "description": "larger meaning-based chunks",
+      "pauseBehavior": "after_each_chunk"
+    },
+    {
+      "id": "natural",
+      "label": "자연스럽게",
+      "description": "continuous playback",
+      "pauseBehavior": "none"
+    }
+  ],
+  "paragraphs": [
+    {
+      "id": "p1",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s1",
+          "text": "Chameleons are famous for being able to change colors.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s1_short_c1",
+                  "text": "Chameleons",
+                  "startChar": 0,
+                  "endChar": 10
+                },
+                {
+                  "id": "s1_short_c2",
+                  "text": "are famous",
+                  "startChar": 11,
+                  "endChar": 21
+                },
+                {
+                  "id": "s1_short_c3",
+                  "text": "for being able to change colors.",
+                  "startChar": 22,
+                  "endChar": 54
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s1_long_c1",
+                  "text": "Chameleons are famous",
+                  "startChar": 0,
+                  "endChar": 21
+                },
+                {
+                  "id": "s1_long_c2",
+                  "text": "for being able to change colors.",
+                  "startChar": 22,
+                  "endChar": 54
+                }
+              ]
+            },
+            {
+              "id": "natural",
+              "label": "자연스럽게",
+              "chunks": [
+                {
+                  "id": "s1_natural_c1",
+                  "text": "Chameleons are famous for being able to change colors.",
+                  "startChar": 0,
+                  "endChar": 54
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        },
+        {
+          "id": "s2",
+          "text": "Sometimes, they change colors to blend into their surroundings.",
+          "audioId": "main_en",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "짧게",
+              "chunks": [
+                {
+                  "id": "s2_short_c1",
+                  "text": "Sometimes,",
+                  "startChar": 0,
+                  "endChar": 10
+                },
+                {
+                  "id": "s2_short_c2",
+                  "text": "they change colors",
+                  "startChar": 11,
+                  "endChar": 29
+                },
+                {
+                  "id": "s2_short_c3",
+                  "text": "to blend into their surroundings.",
+                  "startChar": 30,
+                  "endChar": 63
+                }
+              ]
+            },
+            {
+              "id": "long",
+              "label": "길게",
+              "chunks": [
+                {
+                  "id": "s2_long_c1",
+                  "text": "Sometimes, they change colors",
+                  "startChar": 0,
+                  "endChar": 29
+                },
+                {
+                  "id": "s2_long_c2",
+                  "text": "to blend into their surroundings.",
+                  "startChar": 30,
+                  "endChar": 63
+                }
+              ]
+            },
+            {
+              "id": "natural",
+              "label": "자연스럽게",
+              "chunks": [
+                {
+                  "id": "s2_natural_c1",
+                  "text": "Sometimes, they change colors to blend into their surroundings.",
+                  "startChar": 0,
+                  "endChar": 63
+                }
+              ]
+            }
+          ],
+          "annotations": [],
+          "explanationIds": []
+        }
+      ]
+    }
+  ],
+  "vocabulary": [
+    {
+      "id": "w_hang",
+      "word": "hang",
+      "lemma": "hang",
+      "forms": [
+        "hung",
+        "hangs",
+        "hanging"
+      ],
+      "partOfSpeech": "verb",
+      "easyEnglish": "to put a thing at a high place",
+      "easyEnglishLong": "When you hang something, you put it up high, like on a wall or a hook, so it stays there.",
+      "meaningKo": "걸다, 매달다",
+      "simpleKo": "높은 곳에 걸어 두다",
+      "examples": [
+        "I always hang my coat on the wall."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "comic": {
+        "word": "hang",
+        "meaning": "to put a thing at a high place",
+        "panels": [
+          {
+            "bg": "room",
+            "caption": "Kibu has a warm coat.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 34,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": -3,
+                "flip": false,
+                "anim": "sway"
+              },
+              {
+                "char": "🧥",
+                "x": 64,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "My coat!"
+            }
+          },
+          {
+            "bg": "room",
+            "caption": "Kibu reaches up very high.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 40,
+                "y": 64,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "jump"
+              },
+              {
+                "char": "🧥",
+                "x": 64,
+                "y": 40,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "room",
+            "caption": "Kibu hangs the coat on the wall.",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 36,
+                "y": 68,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "bounce"
+              },
+              {
+                "char": "🧥",
+                "x": 66,
+                "y": 44,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "✨",
+                "x": 78,
+                "y": 34,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "room",
+            "caption": "Now the coat hangs up high!",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 36,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "bounce"
+              },
+              {
+                "char": "🧥",
+                "x": 66,
+                "y": 44,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "Up high!"
+            }
+          }
+        ]
+      },
+      "explanationIds": [
+        "exp_w_hang_basic"
+      ],
+      "reflexProfile": {
+        "coreCue": "to put a thing at a high place",
+        "readingBridge": "This word comes from the vocabulary file. Connect hang to: to put a thing at a high place.",
+        "confusableWith": [
+          {
+            "wordId": "w_mothball",
+            "word": "mothball",
+            "differenceKo": "hang?/? '걸다, 매달다' ???, mothball?/? '좀약' ????."
+          },
+          {
+            "wordId": "w_naphthalene",
+            "word": "naphthalene",
+            "differenceKo": "hang?/? '걸다, 매달다' ???, naphthalene?/? '나프탈렌' ????."
+          }
+        ],
+        "cardIds": [
+          "vr_c001",
+          "vr_c009",
+          "vr_c021",
+          "vr_c025",
+          "vr_e001",
+          "vr_e009",
+          "vr_e021",
+          "vr_e025"
+        ]
+      }
+    },
+    {
+      "id": "w_mothball",
+      "word": "mothball",
+      "lemma": "mothball",
+      "forms": [
+        "mothballs"
+      ],
+      "partOfSpeech": "noun",
+      "easyEnglish": "a small ball that keeps moths away from clothes",
+      "easyEnglishLong": "A mothball is a small white ball. People put it near clothes to keep bugs away.",
+      "meaningKo": "좀약",
+      "simpleKo": "옷에서 벌레를 쫓는 작은 흰 공",
+      "examples": [
+        "She has mothballs in her closet."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "comic": {
+        "word": "mothball",
+        "meaning": "a small ball that keeps moths away",
+        "panels": [
+          {
+            "bg": "room",
+            "caption": "Bugs come near the clothes!",
+            "sprites": [
+              {
+                "char": "🙀",
+                "x": 32,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "shiver"
+              },
+              {
+                "char": "👕",
+                "x": 60,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "🦋",
+                "x": 76,
+                "y": 42,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "Oh no!"
+            }
+          },
+          {
+            "bg": "room",
+            "caption": "Kibu brings a small white mothball.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 34,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "bounce"
+              },
+              {
+                "char": "⚪",
+                "x": 62,
+                "y": 70,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "A mothball!"
+            }
+          },
+          {
+            "bg": "room",
+            "caption": "The mothball keeps the bugs away.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 34,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "sway"
+              },
+              {
+                "char": "⚪",
+                "x": 56,
+                "y": 70,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "🦋",
+                "x": 78,
+                "y": 40,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": true,
+                "anim": "dash"
+              }
+            ]
+          },
+          {
+            "bg": "room",
+            "caption": "Now the clothes are safe!",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 34,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "bounce"
+              },
+              {
+                "char": "👕",
+                "x": 60,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "✨",
+                "x": 78,
+                "y": 36,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "Safe!"
+            }
+          }
+        ]
+      },
+      "explanationIds": [
+        "exp_w_mothball_basic"
+      ],
+      "reflexProfile": {
+        "coreCue": "a small ball that keeps moths away from clothes",
+        "readingBridge": "This word comes from the vocabulary file. Connect mothball to: a small ball that keeps moths away from clothes.",
+        "confusableWith": [
+          {
+            "wordId": "w_chemical",
+            "word": "chemical",
+            "differenceKo": "mothball?/? '좀약' ???, chemical?/? '화학 물질' ????."
+          },
+          {
+            "wordId": "w_dissolve",
+            "word": "dissolve",
+            "differenceKo": "mothball?/? '좀약' ???, dissolve?/? '녹다, 용해되다' ????."
+          }
+        ],
+        "cardIds": [
+          "vr_c002",
+          "vr_c013",
+          "vr_c023",
+          "vr_c028",
+          "vr_e002",
+          "vr_e013",
+          "vr_e023",
+          "vr_e028"
+        ]
+      }
+    },
+    {
+      "id": "w_chemical",
+      "word": "chemical",
+      "lemma": "chemical",
+      "forms": [
+        "chemicals"
+      ],
+      "partOfSpeech": "noun",
+      "easyEnglish": "a thing made by changing its first state",
+      "easyEnglishLong": "A chemical is something made when things change and mix into something new.",
+      "meaningKo": "화학 물질",
+      "simpleKo": "섞고 바꾸어 만든 물질",
+      "examples": [
+        "Some gardeners use chemicals to kill insects."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "comic": {
+        "word": "chemical",
+        "meaning": "a thing made by changing",
+        "panels": [
+          {
+            "bg": "room",
+            "caption": "Kibu mixes two things together.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 32,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": -3,
+                "flip": false,
+                "anim": "sway"
+              },
+              {
+                "char": "🧪",
+                "x": 58,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "🧴",
+                "x": 76,
+                "y": 72,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "Mix!"
+            }
+          },
+          {
+            "bg": "room",
+            "caption": "They start to change!",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 34,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "bounce"
+              },
+              {
+                "char": "🧪",
+                "x": 58,
+                "y": 68,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "shiver"
+              },
+              {
+                "char": "✨",
+                "x": 76,
+                "y": 38,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "room",
+            "caption": "Now it is a new chemical.",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 34,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "bounce"
+              },
+              {
+                "char": "🧪",
+                "x": 60,
+                "y": 68,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "💧",
+                "x": 74,
+                "y": 50,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "room",
+            "caption": "A chemical is made by changing!",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 36,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "jump"
+              },
+              {
+                "char": "🧪",
+                "x": 62,
+                "y": 68,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "✨",
+                "x": 78,
+                "y": 36,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "Cool!"
+            }
+          }
+        ]
+      },
+      "explanationIds": [
+        "exp_w_chemical_basic"
+      ],
+      "reflexProfile": {
+        "coreCue": "a thing made by changing its first state",
+        "readingBridge": "This word comes from the vocabulary file. Connect chemical to: a thing made by changing its first state.",
+        "confusableWith": [
+          {
+            "wordId": "w_naphthalene",
+            "word": "naphthalene",
+            "differenceKo": "chemical?/? '화학 물질' ???, naphthalene?/? '나프탈렌' ????."
+          },
+          {
+            "wordId": "w_sublimation",
+            "word": "sublimation",
+            "differenceKo": "chemical?/? '화학 물질' ???, sublimation?/? '승화' ????."
+          }
+        ],
+        "cardIds": [
+          "vr_c003",
+          "vr_c010",
+          "vr_c017",
+          "vr_c027",
+          "vr_e003",
+          "vr_e010",
+          "vr_e017",
+          "vr_e027"
+        ]
+      }
+    },
+    {
+      "id": "w_naphthalene",
+      "word": "naphthalene",
+      "lemma": "naphthalene",
+      "forms": [],
+      "partOfSpeech": "noun",
+      "easyEnglish": "a strong-smelling thing used in mothballs",
+      "easyEnglishLong": "Naphthalene is the strong-smelling chemical inside a mothball. The smell keeps bugs away.",
+      "meaningKo": "나프탈렌",
+      "simpleKo": "좀약 속 냄새가 강한 물질",
+      "examples": [
+        "The naphthalene smells strong."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "comic": {
+        "word": "naphthalene",
+        "meaning": "a strong-smelling thing in mothballs",
+        "panels": [
+          {
+            "bg": "room",
+            "caption": "Kibu sniffs a small white ball.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 32,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "sway"
+              },
+              {
+                "char": "⚪",
+                "x": 58,
+                "y": 70,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "💨",
+                "x": 74,
+                "y": 46,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "Sniff..."
+            }
+          },
+          {
+            "bg": "room",
+            "caption": "It is naphthalene inside the mothball.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 32,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "⚪",
+                "x": 58,
+                "y": 70,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "💨",
+                "x": 74,
+                "y": 44,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "room",
+            "caption": "The strong smell keeps bugs away.",
+            "sprites": [
+              {
+                "char": "⚪",
+                "x": 40,
+                "y": 70,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "💨",
+                "x": 58,
+                "y": 46,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              },
+              {
+                "char": "🦋",
+                "x": 78,
+                "y": 40,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": true,
+                "anim": "dash"
+              }
+            ]
+          },
+          {
+            "bg": "room",
+            "caption": "Naphthalene smells very strong!",
+            "sprites": [
+              {
+                "char": "🙀",
+                "x": 34,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "shiver"
+              },
+              {
+                "char": "⚪",
+                "x": 60,
+                "y": 70,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "💨",
+                "x": 76,
+                "y": 44,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "Pee-yew!"
+            }
+          }
+        ]
+      },
+      "explanationIds": [
+        "exp_w_naphthalene_basic"
+      ],
+      "reflexProfile": {
+        "coreCue": "a strong-smelling thing used in mothballs",
+        "readingBridge": "This word comes from the vocabulary file. Connect naphthalene to: a strong-smelling thing used in mothballs.",
+        "confusableWith": [
+          {
+            "wordId": "w_dissolve",
+            "word": "dissolve",
+            "differenceKo": "naphthalene?/? '나프탈렌' ???, dissolve?/? '녹다, 용해되다' ????."
+          },
+          {
+            "wordId": "w_heat",
+            "word": "heat",
+            "differenceKo": "naphthalene?/? '나프탈렌' ???, heat?/? '데우다, 가열하다' ????."
+          }
+        ],
+        "cardIds": [
+          "vr_c004",
+          "vr_c014",
+          "vr_c019",
+          "vr_c029",
+          "vr_e004",
+          "vr_e014",
+          "vr_e019",
+          "vr_e029"
+        ]
+      }
+    },
+    {
+      "id": "w_dissolve",
+      "word": "dissolve",
+      "lemma": "dissolve",
+      "forms": [
+        "dissolves",
+        "dissolved"
+      ],
+      "partOfSpeech": "verb",
+      "easyEnglish": "to slowly disappear into a liquid",
+      "easyEnglishLong": "When something dissolves, it mixes into a liquid and slowly disappears, like sugar in water.",
+      "meaningKo": "녹다, 용해되다",
+      "simpleKo": "액체에 섞여 사라지다",
+      "examples": [
+        "The sugar dissolved in her coffee."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "comic": {
+        "word": "dissolve",
+        "meaning": "to slowly disappear into a liquid",
+        "panels": [
+          {
+            "bg": "room",
+            "caption": "Kibu drops sugar into the water.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 32,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": -3,
+                "flip": false,
+                "anim": "sway"
+              },
+              {
+                "char": "🍬",
+                "x": 54,
+                "y": 56,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              },
+              {
+                "char": "🥤",
+                "x": 66,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "Plop!"
+            }
+          },
+          {
+            "bg": "room",
+            "caption": "Kibu stirs it round and round.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 32,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "bounce"
+              },
+              {
+                "char": "🥤",
+                "x": 60,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "spin"
+              },
+              {
+                "char": "🥄",
+                "x": 74,
+                "y": 60,
+                "scale": 0.8,
+                "rotate": 20,
+                "flip": false,
+                "anim": "none"
+              }
+            ]
+          },
+          {
+            "bg": "room",
+            "caption": "The sugar dissolves and disappears!",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 32,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "🥤",
+                "x": 60,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "✨",
+                "x": 74,
+                "y": 48,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "room",
+            "caption": "Now the sugar is gone. It dissolved!",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 34,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "bounce"
+              },
+              {
+                "char": "🥤",
+                "x": 62,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "All gone!"
+            }
+          }
+        ]
+      },
+      "explanationIds": [
+        "exp_w_dissolve_basic"
+      ],
+      "reflexProfile": {
+        "coreCue": "to slowly disappear into a liquid",
+        "readingBridge": "This word comes from the vocabulary file. Connect dissolve to: to slowly disappear into a liquid.",
+        "confusableWith": [
+          {
+            "wordId": "w_sublimation",
+            "word": "sublimation",
+            "differenceKo": "dissolve?/? '녹다, 용해되다' ???, sublimation?/? '승화' ????."
+          },
+          {
+            "wordId": "w_freeze",
+            "word": "freeze",
+            "differenceKo": "dissolve?/? '녹다, 용해되다' ???, freeze?/? '얼다, 얼리다' ????."
+          }
+        ],
+        "cardIds": [
+          "vr_c005",
+          "vr_c015",
+          "vr_c020",
+          "vr_c026",
+          "vr_e005",
+          "vr_e015",
+          "vr_e020",
+          "vr_e026"
+        ]
+      }
+    },
+    {
+      "id": "w_sublimation",
+      "word": "sublimation",
+      "lemma": "sublimation",
+      "forms": [],
+      "partOfSpeech": "noun",
+      "easyEnglish": "the changing of a solid into a gas",
+      "easyEnglishLong": "Sublimation is when a solid turns straight into a gas, with no liquid in between.",
+      "meaningKo": "승화",
+      "simpleKo": "고체가 바로 기체로 변하는 것",
+      "examples": [
+        "Sublimation makes solids change into gases."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "comic": {
+        "word": "sublimation",
+        "meaning": "a solid changing into a gas",
+        "panels": [
+          {
+            "bg": "plain",
+            "caption": "Kibu looks at a hard solid.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 32,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": -3,
+                "flip": false,
+                "anim": "sway"
+              },
+              {
+                "char": "🧊",
+                "x": 62,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "A solid!"
+            }
+          },
+          {
+            "bg": "plain",
+            "caption": "The solid turns into gas.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 32,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "🧊",
+                "x": 56,
+                "y": 70,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "shiver"
+              },
+              {
+                "char": "💨",
+                "x": 74,
+                "y": 44,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "plain",
+            "caption": "No water! Solid goes straight to gas.",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 32,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "bounce"
+              },
+              {
+                "char": "💨",
+                "x": 60,
+                "y": 46,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              },
+              {
+                "char": "✨",
+                "x": 76,
+                "y": 38,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "plain",
+            "caption": "This is sublimation: solid to gas!",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 34,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "jump"
+              },
+              {
+                "char": "💨",
+                "x": 62,
+                "y": 44,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              },
+              {
+                "char": "✨",
+                "x": 78,
+                "y": 36,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "Wow!"
+            }
+          }
+        ]
+      },
+      "explanationIds": [
+        "exp_w_sublimation_basic"
+      ],
+      "reflexProfile": {
+        "coreCue": "the changing of a solid into a gas",
+        "readingBridge": "This word comes from the vocabulary file. Connect sublimation to: the changing of a solid into a gas.",
+        "confusableWith": [
+          {
+            "wordId": "w_heat",
+            "word": "heat",
+            "differenceKo": "sublimation?/? '승화' ???, heat?/? '데우다, 가열하다' ????."
+          },
+          {
+            "wordId": "w_hang",
+            "word": "hang",
+            "differenceKo": "sublimation?/? '승화' ???, hang?/? '걸다, 매달다' ????."
+          }
+        ],
+        "cardIds": [
+          "vr_c006",
+          "vr_c011",
+          "vr_c018",
+          "vr_c030",
+          "vr_e006",
+          "vr_e011",
+          "vr_e018",
+          "vr_e030"
+        ]
+      }
+    },
+    {
+      "id": "w_heat",
+      "word": "heat",
+      "lemma": "heat",
+      "forms": [
+        "heats",
+        "heated",
+        "heating"
+      ],
+      "partOfSpeech": "verb",
+      "easyEnglish": "to make something hot",
+      "easyEnglishLong": "When you heat something, you make it hot, like warming a pan on the stove.",
+      "meaningKo": "데우다, 가열하다",
+      "simpleKo": "뜨겁게 만들다",
+      "examples": [
+        "I heated the oil in the frying pan."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "comic": {
+        "word": "heat",
+        "meaning": "to make something hot",
+        "panels": [
+          {
+            "bg": "room",
+            "caption": "Kibu has a cold pan.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 34,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": -3,
+                "flip": false,
+                "anim": "sway"
+              },
+              {
+                "char": "🍳",
+                "x": 64,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "So cold."
+            }
+          },
+          {
+            "bg": "room",
+            "caption": "Kibu heats the pan with fire.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 34,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "bounce"
+              },
+              {
+                "char": "🍳",
+                "x": 60,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "🔥",
+                "x": 60,
+                "y": 50,
+                "scale": 0.9,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "room",
+            "caption": "The pan gets very, very hot.",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 34,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "🍳",
+                "x": 60,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "shiver"
+              },
+              {
+                "char": "🔥",
+                "x": 60,
+                "y": 50,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "room",
+            "caption": "Heat makes things hot!",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 34,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "jump"
+              },
+              {
+                "char": "🔥",
+                "x": 62,
+                "y": 56,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              },
+              {
+                "char": "✨",
+                "x": 78,
+                "y": 36,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "So hot!"
+            }
+          }
+        ]
+      },
+      "explanationIds": [
+        "exp_w_heat_basic"
+      ],
+      "reflexProfile": {
+        "coreCue": "to make something hot",
+        "readingBridge": "This word comes from the vocabulary file. Connect heat to: to make something hot.",
+        "confusableWith": [
+          {
+            "wordId": "w_freeze",
+            "word": "freeze",
+            "differenceKo": "heat?/? '데우다, 가열하다' ???, freeze?/? '얼다, 얼리다' ????."
+          },
+          {
+            "wordId": "w_mothball",
+            "word": "mothball",
+            "differenceKo": "heat?/? '데우다, 가열하다' ???, mothball?/? '좀약' ????."
+          }
+        ],
+        "cardIds": [
+          "vr_c007",
+          "vr_c016",
+          "vr_c024",
+          "vr_c031",
+          "vr_e007",
+          "vr_e016",
+          "vr_e024",
+          "vr_e031"
+        ]
+      }
+    },
+    {
+      "id": "w_freeze",
+      "word": "freeze",
+      "lemma": "freeze",
+      "forms": [
+        "freezes",
+        "frozen",
+        "freezer",
+        "freezing"
+      ],
+      "partOfSpeech": "verb",
+      "easyEnglish": "to change from a liquid into a solid because of cold",
+      "easyEnglishLong": "When water freezes, the cold turns it into hard, solid ice.",
+      "meaningKo": "얼다, 얼리다",
+      "simpleKo": "차가워져서 액체가 고체로 변하다",
+      "examples": [
+        "The water in the lake freezes and turns into ice."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab",
+      "comic": {
+        "word": "freeze",
+        "meaning": "liquid turns to solid in the cold",
+        "panels": [
+          {
+            "bg": "snow",
+            "caption": "Kibu has a glass of water.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 34,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": -3,
+                "flip": false,
+                "anim": "sway"
+              },
+              {
+                "char": "🥤",
+                "x": 64,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "Water!"
+            }
+          },
+          {
+            "bg": "snow",
+            "caption": "Kibu puts it in the cold.",
+            "sprites": [
+              {
+                "char": "🐱",
+                "x": 34,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "shiver"
+              },
+              {
+                "char": "🥤",
+                "x": 60,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "❄️",
+                "x": 76,
+                "y": 42,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "snow",
+            "caption": "The water freezes into hard ice.",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 34,
+                "y": 70,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "🧊",
+                "x": 60,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "❄️",
+                "x": 76,
+                "y": 42,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ]
+          },
+          {
+            "bg": "snow",
+            "caption": "Freezing makes water a solid!",
+            "sprites": [
+              {
+                "char": "😺",
+                "x": 34,
+                "y": 70,
+                "scale": 1.1,
+                "rotate": 0,
+                "flip": false,
+                "anim": "bounce"
+              },
+              {
+                "char": "🧊",
+                "x": 62,
+                "y": 72,
+                "scale": 1.0,
+                "rotate": 0,
+                "flip": false,
+                "anim": "none"
+              },
+              {
+                "char": "✨",
+                "x": 78,
+                "y": 36,
+                "scale": 0.8,
+                "rotate": 0,
+                "flip": false,
+                "anim": "float"
+              }
+            ],
+            "bubble": {
+              "anchor": 0,
+              "text": "Ice!"
+            }
+          }
+        ]
+      },
+      "explanationIds": [
+        "exp_w_freeze_basic"
+      ],
+      "reflexProfile": {
+        "coreCue": "to change from a liquid into a solid because of cold",
+        "readingBridge": "This word comes from the vocabulary file. Connect freeze to: to change from a liquid into a solid because of cold.",
+        "confusableWith": [
+          {
+            "wordId": "w_hang",
+            "word": "hang",
+            "differenceKo": "freeze?/? '얼다, 얼리다' ???, hang?/? '걸다, 매달다' ????."
+          },
+          {
+            "wordId": "w_chemical",
+            "word": "chemical",
+            "differenceKo": "freeze?/? '얼다, 얼리다' ???, chemical?/? '화학 물질' ????."
+          }
+        ],
+        "cardIds": [
+          "vr_c008",
+          "vr_c012",
+          "vr_c022",
+          "vr_c032",
+          "vr_e008",
+          "vr_e012",
+          "vr_e022",
+          "vr_e032"
+        ]
+      }
+    }
+  ],
+  "explanations": [
+    {
+      "id": "exp_w_hang_basic",
+      "targetType": "vocab",
+      "targetId": "w_hang",
+      "title": "hang ?",
+      "easyEnglish": "to put a thing at a high place",
+      "easyEnglishLong": "When you hang something, you put it up high, like on a wall or a hook, so it stays there.",
+      "textKo": "걸다, 매달다",
+      "examples": [
+        "I always hang my coat on the wall."
+      ]
+    },
+    {
+      "id": "exp_w_mothball_basic",
+      "targetType": "vocab",
+      "targetId": "w_mothball",
+      "title": "mothball ?",
+      "easyEnglish": "a small ball that keeps moths away from clothes",
+      "easyEnglishLong": "A mothball is a small white ball. People put it near clothes to keep bugs away.",
+      "textKo": "좀약",
+      "examples": [
+        "She has mothballs in her closet."
+      ]
+    },
+    {
+      "id": "exp_w_chemical_basic",
+      "targetType": "vocab",
+      "targetId": "w_chemical",
+      "title": "chemical ?",
+      "easyEnglish": "a thing made by changing its first state",
+      "easyEnglishLong": "A chemical is something made when things change and mix into something new.",
+      "textKo": "화학 물질",
+      "examples": [
+        "Some gardeners use chemicals to kill insects."
+      ]
+    },
+    {
+      "id": "exp_w_naphthalene_basic",
+      "targetType": "vocab",
+      "targetId": "w_naphthalene",
+      "title": "naphthalene ?",
+      "easyEnglish": "a strong-smelling thing used in mothballs",
+      "easyEnglishLong": "Naphthalene is the strong-smelling chemical inside a mothball. The smell keeps bugs away.",
+      "textKo": "나프탈렌",
+      "examples": [
+        "The naphthalene smells strong."
+      ]
+    },
+    {
+      "id": "exp_w_dissolve_basic",
+      "targetType": "vocab",
+      "targetId": "w_dissolve",
+      "title": "dissolve ?",
+      "easyEnglish": "to slowly disappear into a liquid",
+      "easyEnglishLong": "When something dissolves, it mixes into a liquid and slowly disappears, like sugar in water.",
+      "textKo": "녹다, 용해되다",
+      "examples": [
+        "The sugar dissolved in her coffee."
+      ]
+    },
+    {
+      "id": "exp_w_sublimation_basic",
+      "targetType": "vocab",
+      "targetId": "w_sublimation",
+      "title": "sublimation ?",
+      "easyEnglish": "the changing of a solid into a gas",
+      "easyEnglishLong": "Sublimation is when a solid turns straight into a gas, with no liquid in between.",
+      "textKo": "승화",
+      "examples": [
+        "Sublimation makes solids change into gases."
+      ]
+    },
+    {
+      "id": "exp_w_heat_basic",
+      "targetType": "vocab",
+      "targetId": "w_heat",
+      "title": "heat ?",
+      "easyEnglish": "to make something hot",
+      "easyEnglishLong": "When you heat something, you make it hot, like warming a pan on the stove.",
+      "textKo": "데우다, 가열하다",
+      "examples": [
+        "I heated the oil in the frying pan."
+      ]
+    },
+    {
+      "id": "exp_w_freeze_basic",
+      "targetType": "vocab",
+      "targetId": "w_freeze",
+      "title": "freeze ?",
+      "easyEnglish": "to change from a liquid into a solid because of cold",
+      "easyEnglishLong": "When water freezes, the cold turns it into hard, solid ice.",
+      "textKo": "얼다, 얼리다",
+      "examples": [
+        "The water in the lake freezes and turns into ice."
+      ]
+    }
+  ],
+  "comprehensionChecks": [],
+  "legacyComprehensionChecks": [],
+  "qComprehensionChecks": [],
+  "transformedSchemaVersion": "qchunk_vocab_reflex_v1_word_only",
+  "lessonModeDefaults": {
+    "wordMode": "vocab_reflex_card",
+    "readingMode": "basic_sentence_reading",
+    "voiceReviewModes": [
+      "vocab_reflex_voice_review"
+    ],
+    "legacyChunkSetId": "short"
+  },
+  "vocabReflexGame": {
+    "version": "1.0",
+    "lessonId": "chameleons_change_colors_vocab_reflex",
+    "title": "Vocab Reflex: What's the Matter with Kitty?",
+    "goal": "pre_reading_meaning_priming",
+    "uxRule": "The prompt always shows exactly one target word or target expression; the learner chooses the closer cue card.",
+    "contentDensity": {
+      "baselineCardCountFromPreviousLesson": 24,
+      "generatedCardCount": 64,
+      "multiplier": 2.67,
+      "seedCardCount": 32,
+      "echoCardCount": 32,
+      "cardsPerTargetWord": 8
+    },
+    "rules": {
+      "moveNextDelayMs": 650
+    },
+    "timingRules": {
+      "fastMsMax": 1500,
+      "okayMsMax": 3000,
+      "slowMsMin": 3001
+    },
+    "targetWords": [
+      {
+        "wordId": "w_hang",
+        "word": "hang",
+        "coreCue": "to put a thing at a high place",
+        "readingBridge": "This word comes from the vocabulary file. Connect hang to: to put a thing at a high place.",
+        "confusableWith": [
+          {
+            "wordId": "w_mothball",
+            "word": "mothball",
+            "differenceKo": "hang?/? '걸다, 매달다' ???, mothball?/? '좀약' ????."
+          },
+          {
+            "wordId": "w_naphthalene",
+            "word": "naphthalene",
+            "differenceKo": "hang?/? '걸다, 매달다' ???, naphthalene?/? '나프탈렌' ????."
+          }
+        ]
+      },
+      {
+        "wordId": "w_mothball",
+        "word": "mothball",
+        "coreCue": "a small ball that keeps moths away from clothes",
+        "readingBridge": "This word comes from the vocabulary file. Connect mothball to: a small ball that keeps moths away from clothes.",
+        "confusableWith": [
+          {
+            "wordId": "w_chemical",
+            "word": "chemical",
+            "differenceKo": "mothball?/? '좀약' ???, chemical?/? '화학 물질' ????."
+          },
+          {
+            "wordId": "w_dissolve",
+            "word": "dissolve",
+            "differenceKo": "mothball?/? '좀약' ???, dissolve?/? '녹다, 용해되다' ????."
+          }
+        ]
+      },
+      {
+        "wordId": "w_chemical",
+        "word": "chemical",
+        "coreCue": "a thing made by changing its first state",
+        "readingBridge": "This word comes from the vocabulary file. Connect chemical to: a thing made by changing its first state.",
+        "confusableWith": [
+          {
+            "wordId": "w_naphthalene",
+            "word": "naphthalene",
+            "differenceKo": "chemical?/? '화학 물질' ???, naphthalene?/? '나프탈렌' ????."
+          },
+          {
+            "wordId": "w_sublimation",
+            "word": "sublimation",
+            "differenceKo": "chemical?/? '화학 물질' ???, sublimation?/? '승화' ????."
+          }
+        ]
+      },
+      {
+        "wordId": "w_naphthalene",
+        "word": "naphthalene",
+        "coreCue": "a strong-smelling thing used in mothballs",
+        "readingBridge": "This word comes from the vocabulary file. Connect naphthalene to: a strong-smelling thing used in mothballs.",
+        "confusableWith": [
+          {
+            "wordId": "w_dissolve",
+            "word": "dissolve",
+            "differenceKo": "naphthalene?/? '나프탈렌' ???, dissolve?/? '녹다, 용해되다' ????."
+          },
+          {
+            "wordId": "w_heat",
+            "word": "heat",
+            "differenceKo": "naphthalene?/? '나프탈렌' ???, heat?/? '데우다, 가열하다' ????."
+          }
+        ]
+      },
+      {
+        "wordId": "w_dissolve",
+        "word": "dissolve",
+        "coreCue": "to slowly disappear into a liquid",
+        "readingBridge": "This word comes from the vocabulary file. Connect dissolve to: to slowly disappear into a liquid.",
+        "confusableWith": [
+          {
+            "wordId": "w_sublimation",
+            "word": "sublimation",
+            "differenceKo": "dissolve?/? '녹다, 용해되다' ???, sublimation?/? '승화' ????."
+          },
+          {
+            "wordId": "w_freeze",
+            "word": "freeze",
+            "differenceKo": "dissolve?/? '녹다, 용해되다' ???, freeze?/? '얼다, 얼리다' ????."
+          }
+        ]
+      },
+      {
+        "wordId": "w_sublimation",
+        "word": "sublimation",
+        "coreCue": "the changing of a solid into a gas",
+        "readingBridge": "This word comes from the vocabulary file. Connect sublimation to: the changing of a solid into a gas.",
+        "confusableWith": [
+          {
+            "wordId": "w_heat",
+            "word": "heat",
+            "differenceKo": "sublimation?/? '승화' ???, heat?/? '데우다, 가열하다' ????."
+          },
+          {
+            "wordId": "w_hang",
+            "word": "hang",
+            "differenceKo": "sublimation?/? '승화' ???, hang?/? '걸다, 매달다' ????."
+          }
+        ]
+      },
+      {
+        "wordId": "w_heat",
+        "word": "heat",
+        "coreCue": "to make something hot",
+        "readingBridge": "This word comes from the vocabulary file. Connect heat to: to make something hot.",
+        "confusableWith": [
+          {
+            "wordId": "w_freeze",
+            "word": "freeze",
+            "differenceKo": "heat?/? '데우다, 가열하다' ???, freeze?/? '얼다, 얼리다' ????."
+          },
+          {
+            "wordId": "w_mothball",
+            "word": "mothball",
+            "differenceKo": "heat?/? '데우다, 가열하다' ???, mothball?/? '좀약' ????."
+          }
+        ]
+      },
+      {
+        "wordId": "w_freeze",
+        "word": "freeze",
+        "coreCue": "to change from a liquid into a solid because of cold",
+        "readingBridge": "This word comes from the vocabulary file. Connect freeze to: to change from a liquid into a solid because of cold.",
+        "confusableWith": [
+          {
+            "wordId": "w_hang",
+            "word": "hang",
+            "differenceKo": "freeze?/? '얼다, 얼리다' ???, hang?/? '걸다, 매달다' ????."
+          },
+          {
+            "wordId": "w_chemical",
+            "word": "chemical",
+            "differenceKo": "freeze?/? '얼다, 얼리다' ???, chemical?/? '화학 물질' ????."
+          }
+        ]
+      }
+    ],
+    "sets": [
+      {
+        "id": "vr_set_1",
+        "roundType": "seed",
+        "purpose": "seed practice set 1",
+        "cards": [
+          {
+            "id": "vr_c001",
+            "targetWordId": "w_hang",
+            "targetWord": "hang",
+            "options": [
+              {
+                "id": "A",
+                "text": "a thing made by changing its first state",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_chemical",
+                "errorTag": "w_hang_not_w_chemical"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. hang = to put a thing at a high place.",
+            "feedbackWrong": "hang means to put a thing at a high place. chemical means a thing made by changing its first state.",
+            "readingBridge": "This word comes from the vocabulary file. Connect hang to: to put a thing at a high place.",
+            "echoCardId": "vr_e001"
+          },
+          {
+            "id": "vr_c002",
+            "targetWordId": "w_mothball",
+            "targetWord": "mothball",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_dissolve",
+                "errorTag": "w_mothball_not_w_dissolve"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. mothball = a small ball that keeps moths away from clothes.",
+            "feedbackWrong": "mothball means a small ball that keeps moths away from clothes. dissolve means to slowly disappear into a liquid.",
+            "readingBridge": "This word comes from the vocabulary file. Connect mothball to: a small ball that keeps moths away from clothes.",
+            "echoCardId": "vr_e002"
+          },
+          {
+            "id": "vr_c003",
+            "targetWordId": "w_chemical",
+            "targetWord": "chemical",
+            "options": [
+              {
+                "id": "A",
+                "text": "to make something hot",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_heat",
+                "errorTag": "w_chemical_not_w_heat"
+              },
+              {
+                "id": "B",
+                "text": "a thing made by changing its first state",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. chemical = a thing made by changing its first state.",
+            "feedbackWrong": "chemical means a thing made by changing its first state. heat means to make something hot.",
+            "readingBridge": "This word comes from the vocabulary file. Connect chemical to: a thing made by changing its first state.",
+            "echoCardId": "vr_e003"
+          },
+          {
+            "id": "vr_c004",
+            "targetWordId": "w_naphthalene",
+            "targetWord": "naphthalene",
+            "options": [
+              {
+                "id": "A",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_hang",
+                "errorTag": "w_naphthalene_not_w_hang"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. naphthalene = a strong-smelling thing used in mothballs.",
+            "feedbackWrong": "naphthalene means a strong-smelling thing used in mothballs. hang means to put a thing at a high place.",
+            "readingBridge": "This word comes from the vocabulary file. Connect naphthalene to: a strong-smelling thing used in mothballs.",
+            "echoCardId": "vr_e004"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_2",
+        "roundType": "seed",
+        "purpose": "seed practice set 2",
+        "cards": [
+          {
+            "id": "vr_c005",
+            "targetWordId": "w_dissolve",
+            "targetWord": "dissolve",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to make something hot",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_heat",
+                "errorTag": "w_dissolve_not_w_heat"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. dissolve = to slowly disappear into a liquid.",
+            "feedbackWrong": "dissolve means to slowly disappear into a liquid. heat means to make something hot.",
+            "readingBridge": "This word comes from the vocabulary file. Connect dissolve to: to slowly disappear into a liquid.",
+            "echoCardId": "vr_e005"
+          },
+          {
+            "id": "vr_c006",
+            "targetWordId": "w_sublimation",
+            "targetWord": "sublimation",
+            "options": [
+              {
+                "id": "A",
+                "text": "to put a thing at a high place",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_hang",
+                "errorTag": "w_sublimation_not_w_hang"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. sublimation = the changing of a solid into a gas.",
+            "feedbackWrong": "sublimation means the changing of a solid into a gas. hang means to put a thing at a high place.",
+            "readingBridge": "This word comes from the vocabulary file. Connect sublimation to: the changing of a solid into a gas.",
+            "echoCardId": "vr_e006"
+          },
+          {
+            "id": "vr_c007",
+            "targetWordId": "w_heat",
+            "targetWord": "heat",
+            "options": [
+              {
+                "id": "A",
+                "text": "to make something hot",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "a thing made by changing its first state",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_chemical",
+                "errorTag": "w_heat_not_w_chemical"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. heat = to make something hot.",
+            "feedbackWrong": "heat means to make something hot. chemical means a thing made by changing its first state.",
+            "readingBridge": "This word comes from the vocabulary file. Connect heat to: to make something hot.",
+            "echoCardId": "vr_e007"
+          },
+          {
+            "id": "vr_c008",
+            "targetWordId": "w_freeze",
+            "targetWord": "freeze",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_dissolve",
+                "errorTag": "w_freeze_not_w_dissolve"
+              },
+              {
+                "id": "B",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. freeze = to change from a liquid into a solid because of cold.",
+            "feedbackWrong": "freeze means to change from a liquid into a solid because of cold. dissolve means to slowly disappear into a liquid.",
+            "readingBridge": "This word comes from the vocabulary file. Connect freeze to: to change from a liquid into a solid because of cold.",
+            "echoCardId": "vr_e008"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_3",
+        "roundType": "seed",
+        "purpose": "seed practice set 3",
+        "cards": [
+          {
+            "id": "vr_c009",
+            "targetWordId": "w_hang",
+            "targetWord": "hang",
+            "options": [
+              {
+                "id": "A",
+                "text": "a thing made by changing its first state",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_chemical",
+                "errorTag": "w_hang_not_w_chemical"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. hang = to put a thing at a high place.",
+            "feedbackWrong": "hang means to put a thing at a high place. chemical means a thing made by changing its first state.",
+            "readingBridge": "This word comes from the vocabulary file. Connect hang to: to put a thing at a high place.",
+            "echoCardId": "vr_e009"
+          },
+          {
+            "id": "vr_c010",
+            "targetWordId": "w_chemical",
+            "targetWord": "chemical",
+            "options": [
+              {
+                "id": "A",
+                "text": "a thing made by changing its first state",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_sublimation",
+                "errorTag": "w_chemical_not_w_sublimation"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. chemical = a thing made by changing its first state.",
+            "feedbackWrong": "chemical means a thing made by changing its first state. sublimation means the changing of a solid into a gas.",
+            "readingBridge": "This word comes from the vocabulary file. Connect chemical to: a thing made by changing its first state.",
+            "echoCardId": "vr_e010"
+          },
+          {
+            "id": "vr_c011",
+            "targetWordId": "w_sublimation",
+            "targetWord": "sublimation",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_mothball",
+                "errorTag": "w_sublimation_not_w_mothball"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. sublimation = the changing of a solid into a gas.",
+            "feedbackWrong": "sublimation means the changing of a solid into a gas. mothball means a small ball that keeps moths away from clothes.",
+            "readingBridge": "This word comes from the vocabulary file. Connect sublimation to: the changing of a solid into a gas.",
+            "echoCardId": "vr_e011"
+          },
+          {
+            "id": "vr_c012",
+            "targetWordId": "w_freeze",
+            "targetWord": "freeze",
+            "options": [
+              {
+                "id": "A",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_dissolve",
+                "errorTag": "w_freeze_not_w_dissolve"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. freeze = to change from a liquid into a solid because of cold.",
+            "feedbackWrong": "freeze means to change from a liquid into a solid because of cold. dissolve means to slowly disappear into a liquid.",
+            "readingBridge": "This word comes from the vocabulary file. Connect freeze to: to change from a liquid into a solid because of cold.",
+            "echoCardId": "vr_e012"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_4",
+        "roundType": "seed",
+        "purpose": "seed practice set 4",
+        "cards": [
+          {
+            "id": "vr_c013",
+            "targetWordId": "w_mothball",
+            "targetWord": "mothball",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_naphthalene",
+                "errorTag": "w_mothball_not_w_naphthalene"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. mothball = a small ball that keeps moths away from clothes.",
+            "feedbackWrong": "mothball means a small ball that keeps moths away from clothes. naphthalene means a strong-smelling thing used in mothballs.",
+            "readingBridge": "This word comes from the vocabulary file. Connect mothball to: a small ball that keeps moths away from clothes.",
+            "echoCardId": "vr_e013"
+          },
+          {
+            "id": "vr_c014",
+            "targetWordId": "w_naphthalene",
+            "targetWord": "naphthalene",
+            "options": [
+              {
+                "id": "A",
+                "text": "to make something hot",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_heat",
+                "errorTag": "w_naphthalene_not_w_heat"
+              },
+              {
+                "id": "B",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. naphthalene = a strong-smelling thing used in mothballs.",
+            "feedbackWrong": "naphthalene means a strong-smelling thing used in mothballs. heat means to make something hot.",
+            "readingBridge": "This word comes from the vocabulary file. Connect naphthalene to: a strong-smelling thing used in mothballs.",
+            "echoCardId": "vr_e014"
+          },
+          {
+            "id": "vr_c015",
+            "targetWordId": "w_dissolve",
+            "targetWord": "dissolve",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_hang",
+                "errorTag": "w_dissolve_not_w_hang"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. dissolve = to slowly disappear into a liquid.",
+            "feedbackWrong": "dissolve means to slowly disappear into a liquid. hang means to put a thing at a high place.",
+            "readingBridge": "This word comes from the vocabulary file. Connect dissolve to: to slowly disappear into a liquid.",
+            "echoCardId": "vr_e015"
+          },
+          {
+            "id": "vr_c016",
+            "targetWordId": "w_heat",
+            "targetWord": "heat",
+            "options": [
+              {
+                "id": "A",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_naphthalene",
+                "errorTag": "w_heat_not_w_naphthalene"
+              },
+              {
+                "id": "B",
+                "text": "to make something hot",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. heat = to make something hot.",
+            "feedbackWrong": "heat means to make something hot. naphthalene means a strong-smelling thing used in mothballs.",
+            "readingBridge": "This word comes from the vocabulary file. Connect heat to: to make something hot.",
+            "echoCardId": "vr_e016"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_5",
+        "roundType": "seed",
+        "purpose": "seed practice set 5",
+        "cards": [
+          {
+            "id": "vr_c017",
+            "targetWordId": "w_chemical",
+            "targetWord": "chemical",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_dissolve",
+                "errorTag": "w_chemical_not_w_dissolve"
+              },
+              {
+                "id": "B",
+                "text": "a thing made by changing its first state",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. chemical = a thing made by changing its first state.",
+            "feedbackWrong": "chemical means a thing made by changing its first state. dissolve means to slowly disappear into a liquid.",
+            "readingBridge": "This word comes from the vocabulary file. Connect chemical to: a thing made by changing its first state.",
+            "echoCardId": "vr_e017"
+          },
+          {
+            "id": "vr_c018",
+            "targetWordId": "w_sublimation",
+            "targetWord": "sublimation",
+            "options": [
+              {
+                "id": "A",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_hang",
+                "errorTag": "w_sublimation_not_w_hang"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. sublimation = the changing of a solid into a gas.",
+            "feedbackWrong": "sublimation means the changing of a solid into a gas. hang means to put a thing at a high place.",
+            "readingBridge": "This word comes from the vocabulary file. Connect sublimation to: the changing of a solid into a gas.",
+            "echoCardId": "vr_e018"
+          },
+          {
+            "id": "vr_c019",
+            "targetWordId": "w_naphthalene",
+            "targetWord": "naphthalene",
+            "options": [
+              {
+                "id": "A",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_freeze",
+                "errorTag": "w_naphthalene_not_w_freeze"
+              },
+              {
+                "id": "B",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. naphthalene = a strong-smelling thing used in mothballs.",
+            "feedbackWrong": "naphthalene means a strong-smelling thing used in mothballs. freeze means to change from a liquid into a solid because of cold.",
+            "readingBridge": "This word comes from the vocabulary file. Connect naphthalene to: a strong-smelling thing used in mothballs.",
+            "echoCardId": "vr_e019"
+          },
+          {
+            "id": "vr_c020",
+            "targetWordId": "w_dissolve",
+            "targetWord": "dissolve",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_mothball",
+                "errorTag": "w_dissolve_not_w_mothball"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. dissolve = to slowly disappear into a liquid.",
+            "feedbackWrong": "dissolve means to slowly disappear into a liquid. mothball means a small ball that keeps moths away from clothes.",
+            "readingBridge": "This word comes from the vocabulary file. Connect dissolve to: to slowly disappear into a liquid.",
+            "echoCardId": "vr_e020"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_6",
+        "roundType": "seed",
+        "purpose": "seed practice set 6",
+        "cards": [
+          {
+            "id": "vr_c021",
+            "targetWordId": "w_hang",
+            "targetWord": "hang",
+            "options": [
+              {
+                "id": "A",
+                "text": "to put a thing at a high place",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "a thing made by changing its first state",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_chemical",
+                "errorTag": "w_hang_not_w_chemical"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. hang = to put a thing at a high place.",
+            "feedbackWrong": "hang means to put a thing at a high place. chemical means a thing made by changing its first state.",
+            "readingBridge": "This word comes from the vocabulary file. Connect hang to: to put a thing at a high place.",
+            "echoCardId": "vr_e021"
+          },
+          {
+            "id": "vr_c022",
+            "targetWordId": "w_freeze",
+            "targetWord": "freeze",
+            "options": [
+              {
+                "id": "A",
+                "text": "a thing made by changing its first state",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_chemical",
+                "errorTag": "w_freeze_not_w_chemical"
+              },
+              {
+                "id": "B",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. freeze = to change from a liquid into a solid because of cold.",
+            "feedbackWrong": "freeze means to change from a liquid into a solid because of cold. chemical means a thing made by changing its first state.",
+            "readingBridge": "This word comes from the vocabulary file. Connect freeze to: to change from a liquid into a solid because of cold.",
+            "echoCardId": "vr_e022"
+          },
+          {
+            "id": "vr_c023",
+            "targetWordId": "w_mothball",
+            "targetWord": "mothball",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_sublimation",
+                "errorTag": "w_mothball_not_w_sublimation"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. mothball = a small ball that keeps moths away from clothes.",
+            "feedbackWrong": "mothball means a small ball that keeps moths away from clothes. sublimation means the changing of a solid into a gas.",
+            "readingBridge": "This word comes from the vocabulary file. Connect mothball to: a small ball that keeps moths away from clothes.",
+            "echoCardId": "vr_e023"
+          },
+          {
+            "id": "vr_c024",
+            "targetWordId": "w_heat",
+            "targetWord": "heat",
+            "options": [
+              {
+                "id": "A",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_naphthalene",
+                "errorTag": "w_heat_not_w_naphthalene"
+              },
+              {
+                "id": "B",
+                "text": "to make something hot",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. heat = to make something hot.",
+            "feedbackWrong": "heat means to make something hot. naphthalene means a strong-smelling thing used in mothballs.",
+            "readingBridge": "This word comes from the vocabulary file. Connect heat to: to make something hot.",
+            "echoCardId": "vr_e024"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_7",
+        "roundType": "seed",
+        "purpose": "seed practice set 7",
+        "cards": [
+          {
+            "id": "vr_c025",
+            "targetWordId": "w_hang",
+            "targetWord": "hang",
+            "options": [
+              {
+                "id": "A",
+                "text": "a thing made by changing its first state",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_chemical",
+                "errorTag": "w_hang_not_w_chemical"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. hang = to put a thing at a high place.",
+            "feedbackWrong": "hang means to put a thing at a high place. chemical means a thing made by changing its first state.",
+            "readingBridge": "This word comes from the vocabulary file. Connect hang to: to put a thing at a high place.",
+            "echoCardId": "vr_e025"
+          },
+          {
+            "id": "vr_c026",
+            "targetWordId": "w_dissolve",
+            "targetWord": "dissolve",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_freeze",
+                "errorTag": "w_dissolve_not_w_freeze"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. dissolve = to slowly disappear into a liquid.",
+            "feedbackWrong": "dissolve means to slowly disappear into a liquid. freeze means to change from a liquid into a solid because of cold.",
+            "readingBridge": "This word comes from the vocabulary file. Connect dissolve to: to slowly disappear into a liquid.",
+            "echoCardId": "vr_e026"
+          },
+          {
+            "id": "vr_c027",
+            "targetWordId": "w_chemical",
+            "targetWord": "chemical",
+            "options": [
+              {
+                "id": "A",
+                "text": "to make something hot",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_heat",
+                "errorTag": "w_chemical_not_w_heat"
+              },
+              {
+                "id": "B",
+                "text": "a thing made by changing its first state",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. chemical = a thing made by changing its first state.",
+            "feedbackWrong": "chemical means a thing made by changing its first state. heat means to make something hot.",
+            "readingBridge": "This word comes from the vocabulary file. Connect chemical to: a thing made by changing its first state.",
+            "echoCardId": "vr_e027"
+          },
+          {
+            "id": "vr_c028",
+            "targetWordId": "w_mothball",
+            "targetWord": "mothball",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to make something hot",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_heat",
+                "errorTag": "w_mothball_not_w_heat"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. mothball = a small ball that keeps moths away from clothes.",
+            "feedbackWrong": "mothball means a small ball that keeps moths away from clothes. heat means to make something hot.",
+            "readingBridge": "This word comes from the vocabulary file. Connect mothball to: a small ball that keeps moths away from clothes.",
+            "echoCardId": "vr_e028"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_8",
+        "roundType": "seed",
+        "purpose": "seed practice set 8",
+        "cards": [
+          {
+            "id": "vr_c029",
+            "targetWordId": "w_naphthalene",
+            "targetWord": "naphthalene",
+            "options": [
+              {
+                "id": "A",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_sublimation",
+                "errorTag": "w_naphthalene_not_w_sublimation"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. naphthalene = a strong-smelling thing used in mothballs.",
+            "feedbackWrong": "naphthalene means a strong-smelling thing used in mothballs. sublimation means the changing of a solid into a gas.",
+            "readingBridge": "This word comes from the vocabulary file. Connect naphthalene to: a strong-smelling thing used in mothballs.",
+            "echoCardId": "vr_e029"
+          },
+          {
+            "id": "vr_c030",
+            "targetWordId": "w_sublimation",
+            "targetWord": "sublimation",
+            "options": [
+              {
+                "id": "A",
+                "text": "to put a thing at a high place",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_hang",
+                "errorTag": "w_sublimation_not_w_hang"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. sublimation = the changing of a solid into a gas.",
+            "feedbackWrong": "sublimation means the changing of a solid into a gas. hang means to put a thing at a high place.",
+            "readingBridge": "This word comes from the vocabulary file. Connect sublimation to: the changing of a solid into a gas.",
+            "echoCardId": "vr_e030"
+          },
+          {
+            "id": "vr_c031",
+            "targetWordId": "w_heat",
+            "targetWord": "heat",
+            "options": [
+              {
+                "id": "A",
+                "text": "to make something hot",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "a thing made by changing its first state",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_chemical",
+                "errorTag": "w_heat_not_w_chemical"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. heat = to make something hot.",
+            "feedbackWrong": "heat means to make something hot. chemical means a thing made by changing its first state.",
+            "readingBridge": "This word comes from the vocabulary file. Connect heat to: to make something hot.",
+            "echoCardId": "vr_e031"
+          },
+          {
+            "id": "vr_c032",
+            "targetWordId": "w_freeze",
+            "targetWord": "freeze",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_dissolve",
+                "errorTag": "w_freeze_not_w_dissolve"
+              },
+              {
+                "id": "B",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. freeze = to change from a liquid into a solid because of cold.",
+            "feedbackWrong": "freeze means to change from a liquid into a solid because of cold. dissolve means to slowly disappear into a liquid.",
+            "readingBridge": "This word comes from the vocabulary file. Connect freeze to: to change from a liquid into a solid because of cold.",
+            "echoCardId": "vr_e032"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_9",
+        "roundType": "echo",
+        "purpose": "echo review set 1",
+        "cards": [
+          {
+            "id": "vr_e001",
+            "targetWordId": "w_hang",
+            "targetWord": "hang",
+            "options": [
+              {
+                "id": "A",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_sublimation",
+                "errorTag": "w_hang_not_w_sublimation"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. hang = to put a thing at a high place.",
+            "feedbackWrong": "hang means to put a thing at a high place. sublimation means the changing of a solid into a gas.",
+            "readingBridge": "This word comes from the vocabulary file. Connect hang to: to put a thing at a high place.",
+            "echoOfCardId": "vr_c001"
+          },
+          {
+            "id": "vr_e002",
+            "targetWordId": "w_mothball",
+            "targetWord": "mothball",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_freeze",
+                "errorTag": "w_mothball_not_w_freeze"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. mothball = a small ball that keeps moths away from clothes.",
+            "feedbackWrong": "mothball means a small ball that keeps moths away from clothes. freeze means to change from a liquid into a solid because of cold.",
+            "readingBridge": "This word comes from the vocabulary file. Connect mothball to: a small ball that keeps moths away from clothes.",
+            "echoOfCardId": "vr_c002"
+          },
+          {
+            "id": "vr_e003",
+            "targetWordId": "w_chemical",
+            "targetWord": "chemical",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_mothball",
+                "errorTag": "w_chemical_not_w_mothball"
+              },
+              {
+                "id": "B",
+                "text": "a thing made by changing its first state",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. chemical = a thing made by changing its first state.",
+            "feedbackWrong": "chemical means a thing made by changing its first state. mothball means a small ball that keeps moths away from clothes.",
+            "readingBridge": "This word comes from the vocabulary file. Connect chemical to: a thing made by changing its first state.",
+            "echoOfCardId": "vr_c003"
+          },
+          {
+            "id": "vr_e004",
+            "targetWordId": "w_naphthalene",
+            "targetWord": "naphthalene",
+            "options": [
+              {
+                "id": "A",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_naphthalene",
+                "errorTag": "w_naphthalene_not_w_naphthalene"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. naphthalene = a strong-smelling thing used in mothballs.",
+            "feedbackWrong": "naphthalene means a strong-smelling thing used in mothballs. naphthalene means a strong-smelling thing used in mothballs.",
+            "readingBridge": "This word comes from the vocabulary file. Connect naphthalene to: a strong-smelling thing used in mothballs.",
+            "echoOfCardId": "vr_c004"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_10",
+        "roundType": "echo",
+        "purpose": "echo review set 2",
+        "cards": [
+          {
+            "id": "vr_e005",
+            "targetWordId": "w_dissolve",
+            "targetWord": "dissolve",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_mothball",
+                "errorTag": "w_dissolve_not_w_mothball"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. dissolve = to slowly disappear into a liquid.",
+            "feedbackWrong": "dissolve means to slowly disappear into a liquid. mothball means a small ball that keeps moths away from clothes.",
+            "readingBridge": "This word comes from the vocabulary file. Connect dissolve to: to slowly disappear into a liquid.",
+            "echoOfCardId": "vr_c005"
+          },
+          {
+            "id": "vr_e006",
+            "targetWordId": "w_sublimation",
+            "targetWord": "sublimation",
+            "options": [
+              {
+                "id": "A",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_naphthalene",
+                "errorTag": "w_sublimation_not_w_naphthalene"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. sublimation = the changing of a solid into a gas.",
+            "feedbackWrong": "sublimation means the changing of a solid into a gas. naphthalene means a strong-smelling thing used in mothballs.",
+            "readingBridge": "This word comes from the vocabulary file. Connect sublimation to: the changing of a solid into a gas.",
+            "echoOfCardId": "vr_c006"
+          },
+          {
+            "id": "vr_e007",
+            "targetWordId": "w_heat",
+            "targetWord": "heat",
+            "options": [
+              {
+                "id": "A",
+                "text": "to make something hot",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_sublimation",
+                "errorTag": "w_heat_not_w_sublimation"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. heat = to make something hot.",
+            "feedbackWrong": "heat means to make something hot. sublimation means the changing of a solid into a gas.",
+            "readingBridge": "This word comes from the vocabulary file. Connect heat to: to make something hot.",
+            "echoOfCardId": "vr_c007"
+          },
+          {
+            "id": "vr_e008",
+            "targetWordId": "w_freeze",
+            "targetWord": "freeze",
+            "options": [
+              {
+                "id": "A",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_freeze",
+                "errorTag": "w_freeze_not_w_freeze"
+              },
+              {
+                "id": "B",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. freeze = to change from a liquid into a solid because of cold.",
+            "feedbackWrong": "freeze means to change from a liquid into a solid because of cold. freeze means to change from a liquid into a solid because of cold.",
+            "readingBridge": "This word comes from the vocabulary file. Connect freeze to: to change from a liquid into a solid because of cold.",
+            "echoOfCardId": "vr_c008"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_11",
+        "roundType": "echo",
+        "purpose": "echo review set 3",
+        "cards": [
+          {
+            "id": "vr_e009",
+            "targetWordId": "w_hang",
+            "targetWord": "hang",
+            "options": [
+              {
+                "id": "A",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_sublimation",
+                "errorTag": "w_hang_not_w_sublimation"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. hang = to put a thing at a high place.",
+            "feedbackWrong": "hang means to put a thing at a high place. sublimation means the changing of a solid into a gas.",
+            "readingBridge": "This word comes from the vocabulary file. Connect hang to: to put a thing at a high place.",
+            "echoOfCardId": "vr_c009"
+          },
+          {
+            "id": "vr_e010",
+            "targetWordId": "w_chemical",
+            "targetWord": "chemical",
+            "options": [
+              {
+                "id": "A",
+                "text": "a thing made by changing its first state",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_hang",
+                "errorTag": "w_chemical_not_w_hang"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. chemical = a thing made by changing its first state.",
+            "feedbackWrong": "chemical means a thing made by changing its first state. hang means to put a thing at a high place.",
+            "readingBridge": "This word comes from the vocabulary file. Connect chemical to: a thing made by changing its first state.",
+            "echoOfCardId": "vr_c010"
+          },
+          {
+            "id": "vr_e011",
+            "targetWordId": "w_sublimation",
+            "targetWord": "sublimation",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_dissolve",
+                "errorTag": "w_sublimation_not_w_dissolve"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. sublimation = the changing of a solid into a gas.",
+            "feedbackWrong": "sublimation means the changing of a solid into a gas. dissolve means to slowly disappear into a liquid.",
+            "readingBridge": "This word comes from the vocabulary file. Connect sublimation to: the changing of a solid into a gas.",
+            "echoOfCardId": "vr_c011"
+          },
+          {
+            "id": "vr_e012",
+            "targetWordId": "w_freeze",
+            "targetWord": "freeze",
+            "options": [
+              {
+                "id": "A",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_freeze",
+                "errorTag": "w_freeze_not_w_freeze"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. freeze = to change from a liquid into a solid because of cold.",
+            "feedbackWrong": "freeze means to change from a liquid into a solid because of cold. freeze means to change from a liquid into a solid because of cold.",
+            "readingBridge": "This word comes from the vocabulary file. Connect freeze to: to change from a liquid into a solid because of cold.",
+            "echoOfCardId": "vr_c012"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_12",
+        "roundType": "echo",
+        "purpose": "echo review set 4",
+        "cards": [
+          {
+            "id": "vr_e013",
+            "targetWordId": "w_mothball",
+            "targetWord": "mothball",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to make something hot",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_heat",
+                "errorTag": "w_mothball_not_w_heat"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. mothball = a small ball that keeps moths away from clothes.",
+            "feedbackWrong": "mothball means a small ball that keeps moths away from clothes. heat means to make something hot.",
+            "readingBridge": "This word comes from the vocabulary file. Connect mothball to: a small ball that keeps moths away from clothes.",
+            "echoOfCardId": "vr_c013"
+          },
+          {
+            "id": "vr_e014",
+            "targetWordId": "w_naphthalene",
+            "targetWord": "naphthalene",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_mothball",
+                "errorTag": "w_naphthalene_not_w_mothball"
+              },
+              {
+                "id": "B",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. naphthalene = a strong-smelling thing used in mothballs.",
+            "feedbackWrong": "naphthalene means a strong-smelling thing used in mothballs. mothball means a small ball that keeps moths away from clothes.",
+            "readingBridge": "This word comes from the vocabulary file. Connect naphthalene to: a strong-smelling thing used in mothballs.",
+            "echoOfCardId": "vr_c014"
+          },
+          {
+            "id": "vr_e015",
+            "targetWordId": "w_dissolve",
+            "targetWord": "dissolve",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_naphthalene",
+                "errorTag": "w_dissolve_not_w_naphthalene"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. dissolve = to slowly disappear into a liquid.",
+            "feedbackWrong": "dissolve means to slowly disappear into a liquid. naphthalene means a strong-smelling thing used in mothballs.",
+            "readingBridge": "This word comes from the vocabulary file. Connect dissolve to: to slowly disappear into a liquid.",
+            "echoOfCardId": "vr_c015"
+          },
+          {
+            "id": "vr_e016",
+            "targetWordId": "w_heat",
+            "targetWord": "heat",
+            "options": [
+              {
+                "id": "A",
+                "text": "to make something hot",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_heat",
+                "errorTag": "w_heat_not_w_heat"
+              },
+              {
+                "id": "B",
+                "text": "to make something hot",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. heat = to make something hot.",
+            "feedbackWrong": "heat means to make something hot. heat means to make something hot.",
+            "readingBridge": "This word comes from the vocabulary file. Connect heat to: to make something hot.",
+            "echoOfCardId": "vr_c016"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_13",
+        "roundType": "echo",
+        "purpose": "echo review set 5",
+        "cards": [
+          {
+            "id": "vr_e017",
+            "targetWordId": "w_chemical",
+            "targetWord": "chemical",
+            "options": [
+              {
+                "id": "A",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_freeze",
+                "errorTag": "w_chemical_not_w_freeze"
+              },
+              {
+                "id": "B",
+                "text": "a thing made by changing its first state",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. chemical = a thing made by changing its first state.",
+            "feedbackWrong": "chemical means a thing made by changing its first state. freeze means to change from a liquid into a solid because of cold.",
+            "readingBridge": "This word comes from the vocabulary file. Connect chemical to: a thing made by changing its first state.",
+            "echoOfCardId": "vr_c017"
+          },
+          {
+            "id": "vr_e018",
+            "targetWordId": "w_sublimation",
+            "targetWord": "sublimation",
+            "options": [
+              {
+                "id": "A",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_naphthalene",
+                "errorTag": "w_sublimation_not_w_naphthalene"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. sublimation = the changing of a solid into a gas.",
+            "feedbackWrong": "sublimation means the changing of a solid into a gas. naphthalene means a strong-smelling thing used in mothballs.",
+            "readingBridge": "This word comes from the vocabulary file. Connect sublimation to: the changing of a solid into a gas.",
+            "echoOfCardId": "vr_c018"
+          },
+          {
+            "id": "vr_e019",
+            "targetWordId": "w_naphthalene",
+            "targetWord": "naphthalene",
+            "options": [
+              {
+                "id": "A",
+                "text": "a thing made by changing its first state",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_chemical",
+                "errorTag": "w_naphthalene_not_w_chemical"
+              },
+              {
+                "id": "B",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. naphthalene = a strong-smelling thing used in mothballs.",
+            "feedbackWrong": "naphthalene means a strong-smelling thing used in mothballs. chemical means a thing made by changing its first state.",
+            "readingBridge": "This word comes from the vocabulary file. Connect naphthalene to: a strong-smelling thing used in mothballs.",
+            "echoOfCardId": "vr_c019"
+          },
+          {
+            "id": "vr_e020",
+            "targetWordId": "w_dissolve",
+            "targetWord": "dissolve",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_dissolve",
+                "errorTag": "w_dissolve_not_w_dissolve"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. dissolve = to slowly disappear into a liquid.",
+            "feedbackWrong": "dissolve means to slowly disappear into a liquid. dissolve means to slowly disappear into a liquid.",
+            "readingBridge": "This word comes from the vocabulary file. Connect dissolve to: to slowly disappear into a liquid.",
+            "echoOfCardId": "vr_c020"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_14",
+        "roundType": "echo",
+        "purpose": "echo review set 6",
+        "cards": [
+          {
+            "id": "vr_e021",
+            "targetWordId": "w_hang",
+            "targetWord": "hang",
+            "options": [
+              {
+                "id": "A",
+                "text": "to put a thing at a high place",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_sublimation",
+                "errorTag": "w_hang_not_w_sublimation"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. hang = to put a thing at a high place.",
+            "feedbackWrong": "hang means to put a thing at a high place. sublimation means the changing of a solid into a gas.",
+            "readingBridge": "This word comes from the vocabulary file. Connect hang to: to put a thing at a high place.",
+            "echoOfCardId": "vr_c021"
+          },
+          {
+            "id": "vr_e022",
+            "targetWordId": "w_freeze",
+            "targetWord": "freeze",
+            "options": [
+              {
+                "id": "A",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_sublimation",
+                "errorTag": "w_freeze_not_w_sublimation"
+              },
+              {
+                "id": "B",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. freeze = to change from a liquid into a solid because of cold.",
+            "feedbackWrong": "freeze means to change from a liquid into a solid because of cold. sublimation means the changing of a solid into a gas.",
+            "readingBridge": "This word comes from the vocabulary file. Connect freeze to: to change from a liquid into a solid because of cold.",
+            "echoOfCardId": "vr_c022"
+          },
+          {
+            "id": "vr_e023",
+            "targetWordId": "w_mothball",
+            "targetWord": "mothball",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_hang",
+                "errorTag": "w_mothball_not_w_hang"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. mothball = a small ball that keeps moths away from clothes.",
+            "feedbackWrong": "mothball means a small ball that keeps moths away from clothes. hang means to put a thing at a high place.",
+            "readingBridge": "This word comes from the vocabulary file. Connect mothball to: a small ball that keeps moths away from clothes.",
+            "echoOfCardId": "vr_c023"
+          },
+          {
+            "id": "vr_e024",
+            "targetWordId": "w_heat",
+            "targetWord": "heat",
+            "options": [
+              {
+                "id": "A",
+                "text": "to make something hot",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_heat",
+                "errorTag": "w_heat_not_w_heat"
+              },
+              {
+                "id": "B",
+                "text": "to make something hot",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. heat = to make something hot.",
+            "feedbackWrong": "heat means to make something hot. heat means to make something hot.",
+            "readingBridge": "This word comes from the vocabulary file. Connect heat to: to make something hot.",
+            "echoOfCardId": "vr_c024"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_15",
+        "roundType": "echo",
+        "purpose": "echo review set 7",
+        "cards": [
+          {
+            "id": "vr_e025",
+            "targetWordId": "w_hang",
+            "targetWord": "hang",
+            "options": [
+              {
+                "id": "A",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_sublimation",
+                "errorTag": "w_hang_not_w_sublimation"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. hang = to put a thing at a high place.",
+            "feedbackWrong": "hang means to put a thing at a high place. sublimation means the changing of a solid into a gas.",
+            "readingBridge": "This word comes from the vocabulary file. Connect hang to: to put a thing at a high place.",
+            "echoOfCardId": "vr_c025"
+          },
+          {
+            "id": "vr_e026",
+            "targetWordId": "w_dissolve",
+            "targetWord": "dissolve",
+            "options": [
+              {
+                "id": "A",
+                "text": "to slowly disappear into a liquid",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "a thing made by changing its first state",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_chemical",
+                "errorTag": "w_dissolve_not_w_chemical"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. dissolve = to slowly disappear into a liquid.",
+            "feedbackWrong": "dissolve means to slowly disappear into a liquid. chemical means a thing made by changing its first state.",
+            "readingBridge": "This word comes from the vocabulary file. Connect dissolve to: to slowly disappear into a liquid.",
+            "echoOfCardId": "vr_c026"
+          },
+          {
+            "id": "vr_e027",
+            "targetWordId": "w_chemical",
+            "targetWord": "chemical",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_mothball",
+                "errorTag": "w_chemical_not_w_mothball"
+              },
+              {
+                "id": "B",
+                "text": "a thing made by changing its first state",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. chemical = a thing made by changing its first state.",
+            "feedbackWrong": "chemical means a thing made by changing its first state. mothball means a small ball that keeps moths away from clothes.",
+            "readingBridge": "This word comes from the vocabulary file. Connect chemical to: a thing made by changing its first state.",
+            "echoOfCardId": "vr_c027"
+          },
+          {
+            "id": "vr_e028",
+            "targetWordId": "w_mothball",
+            "targetWord": "mothball",
+            "options": [
+              {
+                "id": "A",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "a small ball that keeps moths away from clothes",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_mothball",
+                "errorTag": "w_mothball_not_w_mothball"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. mothball = a small ball that keeps moths away from clothes.",
+            "feedbackWrong": "mothball means a small ball that keeps moths away from clothes. mothball means a small ball that keeps moths away from clothes.",
+            "readingBridge": "This word comes from the vocabulary file. Connect mothball to: a small ball that keeps moths away from clothes.",
+            "echoOfCardId": "vr_c028"
+          }
+        ]
+      },
+      {
+        "id": "vr_set_16",
+        "roundType": "echo",
+        "purpose": "echo review set 8",
+        "cards": [
+          {
+            "id": "vr_e029",
+            "targetWordId": "w_naphthalene",
+            "targetWord": "naphthalene",
+            "options": [
+              {
+                "id": "A",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "to put a thing at a high place",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_hang",
+                "errorTag": "w_naphthalene_not_w_hang"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. naphthalene = a strong-smelling thing used in mothballs.",
+            "feedbackWrong": "naphthalene means a strong-smelling thing used in mothballs. hang means to put a thing at a high place.",
+            "readingBridge": "This word comes from the vocabulary file. Connect naphthalene to: a strong-smelling thing used in mothballs.",
+            "echoOfCardId": "vr_c029"
+          },
+          {
+            "id": "vr_e030",
+            "targetWordId": "w_sublimation",
+            "targetWord": "sublimation",
+            "options": [
+              {
+                "id": "A",
+                "text": "a strong-smelling thing used in mothballs",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_naphthalene",
+                "errorTag": "w_sublimation_not_w_naphthalene"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. sublimation = the changing of a solid into a gas.",
+            "feedbackWrong": "sublimation means the changing of a solid into a gas. naphthalene means a strong-smelling thing used in mothballs.",
+            "readingBridge": "This word comes from the vocabulary file. Connect sublimation to: the changing of a solid into a gas.",
+            "echoOfCardId": "vr_c030"
+          },
+          {
+            "id": "vr_e031",
+            "targetWordId": "w_heat",
+            "targetWord": "heat",
+            "options": [
+              {
+                "id": "A",
+                "text": "to make something hot",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              },
+              {
+                "id": "B",
+                "text": "the changing of a solid into a gas",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_sublimation",
+                "errorTag": "w_heat_not_w_sublimation"
+              }
+            ],
+            "answerOptionId": "A",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. heat = to make something hot.",
+            "feedbackWrong": "heat means to make something hot. sublimation means the changing of a solid into a gas.",
+            "readingBridge": "This word comes from the vocabulary file. Connect heat to: to make something hot.",
+            "echoOfCardId": "vr_c031"
+          },
+          {
+            "id": "vr_e032",
+            "targetWordId": "w_freeze",
+            "targetWord": "freeze",
+            "options": [
+              {
+                "id": "A",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": false,
+                "cueType": "distractor",
+                "distractorStrategy": "nearby_vocab_cue",
+                "linkedWordId": "w_freeze",
+                "errorTag": "w_freeze_not_w_freeze"
+              },
+              {
+                "id": "B",
+                "text": "to change from a liquid into a solid because of cold",
+                "isCorrect": true,
+                "cueType": "correct_core"
+              }
+            ],
+            "answerOptionId": "B",
+            "cardType": "meaning_boundary",
+            "feedbackCorrect": "Correct. freeze = to change from a liquid into a solid because of cold.",
+            "feedbackWrong": "freeze means to change from a liquid into a solid because of cold. freeze means to change from a liquid into a solid because of cold.",
+            "readingBridge": "This word comes from the vocabulary file. Connect freeze to: to change from a liquid into a solid because of cold.",
+            "echoOfCardId": "vr_c032"
+          }
+        ]
+      }
+    ]
+  },
+  "generationValidation": {
+    "status": "pass",
+    "wordOnly": true,
+    "storySentenceCount": 2,
+    "vocabTargetCount": 8,
+    "vocabReflexSetCount": 16,
+    "vocabReflexSeedSetCount": 8,
+    "vocabReflexEchoSetCount": 8,
+    "vocabReflexCardCount": 64,
+    "easyEnglishLong": "updated_from_download_lesson_json",
+    "sourceVocabularyFile": "C:\\Users\\SAMSUNG\\Downloads\\lesson (1).json",
+    "notes": [
+      "Vocabulary and explanations were replaced from C:/Users/SAMSUNG/Downloads/lesson.json.",
+      "Vocab Reflex cards were regenerated for the updated eight target words.",
+      "The reading passage and lesson title were preserved."
+    ],
+    "sourceVocabularyLessonId": "kk_kitty_matter",
+    "sourceVocabularyTitle": "What's the Matter with Kitty?",
+    "vocabularyUpdatedAt": "2026-06-05T20:30:07",
+    "vocabularyWordCount": 8,
+    "explanationCount": 8,
+    "notesKo": "??/??/?? ?? ???? lesson (1).json ???? ??????. ??? ?? ??? ??????."
+  }
+}

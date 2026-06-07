@@ -460,6 +460,57 @@ assets/lessons/lesson_001/cover.jpg
 - chunk끼리 시간 구간이 심하게 겹치거나 비면 하이라이트가 부자연스러울 수 있습니다.
 - 문장 전체 재생은 `sentence.startMs ~ sentence.endMs`, 쉬어 듣기는 선택된 `chunkSet`의 chunk 구간을 사용합니다.
 
+## comprehensionChecks
+
+본문을 듣고 따라 말하는 중간에 “질문 확인”을 넣기 위한 영역입니다. 앱은 2차 말하며 듣기에서 `afterSentenceId` 문장을 지나갈 때 화면 위에 질문 레이어를 띄우고, 사용자가 본문 안에서 같은 문장 또는 지정된 범위의 chunk 중 정답 chunk를 직접 누르게 합니다.
+
+```json
+"comprehensionChecks": [
+  {
+    "id": "cq_s12_when",
+    "afterSentenceId": "s12",
+    "sentenceId": "s12",
+    "chunkSetId": "short",
+    "question": "When?",
+    "answerChunkId": "s12_short_c1",
+    "answerText": "Long ago,",
+    "scopeSentenceIds": ["s12"],
+    "promptNote": "시간을 묻는 질문"
+  }
+]
+```
+
+필수 필드:
+
+- `id`: 질문 고유 ID
+- `afterSentenceId`: 이 문장을 지나간 뒤 질문을 띄움
+- `sentenceId`: 정답 chunk가 들어 있는 대표 문장
+- `question`: 화면에 보여줄 짧은 질문
+- `answerChunkId`: 정답 chunk ID
+
+권장 필드:
+
+- `chunkSetId`: 선택지를 가져올 chunk set. 기본은 `defaultChunkSetId`, 보통 `short`
+- `answerText`: 정답 chunk 텍스트. 검증 및 GPT 프롬프트 보조용
+- `scopeSentenceIds`: 선택지를 뽑을 문장 범위. 비우면 `sentenceId` 한 문장만 사용
+- `promptNote`: GPT 보조 프롬프트에 넣을 짧은 힌트나 제작자 메모
+
+질문 제작 규칙:
+
+- “내용 있는 chunk”만 정답으로 삼습니다.
+- 정답이 대명사만 있는 chunk, 접속사만 있는 chunk, 조동사/기능어 중심 chunk면 질문을 만들지 않습니다.
+- `They`, `It`, `So`, `Then`, `Thus`, `Because`처럼 단독으로는 정보가 약한 chunk는 정답 후보에서 제외합니다.
+- 수량만 묻는 질문은 가치가 낮으면 생략합니다. 필요할 때만 `To make what?`, `Worth more than what?`처럼 내용 chunk에 연결합니다.
+- 정답이 두 chunk에 걸치면 질문을 억지로 만들지 말고, chunk를 조정하거나 `long` chunk를 쓰는 별도 질문으로 만듭니다.
+- 질문은 짧게 둡니다. 예: `When?`, `Who ruled?`, `Called what?`, `Why did they use it?`
+
+GPT 보조 동작:
+
+- 사용자가 질문 레이어에서 `GPT 보이스`를 누르면 앱은 프롬프트를 자동으로 준비합니다.
+- 첫 질문 도움 요청에는 지침과 전체 지문을 포함합니다.
+- 같은 레슨의 이후 질문 도움 요청에는 현재 질문, 현재 문장, 선택 가능한 chunk만 보냅니다.
+- GPT는 정답을 바로 말하기보다 학생이 chunk를 고르도록 짧은 힌트를 주는 용도로 씁니다.
+
 ## annotations
 
 본문 안에서 단어, 표현, 문법 포인트 등을 표시하기 위한 위치 정보입니다.

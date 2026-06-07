@@ -1,20 +1,30 @@
 package com.seoin.englishstudy
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.Rect
 import android.graphics.RectF
+import android.graphics.Shader
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.media.AudioManager
 import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
+import android.media.ToneGenerator
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -26,6 +36,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.ScaleXSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.view.GestureDetector
@@ -33,6 +44,8 @@ import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -44,6 +57,12 @@ import android.widget.ScrollView
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
+import android.webkit.CookieManager
+import android.webkit.PermissionRequest
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -51,20 +70,36 @@ import androidx.media3.exoplayer.SeekParameters
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.extractor.DefaultExtractorsFactory
 import androidx.media3.extractor.mp3.Mp3Extractor
+import com.seoin.englishstudy.audio.AudioProfileDecoder
+import com.seoin.englishstudy.chunk.*
+import com.seoin.englishstudy.data.*
+import com.seoin.englishstudy.model.Annotation
+import com.seoin.englishstudy.model.*
+import com.seoin.englishstudy.ui.dsl.*
+import com.seoin.englishstudy.ui.views.BoundaryProfileView
+import com.seoin.englishstudy.ui.views.ComicPanelView
+import com.seoin.englishstudy.ui.views.DataComicPanelView
+import com.seoin.englishstudy.ui.views.WavyTextView
 import org.json.JSONArray
 import org.json.JSONObject
 import java.nio.ByteOrder
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
+import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import kotlin.math.sin
 import kotlin.math.sqrt
 
 class MainActivity : Activity() {
     private lateinit var root: FrameLayout
     private val handler = Handler(Looper.getMainLooper())
+    private lateinit var settingsStore: SettingsStore
+    private lateinit var audioProfileDecoder: AudioProfileDecoder
+    private val comicBgNames = setOf("snow", "sky", "forest", "desert", "lava", "ocean", "night", "room", "sunset", "plain")
+    private val comicAnimNames = setOf("none", "bounce", "shiver", "float", "dash", "roll", "jump", "sway", "spin")
 
     private var lessonMetas: List<LessonMeta> = emptyList()
     private var currentLesson: Lesson? = null
@@ -85,11 +120,12 @@ class MainActivity : Activity() {
     private var quizIndex = 0
     private var manualSentenceIndex = 0
     private var manualBodyMode = false
-    private var firstListenMode = false
+    private var manualBodyDraftSentenceIndex: Int? = null
+    private var manualBodyDraftStartWord = -1
+    private var manualBodyDraftEndWord = -1
+    private var manualBodyEditingChunkIndex: Int? = null
     private var unknownUnderlineMode = false
     private var unknownDraft: UnknownDraft? = null
-    private var firstListenStarted = false
-    private var firstListenCompleted = false
     private var selectedSentenceIndex = 0
     private var currentSentenceIndex = 0
     private var currentChunkId: String? = null
@@ -102,12 +138,12 @@ class MainActivity : Activity() {
     private var playButton: ImageButton? = null
     private var ttsModeButton: TextView? = null
     private var unknownButton: TextView? = null
-    private var firstListenNextButton: TextView? = null
     private var seekBar: SeekBar? = null
     private var timeLabel: TextView? = null
     private var modeLabel: TextView? = null
     private var modeButtons: MutableMap<String, TextView> = mutableMapOf()
     private var readerScroll: ScrollView? = null
+    private var readerActionHost: LinearLayout? = null
     private var adjustPanel: LinearLayout? = null
     private var adjustTitle: TextView? = null
     private var adjustText: TextView? = null
@@ -115,10 +151,29 @@ class MainActivity : Activity() {
     private var waveformOffsetLabel: TextView? = null
     private var startProfileView: BoundaryProfileView? = null
     private var endProfileView: BoundaryProfileView? = null
-    private var manualChunkView: ManualChunkView? = null
+    private var chatDialog: AlertDialog? = null
+    private var chatDialogBox: LinearLayout? = null
+    private var chatWebView: WebView? = null
+    private var chatStatusLabel: TextView? = null
+    private var chatLoginSetupMode = false
+    private var pendingChatPermissionRequest: PermissionRequest? = null
+    private var pendingPrimeMicAfterPermission = false
+    private var pendingChatPrompt: String? = null
+    private var pendingChatAutoSend = false
+    private var pendingChatVoiceBeforePrompt = false
+    private var pendingChatVoiceBeforePromptStarted = false
+    private var pendingChatCompactAfterSend = false
+    private val questionPromptPrimedLessons = mutableSetOf<String>()
+    private val answeredComprehensionChecks = mutableSetOf<String>()
+    private var activeComprehensionPass = 0
+    private var activeComprehensionCheck: ComprehensionCheck? = null
+    private var activeComprehensionOptions: List<ComprehensionOption> = emptyList()
+    private var comprehensionOverlay: View? = null
+    private var comprehensionFeedbackLabel: TextView? = null
     private val ttsUtterances = ConcurrentHashMap<String, TtsSegment>()
     private var ttsDoneCallback: (() -> Unit)? = null
     private var flowAutoToken = 0L
+    private val chatMicPermissionRequestCode = 14510
 
     private val tick = object : Runnable {
         override fun run() {
@@ -129,16 +184,44 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        settingsStore = SettingsStore(this)
+        audioProfileDecoder = AudioProfileDecoder(assets)
         root = FrameLayout(this)
         setContentView(root)
         lessonMetas = loadManifest()
         showLessonList()
+        handler.postDelayed({ maybeShowChatGptLoginSetup() }, 450L)
     }
 
     override fun onDestroy() {
+        destroyChatWebView()
         releasePlayer()
         releaseTts()
         super.onDestroy()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != chatMicPermissionRequestCode) return
+        val request = pendingChatPermissionRequest
+        pendingChatPermissionRequest = null
+        val granted = grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED
+        if (granted) {
+            val audioResources = request?.resources
+                ?.filter { it == PermissionRequest.RESOURCE_AUDIO_CAPTURE }
+                ?.toTypedArray()
+            if (audioResources != null && audioResources.isNotEmpty()) request.grant(audioResources)
+            if (pendingPrimeMicAfterPermission) {
+                pendingPrimeMicAfterPermission = false
+                primeChatMicrophone()
+            } else {
+                chatStatusLabel?.text = "마이크 권한이 허용됐어요. 음성 버튼을 다시 눌러보세요."
+            }
+        } else {
+            request?.deny()
+            pendingPrimeMicAfterPermission = false
+            toast("마이크 권한이 필요해요.")
+        }
     }
 
     @Deprecated("Deprecated in Java")
@@ -148,6 +231,7 @@ class MainActivity : Activity() {
 
     private fun showLessonList() {
         releasePlayer()
+        clearComprehensionLayer()
         currentLesson = null
         root.removeAllViews()
         root.setBackgroundColor(color(R.color.skin_background))
@@ -236,172 +320,38 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun showAfterComicQuizStage(lesson: Lesson) {
+        lesson.vocabReflexGame?.takeIf { it.allCards().isNotEmpty() }?.let { game ->
+            showVocabReflexStage(lesson, game)
+            return
+        }
+        showFirstListenStage(lesson)
+    }
+
     private fun showAfterBodyStage(lesson: Lesson) {
         showAfterFirstListenStage(lesson)
     }
 
     private fun showAfterFirstListenStage(lesson: Lesson) {
-        if (masterSettings.manualChunkEnabled && flatSentences.isNotEmpty()) {
-            showManualChunkMode(lesson, 0)
+        if (masterSettings.manualChunkEnabled && lesson.allSentences().isNotEmpty()) {
+            startManualChunkActivity(lesson)
         } else {
             showSpeakListenStage(lesson, pass = 2, sentenceIndex = 0)
         }
     }
 
     private fun showFirstListenStage(lesson: Lesson) {
-        releasePlayer()
-        currentLesson = lesson
-        flatSentences = lesson.allSentences()
-        masterSettings = activeMasterSettings(lesson.id)
-        manualBodyMode = false
-        firstListenMode = true
-        activeMode = "sentence"
-        useTts = true
-        firstListenStarted = false
-        firstListenCompleted = false
-        selectedSentenceIndex = 0
-        currentSentenceIndex = 0
-        currentChunkId = null
-        pendingStartMs = flatSentences.firstOrNull()?.sentence?.startMs
-
-        root.removeAllViews()
-        root.setBackgroundColor(color(R.color.skin_background))
-        modeButtons.clear()
-        paragraphBindings = emptyList()
-
-        val page = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(20), dp(18), dp(20), dp(96))
-        }
-        root.addView(page, matchFrame())
-        addMasterButton()
-
-        val pauseText = decimalSeconds(masterSettings.firstListenPauseMs)
-        page.addView(flowHeader(lesson, "1차 전체 듣기", "문장 pause ${pauseText}초 · 속도 ${masterSettings.firstListenRate}"), matchWrap().withBottom(dp(10)))
-        page.addView(text("본문 전체를 한 번 듣습니다. 문장마다 잠깐 쉬면서 자연스럽게 따라갈 수 있게 했어요.", 15f, color(R.color.skin_muted)).apply {
-            setPadding(0, 0, 0, dp(10))
-        }, matchWrap())
-        page.addView(unknownMarkBar(), matchWrap().withBottom(dp(10)))
-
-        val scroll = ScrollView(this).apply {
-            background = rounded(color(R.color.skin_surface), dp(18), color(R.color.skin_line), dp(1))
-            setPadding(dp(16), dp(16), dp(16), dp(16))
-            setOnTouchListener { _, event ->
-                if (unknownUnderlineMode) return@setOnTouchListener false
-                if (!firstListenStarted && event.action == MotionEvent.ACTION_UP) {
-                    toggleFirstListen(lesson)
-                    true
-                } else {
-                    false
-                }
-            }
-        }
-        readerScroll = scroll
-        val paper = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(4), dp(8), dp(4), dp(18))
-        }
-        scroll.addView(paper, matchWrap())
-        buildParagraphs(paper, lesson)
-        page.addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).withBottom(dp(10)))
-
-        val row = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            setPadding(dp(12), dp(10), dp(12), dp(10))
-            background = rounded(color(R.color.skin_surface), dp(18), color(R.color.skin_line), dp(1))
-        }
-        row.addView(pill("전체 듣기 시작").apply {
-            setOnClickListener { toggleFirstListen(lesson) }
-        }, LinearLayout.LayoutParams(0, dp(50), 1f).withRightMargin(dp(8)))
-        row.addView(pill("다음 활동").apply {
-            background = rounded(color(R.color.skin_mark), dp(18), color(R.color.skin_primary), dp(1))
-            setOnClickListener { showAfterFirstListenStage(lesson) }
-        }, LinearLayout.LayoutParams(0, dp(50), 0.8f))
-        (row.getChildAt(0) as? TextView)?.text = "재생 / 일시멈춤"
-        firstListenNextButton = row.getChildAt(1) as? TextView
-        firstListenNextButton?.text = "청크 활동으로"
-        firstListenNextButton?.visibility = View.GONE
-        page.addView(row, matchWrap())
-
-        val nextRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            setPadding(dp(12), dp(10), dp(12), dp(10))
-            background = rounded(color(R.color.skin_surface_alt), dp(18), color(R.color.skin_line), dp(1))
-        }
-        nextRow.addView(text("1차를 다 들으면 다음 단계로 넘어갈 수 있어요.", 14f, color(R.color.skin_muted)), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-        firstListenNextButton = pill("청크 활동으로").apply {
-            background = rounded(color(R.color.skin_mark), dp(18), color(R.color.skin_primary), dp(1))
-            setOnClickListener { showAfterFirstListenStage(lesson) }
-        }
-        nextRow.addView(firstListenNextButton, fixed(dp(148), dp(46)))
-        page.addView(nextRow, matchWrap().withTop(dp(8)))
-
-        handler.post(tick)
-        refreshAllParagraphs()
-        updateFirstListenNextButton()
-        updatePlayIcon()
-    }
-
-    private fun toggleFirstListen(lesson: Lesson) {
-        if (isTtsSpeaking) {
-            stopTts()
-            return
-        }
-        if (firstListenCompleted) {
-            firstListenCompleted = false
-            selectedSentenceIndex = 0
-            currentSentenceIndex = 0
-            currentChunkId = null
-            pendingStartMs = flatSentences.firstOrNull()?.sentence?.startMs
-            refreshAllParagraphs()
-            scrollToSentence(0)
-            updateFirstListenNextButton()
-        }
-        firstListenStarted = true
-        playFirstListen(lesson)
-    }
-
-    private fun playFirstListen(lesson: Lesson) {
-        val startIndex = currentSentenceIndex.coerceIn(0, max(0, flatSentences.lastIndex))
-        val segments = (startIndex..flatSentences.lastIndex).mapNotNull { index -> sentenceTtsSegment(index) }
-        if (segments.isEmpty()) {
-            firstListenCompleted = true
-            updateFirstListenNextButton()
-            return
-        }
-        speakTtsSegments(
-            segments = segments,
-            pauseAfterMs = masterSettings.firstListenPauseMs,
-            speechRate = masterSettings.firstListenRate,
-            onDone = {
-                firstListenCompleted = true
-                selectedSentenceIndex = flatSentences.lastIndex.coerceAtLeast(0)
-                currentSentenceIndex = selectedSentenceIndex
-                currentChunkId = null
-                updateFirstListenNextButton()
-                refreshAllParagraphs()
-            }
-        )
-    }
-
-    private fun updateFirstListenNextButton() {
-        val enabled = firstListenCompleted || masterSettings.firstListenNextAlwaysEnabled
-        firstListenNextButton?.apply {
-            isEnabled = enabled
-            alpha = if (enabled) 1f else 0.42f
-            text = if (masterSettings.manualChunkEnabled) "청크 활동으로" else "2차로"
-        }
+        showReader(lesson)
     }
 
     private fun showSpeakListenStage(lesson: Lesson, pass: Int, sentenceIndex: Int) {
         releasePlayer()
+        clearComprehensionLayer()
         currentLesson = lesson
         flatSentences = lesson.allSentences()
         masterSettings = activeMasterSettings(lesson.id)
+        answeredComprehensionChecks.removeAll { it.startsWith("${lesson.id}|$pass|") }
         manualBodyMode = false
-        firstListenMode = false
         activeMode = if (pass == 2) "short" else "sentence"
         useTts = true
         selectedSentenceIndex = sentenceIndex.coerceIn(0, max(0, flatSentences.lastIndex))
@@ -413,6 +363,7 @@ class MainActivity : Activity() {
         root.setBackgroundColor(color(R.color.skin_background))
         modeButtons.clear()
         paragraphBindings = emptyList()
+        readerActionHost = null
 
         val page = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -438,6 +389,7 @@ class MainActivity : Activity() {
             setPadding(dp(16), dp(16), dp(16), dp(16))
             setOnTouchListener { _, event ->
                 if (unknownUnderlineMode) return@setOnTouchListener false
+                if (activeComprehensionCheck != null) return@setOnTouchListener false
                 if (event.action == MotionEvent.ACTION_UP) {
                     advanceSpeakListenSentence(lesson, pass)
                     true
@@ -492,6 +444,11 @@ class MainActivity : Activity() {
 
     private fun advanceSpeakListenSentence(lesson: Lesson, pass: Int) {
         stopTts()
+        if (activeComprehensionCheck != null) {
+            comprehensionFeedbackLabel?.text = "질문에 답한 뒤 다음으로 넘어갈게요."
+            return
+        }
+        if (pass == 2 && showNextComprehensionCheckIfNeeded(lesson, pass, selectedSentenceIndex)) return
         val next = selectedSentenceIndex + 1
         if (next <= flatSentences.lastIndex) {
             selectedSentenceIndex = next
@@ -529,7 +486,12 @@ class MainActivity : Activity() {
         speakTtsSegments(
             segments = segments,
             pauseAfterMs = if (pass == 2) masterSettings.speakChunkPauseMs else 0,
-            speechRate = masterSettings.firstListenRate
+            speechRate = masterSettings.firstListenRate,
+            onDone = {
+                if (pass == 2 && activeComprehensionCheck == null) {
+                    showNextComprehensionCheckIfNeeded(currentLesson ?: return@speakTtsSegments, pass, sentenceIndex)
+                }
+            }
         )
     }
 
@@ -546,8 +508,588 @@ class MainActivity : Activity() {
         return chunks.drop(startChunkIndex).map { chunkTtsSegment(sentenceIndex, it) }
     }
 
+    private fun showNextComprehensionCheckIfNeeded(lesson: Lesson, pass: Int, sentenceIndex: Int): Boolean {
+        val sentence = flatSentences.getOrNull(sentenceIndex)?.sentence ?: return false
+        val check = lesson.comprehensionChecks
+            .filter { it.afterSentenceId == sentence.id }
+            .firstOrNull { comprehensionCheckKey(lesson, pass, it) !in answeredComprehensionChecks }
+            ?: return false
+        showComprehensionCheckLayer(lesson, pass, check)
+        return true
+    }
+
+    private fun comprehensionCheckKey(lesson: Lesson, pass: Int, check: ComprehensionCheck): String {
+        return "${lesson.id}|$pass|${check.id}"
+    }
+
+    private fun showComprehensionCheckLayer(lesson: Lesson, pass: Int, check: ComprehensionCheck) {
+        val options = comprehensionCheckOptions(lesson, check)
+        if (options.isEmpty()) {
+            answeredComprehensionChecks.add(comprehensionCheckKey(lesson, pass, check))
+            handler.post { advanceSpeakListenSentence(lesson, pass) }
+            return
+        }
+
+        activeComprehensionPass = pass
+        activeComprehensionCheck = check
+        activeComprehensionOptions = options
+        comprehensionFeedbackLabel = null
+        refreshAllParagraphs()
+        scrollToSentence(flatSentences.indexOfFirst { it.sentence.id == check.sentenceId }.coerceAtLeast(0))
+
+        val layer = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), dp(12), dp(16), dp(12))
+            background = rounded(color(R.color.skin_surface), dp(18), color(R.color.skin_primary), dp(1))
+            elevation = dp(10).toFloat()
+        }
+
+        val header = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        header.addView(LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(text("질문 확인", 13f, color(R.color.skin_primary), Typeface.BOLD))
+            addView(text(check.question, 23f, color(R.color.skin_ink), Typeface.BOLD).apply {
+                setPadding(0, dp(2), 0, 0)
+            })
+        }, LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        header.addView(pill("GPT 보이스").apply {
+            textSize = 13f
+            setOnClickListener { openComprehensionHelp(lesson, check, options) }
+        }, fixed(dp(112), dp(42)).withRightMargin(dp(8)))
+        header.addView(pill("넘기기").apply {
+            textSize = 13f
+            setOnClickListener {
+                answeredComprehensionChecks.add(comprehensionCheckKey(lesson, pass, check))
+                clearComprehensionLayer()
+                advanceSpeakListenSentence(lesson, pass)
+            }
+        }, fixed(dp(76), dp(42)))
+        layer.addView(header, matchWrap())
+
+        layer.addView(text("본문에서 알맞은 chunk를 눌러 골라요.", 14f, color(R.color.skin_muted)).apply {
+            setPadding(0, dp(8), 0, 0)
+        }, matchWrap())
+
+        comprehensionFeedbackLabel = text("", 13f, color(R.color.skin_muted), Typeface.BOLD).apply {
+            setPadding(0, dp(6), 0, 0)
+        }
+        layer.addView(comprehensionFeedbackLabel, matchWrap())
+
+        comprehensionOverlay?.let { (it.parent as? ViewGroup)?.removeView(it) }
+        comprehensionOverlay = layer
+        root.addView(
+            layer,
+            FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP).apply {
+                leftMargin = dp(14)
+                rightMargin = dp(14)
+                topMargin = dp(14)
+            }
+        )
+        speakPopupText(check.question)
+    }
+
+    private fun clearComprehensionLayer() {
+        comprehensionOverlay?.let { (it.parent as? ViewGroup)?.removeView(it) }
+        comprehensionOverlay = null
+        comprehensionFeedbackLabel = null
+        activeComprehensionPass = 0
+        activeComprehensionCheck = null
+        activeComprehensionOptions = emptyList()
+        refreshAllParagraphs()
+    }
+
+    private fun comprehensionCheckOptions(lesson: Lesson, check: ComprehensionCheck): List<ComprehensionOption> {
+        val chunkSetId = check.chunkSetId.ifBlank { lesson.defaultChunkSetId.ifBlank { "short" } }
+        val sentenceIds = check.scopeSentenceIds.ifEmpty { listOf(check.sentenceId) }.toSet()
+        val options = flatSentences
+            .filter { it.sentence.id in sentenceIds }
+            .flatMap { ref ->
+                ref.sentence.chunkSets[chunkSetId].orEmpty().map { chunk ->
+                    ComprehensionOption(ref.sentence.id, chunk.id, chunk.text)
+                }
+            }
+            .filter { it.text.isNotBlank() }
+        if (options.any { isCorrectComprehensionOption(check, it) }) return options
+        return if (check.answerText.isNotBlank()) options + ComprehensionOption(check.sentenceId, "", check.answerText) else options
+    }
+
+    private fun isCorrectComprehensionOption(check: ComprehensionCheck, option: ComprehensionOption): Boolean {
+        if (check.answerChunkId.isNotBlank() && option.chunkId == check.answerChunkId) return true
+        return normalizeAnswerText(option.text) == normalizeAnswerText(check.answerText)
+    }
+
+    private fun handleComprehensionChunkTap(binding: ParagraphBinding, sentenceIndex: Int, paragraphOffset: Int) {
+        val lesson = currentLesson ?: return
+        val check = activeComprehensionCheck ?: return
+        val localOffset = binding.localOffset(sentenceIndex, paragraphOffset) ?: return
+        val sentence = flatSentences.getOrNull(sentenceIndex)?.sentence ?: return
+        val chunkSetId = check.chunkSetId.ifBlank { lesson.defaultChunkSetId.ifBlank { "short" } }
+        val selection = comprehensionSelectionAt(sentence, chunkSetId, localOffset) ?: run {
+            comprehensionFeedbackLabel?.text = "chunk 위를 눌러 골라주세요."
+            return
+        }
+        val (chunk, option) = selection
+
+        selectedSentenceIndex = sentenceIndex
+        currentSentenceIndex = sentenceIndex
+        currentChunkId = chunk.id
+        refreshAllParagraphs()
+
+        if (isCorrectComprehensionOption(check, option)) {
+            answeredComprehensionChecks.add(comprehensionCheckKey(lesson, activeComprehensionPass, check))
+            val feedback = correctComprehensionFeedback(check, option)
+            comprehensionFeedbackLabel?.text = feedback
+            speakPopupText(feedback, onDone = {
+                val pass = activeComprehensionPass
+                clearComprehensionLayer()
+                advanceSpeakListenSentence(lesson, pass)
+            })
+        } else {
+            comprehensionFeedbackLabel?.text = "아직 아니에요. 내용이 들어 있는 chunk를 다시 골라봐요."
+        }
+    }
+
+    private fun correctComprehensionFeedback(check: ComprehensionCheck, option: ComprehensionOption): String {
+        val custom = check.correctFeedback
+            .replace("{answer}", option.text, ignoreCase = true)
+            .ifBlank { check.answerText }
+        return when {
+            custom.isNotBlank() && custom.startsWith("correct", ignoreCase = true) -> custom
+            custom.isNotBlank() -> "Correct! $custom"
+            option.text.isNotBlank() -> "Correct! ${option.text}"
+            else -> "Correct!"
+        }
+    }
+
+    private fun normalizeAnswerText(value: String): String {
+        return value.lowercase(Locale.US)
+            .replace(Regex("[^a-z0-9]+"), " ")
+            .trim()
+    }
+
+    private fun openComprehensionHelp(lesson: Lesson, check: ComprehensionCheck, options: List<ComprehensionOption>) {
+        val includeFullContext = questionPromptPrimedLessons.add(lesson.id)
+        val prompt = buildComprehensionHelpPrompt(lesson, check, options, includeFullContext)
+        openChatGptWithPrompt(prompt, autoSend = true, voiceBeforePrompt = true, compactAfterSend = true)
+    }
+
+    private fun buildComprehensionHelpPrompt(
+        lesson: Lesson,
+        check: ComprehensionCheck,
+        options: List<ComprehensionOption>,
+        includeFullContext: Boolean
+    ): String {
+        val sourceSentence = flatSentences.firstOrNull { it.sentence.id == check.sentenceId }?.sentence?.text.orEmpty()
+        val optionText = options.mapIndexed { index, option -> "${index + 1}. ${option.text}" }.joinToString("\n")
+        return buildString {
+            if (includeFullContext) {
+                appendLine("You are a friendly English reading coach for a young learner.")
+                appendLine("Instructions:")
+                appendLine("- Speak in simple English only.")
+                appendLine("- Do not say the exact answer chunk first.")
+                appendLine("- Give a short hint so the student can choose the right chunk from the passage.")
+                appendLine("- Ask the student to answer out loud.")
+                appendLine("- Keep each turn short and warm.")
+                appendLine()
+                appendLine("Reading passage:")
+                appendLine(lessonStoryText(lesson))
+                appendLine()
+            }
+            appendLine("Current question:")
+            appendLine(check.question)
+            if (sourceSentence.isNotBlank()) appendLine("Sentence: $sourceSentence")
+            appendLine("Chunks the student can choose from:")
+            appendLine(optionText)
+            check.promptNote.takeIf { it.isNotBlank() }?.let { appendLine("Teacher note: $it") }
+            appendLine()
+            append("Start a voice conversation now. Help the student choose the right chunk, but do not reveal it immediately.")
+        }
+    }
+
+    private fun lessonStoryText(lesson: Lesson): String {
+        return lesson.paragraphs
+            .filter { it.type != "title" }
+            .flatMap { it.sentences }
+            .joinToString(" ") { it.text }
+    }
+
     private fun showVocabStage(lesson: Lesson, index: Int) {
-        showVocabTableStage(lesson, index.coerceAtLeast(0), reviewComplete = false, wrongIds = null)
+        showVocabComicStudyStage(lesson, index.coerceAtLeast(0))
+    }
+
+    private fun showVocabComicStudyStage(lesson: Lesson, index: Int) {
+        stopAllPlayback()
+        currentLesson = lesson
+        flatSentences = lesson.allSentences()
+        masterSettings = activeMasterSettings(lesson.id)
+
+        val items = vocabStudyItems(lesson)
+        val lessonComic = lesson.cinematicComic.takeIf { index == 0 }
+        if (items.isEmpty() && lessonComic == null) {
+            showAfterVocabStage(lesson)
+            return
+        }
+        if (lessonComic == null && index >= items.size) {
+            showAfterVocabStage(lesson)
+            return
+        }
+
+        val isLessonComic = lessonComic != null
+        val item = if (isLessonComic) {
+            VocabStudyItem(
+                id = "__lesson_comic",
+                word = lesson.title,
+                meaning = lessonComic?.meaning?.ifBlank { lesson.subtitle } ?: lesson.subtitle,
+                longMeaning = "",
+                note = "",
+                examples = emptyList(),
+                comic = lessonComic
+            )
+        } else {
+            items[index]
+        }
+        val comic = lessonComic ?: item.comic
+        val panels = comic?.panels.orEmpty()
+        var active = true
+        var panelIndex = 0
+        val backgroundSheet = comic?.let { loadComicBackgroundSheet(lesson, it) }
+
+        root.removeAllViews()
+        root.background = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(0xFFFFFFFF.toInt(), 0xFFFDF6EC.toInt(), 0xFFFCE8D8.toInt())
+        )
+
+        val page = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(dp(18), dp(16), dp(18), dp(96))
+        }
+        root.addView(page, matchFrame())
+        addMasterButton()
+
+        page.addView(flowHeader(lesson, "Word comic", if (isLessonComic) "story" else "${index + 1}/${items.size}"), matchWrap().withBottom(dp(10)))
+        page.addView(text(item.word, if (isLessonComic) 28f else 36f, 0xFFEA6A22.toInt(), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+            setPadding(0, dp(4), 0, dp(2))
+        }, matchWrap())
+        page.addView(text(comic?.meaning?.ifBlank { item.meaning } ?: item.meaning, 17f, color(R.color.skin_muted), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+        }, matchWrap().withBottom(dp(12)))
+        val studyWords = comic?.words.orEmpty().ifEmpty { listOf(item.word) }
+        if (studyWords.isNotEmpty()) {
+            page.addView(vocabWordChips(lesson, studyWords, comic), matchWrap().withBottom(dp(10)))
+        }
+
+        val panelView = DataComicPanelView(this).apply {
+            setShowCaption(false)
+            setShowPanelNumber(false)
+            setBackgroundSheet(backgroundSheet, comic?.backgroundColumns ?: 2, comic?.backgroundRows ?: 2)
+        }
+        val panelCaption = text("", 18f, color(R.color.skin_ink), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+            setPadding(dp(14), dp(10), dp(14), dp(10))
+            background = rounded(color(R.color.skin_surface), dp(18), 0xFFFFE0BE.toInt(), dp(1))
+            setOnTouchListener { view, event ->
+                if (event.action != MotionEvent.ACTION_UP) return@setOnTouchListener true
+                val textView = view as? TextView ?: return@setOnTouchListener true
+                val offset = offsetFor(textView, event) ?: return@setOnTouchListener true
+                speakTodayWordAt(textView.text.toString(), offset, lesson, comic)
+                true
+            }
+        }
+        if (panels.isNotEmpty()) {
+            val panelSize = min(
+                resources.displayMetrics.widthPixels - dp(36),
+                max(dp(260), resources.displayMetrics.heightPixels - dp(360))
+            )
+            page.addView(panelView, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, panelSize).withBottom(dp(10)))
+            page.addView(panelCaption, matchWrap().withBottom(dp(10)))
+        } else {
+            page.addView(text(comicExplanationText(item, comic), 21f, color(R.color.skin_ink), Typeface.BOLD).apply {
+                gravity = Gravity.CENTER
+                setPadding(dp(18), dp(28), dp(18), dp(28))
+                background = rounded(color(R.color.skin_surface), dp(22), color(R.color.skin_line), dp(1))
+            }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).withBottom(dp(12)))
+        }
+
+        val explanation = text(comicExplanationText(item, comic), 15f, color(R.color.skin_ink), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+            setPadding(dp(14), dp(10), dp(14), dp(10))
+            background = rounded(color(R.color.skin_surface), dp(18), 0xFFFFE0BE.toInt(), dp(1))
+        }
+        if (panels.isEmpty()) page.addView(explanation, matchWrap().withBottom(dp(10)))
+
+        fun speakPanel(targetPanelIndex: Int) {
+            if (!active) return
+            val caption = panels.getOrNull(targetPanelIndex)?.caption?.ifBlank { item.meaning } ?: item.meaning
+            speakComicText(caption)
+        }
+
+        lateinit var next: TextView
+        fun showPanel(targetPanelIndex: Int) {
+            if (!active) return
+            val panel = panels.getOrNull(targetPanelIndex) ?: return
+            panelView.setPanel(panel, targetPanelIndex, item.word)
+            val caption = panel.caption.ifBlank { item.meaning }
+            panelCaption.text = styledTodayWords(caption, lesson, comic)
+            next.text = if (targetPanelIndex < panels.lastIndex) {
+                "Next"
+            } else if (!isLessonComic && index < items.lastIndex) {
+                "Next word"
+            } else if (isLessonComic) {
+                "Word"
+            } else {
+                "Start game"
+            }
+            speakPanel(targetPanelIndex)
+        }
+
+        val actions = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+        }
+        val replay = pill("Replay").apply {
+            textSize = 16f
+            setOnClickListener {
+                if (panels.isNotEmpty()) {
+                    speakPanel(panelIndex)
+                } else {
+                    active = false
+                    showVocabComicStudyStage(lesson, index)
+                }
+            }
+        }
+        val nextButton = pill("Next").apply {
+            textSize = 16f
+            background = rounded(color(R.color.skin_mark), dp(18), color(R.color.skin_primary), dp(1))
+            setOnClickListener {
+                if (!isEnabled) return@setOnClickListener
+                stopTts()
+                if (panels.isNotEmpty() && panelIndex < panels.lastIndex) {
+                    panelIndex += 1
+                    showPanel(panelIndex)
+                } else {
+                    active = false
+                    if (isLessonComic) {
+                        showVocabSpotlightStage(lesson)
+                    } else if (index < items.lastIndex) {
+                        showVocabComicStudyStage(lesson, index + 1)
+                    } else {
+                        showAfterVocabStage(lesson)
+                    }
+                }
+            }
+        }
+        next = nextButton
+        actions.addView(replay, LinearLayout.LayoutParams(0, dp(48), 1f).withRightMargin(dp(10)))
+        actions.addView(nextButton, LinearLayout.LayoutParams(0, dp(48), 1f))
+        page.addView(actions, matchWrap())
+
+        if (panels.isNotEmpty()) handler.postDelayed({ showPanel(0) }, 250L) else speakComicText(comicExplanationText(item, comic))
+    }
+
+    private fun showVocabSpotlightStage(lesson: Lesson) {
+        stopAllPlayback()
+        currentLesson = lesson
+        flatSentences = lesson.allSentences()
+        masterSettings = activeMasterSettings(lesson.id)
+
+        val vocab = lesson.vocabulary.values.firstOrNull { it.quizPanel != null } ?: run {
+            showAfterVocabStage(lesson)
+            return
+        }
+        val detail = vocabSpotlightDetail(vocab)
+        var active = true
+
+        root.removeAllViews()
+        root.background = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(0xFFFFFFFF.toInt(), 0xFFFDF6EC.toInt(), 0xFFFCE8D8.toInt())
+        )
+
+        val page = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(dp(18), dp(16), dp(18), dp(96))
+        }
+        root.addView(page, matchFrame())
+        addMasterButton()
+
+        page.addView(flowHeader(lesson, "Word picture", "1 word"), matchWrap().withBottom(dp(10)))
+        page.addView(text(vocab.word, 42f, 0xFFEA6A22.toInt(), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+        }, matchWrap().withBottom(dp(10)))
+
+        val panel = DataComicPanelView(this).apply {
+            setShowCaption(false)
+            setShowPanelNumber(false)
+            setPanel(vocab.quizPanel!!, 0, vocab.word)
+        }
+        val panelSize = min(
+            resources.displayMetrics.widthPixels - dp(36),
+            max(dp(280), resources.displayMetrics.heightPixels - dp(360))
+        )
+        page.addView(panel, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, panelSize).withBottom(dp(12)))
+
+        page.addView(text(vocab.easyEnglish.ifBlank { vocab.meaningKo }.ifBlank { "Look at the picture and learn the word." }, 20f, color(R.color.skin_ink), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+            setPadding(dp(16), dp(12), dp(16), dp(12))
+            background = rounded(color(R.color.skin_surface), dp(18), 0xFFFFE0BE.toInt(), dp(1))
+        }, matchWrap().withBottom(dp(12)))
+
+        val actions = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
+        lateinit var replay: TextView
+        lateinit var next: TextView
+
+        fun setReady(ready: Boolean) {
+            replay.isEnabled = ready
+            replay.alpha = if (ready) 1f else 0.42f
+            next.isEnabled = ready
+            next.alpha = if (ready) 1f else 0.42f
+        }
+
+        fun playDetail() {
+            setReady(false)
+            speakComicText(detail, onDone = {
+                if (!active) return@speakComicText
+                setReady(true)
+            })
+        }
+
+        replay = pill("Replay").apply {
+            textSize = 16f
+            setOnClickListener { if (isEnabled) playDetail() }
+        }
+        next = pill("Next").apply {
+            textSize = 16f
+            background = rounded(color(R.color.skin_mark), dp(18), color(R.color.skin_primary), dp(1))
+            setOnClickListener {
+                if (!isEnabled) return@setOnClickListener
+                active = false
+                stopTts()
+                showAfterVocabStage(lesson)
+            }
+        }
+        actions.addView(replay, LinearLayout.LayoutParams(0, dp(48), 1f).withRightMargin(dp(10)))
+        actions.addView(next, LinearLayout.LayoutParams(0, dp(48), 1f))
+        page.addView(actions, matchWrap())
+
+        handler.postDelayed({ playDetail() }, 250L)
+    }
+
+    private fun vocabSpotlightDetail(vocab: Vocab): String {
+        val short = vocab.easyEnglish.ifBlank { "to put something up high" }
+        return "Look at the picture with me. The word is ${vocab.word}. It means $short. In the picture, imagine Kibu looking at something that is up high, not sitting on the floor. When we hang something, we put it on a hook, a wall, a line, or another high place. We might hang a coat, hang a bag, or hang a sign so people can see it. So when you hear ${vocab.word}, think about putting something up and letting it stay there. Try saying it with me: ${vocab.word}."
+    }
+
+    private fun vocabWordChips(lesson: Lesson, words: List<String>, comic: VocabComic?): View {
+        val scroll = HorizontalScrollView(this).apply {
+            isHorizontalScrollBarEnabled = false
+        }
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, 0, dp(2), 0)
+        }
+        words.distinctBy { normalizeKittyKey(it) }.forEach { token ->
+            val vocab = findVocabByToken(lesson, token)
+            val label = vocab?.word ?: token
+            row.addView(chip(label).apply {
+                textSize = 14f
+                setOnClickListener { speakVocabToken(lesson, token, comic) }
+            }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(38)).withRightMargin(dp(8)))
+        }
+        scroll.addView(row, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        return scroll
+    }
+
+    private fun speakVocabToken(lesson: Lesson, token: String, comic: VocabComic?) {
+        val info = todayWordInfo(lesson, token, comic)
+        val vocab = findVocabByToken(lesson, token)
+        val word = info?.first ?: vocab?.word ?: token
+        val meaning = info?.second
+            ?: vocab?.comic?.meaning
+            ?: vocab?.easyEnglish
+            ?: vocab?.meaningKo
+            ?: vocab?.simpleKo
+            ?: "Tap this word again while studying."
+        speakPopupText("$word. $meaning")
+    }
+
+    private fun findVocabByToken(lesson: Lesson, token: String): Vocab? {
+        val key = normalizeKittyKey(token)
+        return lesson.vocabulary.values.firstOrNull {
+            it.id == token || normalizeKittyKey(it.word) == key || normalizeKittyKey(it.lemma) == key || it.forms.any { form -> normalizeKittyKey(form) == key }
+        }
+    }
+
+    private fun speakTodayWordAt(textValue: String, offset: Int, lesson: Lesson, comic: VocabComic?): Boolean {
+        val token = wordTokens(textValue).firstOrNull { offset in it.startChar until it.endChar } ?: return false
+        val info = todayWordInfo(lesson, token.text, comic) ?: return false
+        player?.pause()
+        stopTts()
+        updatePlayIcon()
+        speakPopupText("${info.first}. ${info.second}")
+        return true
+    }
+
+    private fun todayWordInfo(lesson: Lesson, token: String, preferredComic: VocabComic?): Pair<String, String>? {
+        val key = normalizeKittyKey(token)
+        if (key.isBlank()) return null
+        val sources = listOfNotNull(preferredComic, lesson.cinematicComic).distinct()
+        sources.forEach { comic ->
+            val matchedWord = comic.words.firstOrNull { normalizeKittyKey(it) == key }
+            val meaning = comic.wordExplanations[key]
+                ?: comic.wordExplanations[token.lowercase(Locale.US)]
+            if (matchedWord != null || meaning != null) {
+                val vocab = findVocabByToken(lesson, matchedWord ?: token)
+                val resolvedWord = matchedWord ?: vocab?.word ?: token.trim { !it.isLetterOrDigit() }
+                val resolvedMeaning = meaning
+                    ?: vocab?.comic?.meaning
+                    ?: vocab?.easyEnglish
+                    ?: vocab?.meaningKo
+                    ?: vocab?.simpleKo
+                    ?: return null
+                return resolvedWord to resolvedMeaning
+            }
+        }
+        return null
+    }
+
+    private fun styledTodayWords(value: String, lesson: Lesson, comic: VocabComic?): SpannableString {
+        val span = SpannableString(value)
+        applyTodayWordSpans(span, value, 0, value.length, lesson, comic)
+        return span
+    }
+
+    private fun applyTodayWordSpans(
+        span: SpannableString,
+        textValue: String,
+        baseStart: Int,
+        baseEnd: Int,
+        lesson: Lesson,
+        comic: VocabComic?
+    ) {
+        wordTokens(textValue).forEach { token ->
+            if (todayWordInfo(lesson, token.text, comic) == null) return@forEach
+            val start = baseStart + token.startChar
+            val end = min(baseStart + token.endChar, baseEnd)
+            if (start in 0 until end && end <= span.length) {
+                span.setSpan(ForegroundColorSpan(color(R.color.skin_primary_dark)), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                span.setSpan(BackgroundColorSpan(colorWithAlpha(color(R.color.skin_mark), 120)), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                span.setSpan(UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                span.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+    }
+
+    private fun loadComicBackgroundSheet(lesson: Lesson, comic: VocabComic): Bitmap? {
+        val assetId = comic.backgroundImageAssetId.ifBlank { return null }
+        val asset = lesson.imageAssets[assetId] ?: return null
+        return loadBitmapAsset("${lesson.basePath}/${asset.file}")
     }
 
     private fun showVocabTableStage(
@@ -645,6 +1187,11 @@ class MainActivity : Activity() {
                 setPadding(dp(12), 0, dp(10), 0)
             }
             meaningBox.addView(text(item.meaning, 16f, if (isCorrectAfterTest) color(R.color.skin_muted) else color(R.color.skin_primary_dark), Typeface.BOLD))
+            if (item.longMeaning.isNotBlank()) {
+                meaningBox.addView(text(item.longMeaning, 13f, color(R.color.skin_ink)).apply {
+                    setPadding(0, dp(4), 0, 0)
+                })
+            }
             if (item.note.isNotBlank()) {
                 meaningBox.addView(text(item.note, 13f, color(R.color.skin_muted)).apply {
                     setPadding(0, dp(3), 0, 0)
@@ -705,10 +1252,27 @@ class MainActivity : Activity() {
 
         if (reviewComplete) {
             val testTargets = wrongIds?.takeIf { it.isNotEmpty() }
-            page.addView(pill(if (testTargets == null) "테스트 보기" else "틀린 단어 다시 테스트 (${testTargets.size})").apply {
+            page.addView(pill(
+                when {
+                    masterSettings.vocabGameMode2Enabled -> "Find the Kitty"
+                    testTargets == null -> "테스트 보기"
+                    else -> "틀린 단어 다시 테스트 (${testTargets.size})"
+                }
+            ).apply {
                 textSize = 16f
                 background = rounded(color(R.color.skin_mark), dp(18), color(R.color.skin_primary), dp(1))
-                setOnClickListener { showVocabTestStage(lesson, testTargets) }
+                setOnClickListener {
+                    if (masterSettings.vocabGameMode2Enabled) {
+                        showFindKittyStage(lesson)
+                        return@setOnClickListener
+                    }
+                    val reflexGame = lesson.vocabReflexGame?.takeIf { it.allCards().isNotEmpty() }
+                    if (reflexGame != null) {
+                        showVocabReflexStage(lesson, reflexGame, testTargets)
+                    } else {
+                        showVocabTestStage(lesson, testTargets)
+                    }
+                }
             }, matchWrap())
         } else {
             handler.post {
@@ -717,7 +1281,7 @@ class MainActivity : Activity() {
                 }
             }
             val button = nextButton
-            speakVocabStudyItem(items[safeIndex]) {
+            playVocabStudyIntro(lesson, items[safeIndex]) {
                 button?.isEnabled = true
                 button?.alpha = 1f
             }
@@ -802,7 +1366,9 @@ class MainActivity : Activity() {
                 lesson.explanations.values.filter { it.targetType == "vocab" && it.targetId == vocab.id }
             }
             val explanationEnglish = explanations.mapNotNull { it.easyEnglish.takeIf { value -> value.isNotBlank() } }.firstOrNull().orEmpty()
+            val explanationEnglishLong = explanations.mapNotNull { it.easyEnglishLong.takeIf { value -> value.isNotBlank() } }.firstOrNull().orEmpty()
             val meaning = vocab.easyEnglish.ifBlank { explanationEnglish }.ifBlank { vocab.meaningKo }.ifBlank { "No definition yet." }
+            val longMeaning = vocab.easyEnglishLong.ifBlank { explanationEnglishLong }
             val note = vocab.meaningKo
                 .takeIf { it.isNotBlank() && it != meaning }
                 ?: vocab.simpleKo.takeIf { it.isNotBlank() }
@@ -811,8 +1377,10 @@ class MainActivity : Activity() {
                 id = vocab.id,
                 word = vocab.word,
                 meaning = meaning,
+                longMeaning = longMeaning,
                 note = note,
-                examples = (vocab.examples + explanations.flatMap { it.examples }).distinct()
+                examples = (vocab.examples + explanations.flatMap { it.examples }).distinct(),
+                comic = vocab.comic
             )
         }
     }
@@ -834,6 +1402,10 @@ class MainActivity : Activity() {
             append(item.word)
             append(". ")
             append(item.meaning)
+            if (item.longMeaning.isNotBlank()) {
+                append(". ")
+                append(item.longMeaning)
+            }
             if (!example.isNullOrBlank()) {
                 append(". Example. ")
                 append(example)
@@ -842,11 +1414,387 @@ class MainActivity : Activity() {
         speakPopupText(spoken, onDone)
     }
 
+    private fun comicExplanationText(item: VocabStudyItem, comic: VocabComic?): String {
+        val meaning = comic?.meaning?.ifBlank { item.meaning } ?: item.meaning
+        return buildString {
+            append(item.word)
+            append(". ")
+            append(meaning)
+            if (item.longMeaning.isNotBlank()) {
+                append(". ")
+                append(item.longMeaning)
+            }
+            item.examples.firstOrNull()?.takeIf { it.isNotBlank() }?.let { example ->
+                append(". Example. ")
+                append(example)
+            }
+        }
+    }
+
+    private fun playVocabStudyIntro(lesson: Lesson, item: VocabStudyItem, onDone: (() -> Unit)? = null) {
+        if (showVocabComicSequence(lesson, item) {
+                if (item.comic?.readDefinitionAfter == true) {
+                    speakVocabStudyItem(item, onDone)
+                } else {
+                    onDone?.invoke()
+                }
+            }
+        ) return
+        speakVocabStudyItem(item, onDone)
+    }
+
+    private fun showDataComicSequence(lesson: Lesson, item: VocabStudyItem, comic: VocabComic, onDone: () -> Unit): Boolean {
+        val panels = comic.panels
+        if (panels.isEmpty()) return false
+        val backgroundSheet = loadComicBackgroundSheet(lesson, comic)
+        var active = true
+        var step = 0
+
+        val overlay = FrameLayout(this).apply {
+            setBackgroundColor(0x99000000.toInt())
+            isClickable = true
+            isFocusable = true
+        }
+        val card = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(14), dp(14), dp(14), dp(12))
+            background = rounded(color(R.color.skin_surface), dp(20), color(R.color.skin_primary), dp(1))
+            elevation = dp(14).toFloat()
+        }
+        val title = text(item.word, 28f, color(R.color.skin_primary_dark), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+        }
+        val meaning = text(comic.meaning.ifBlank { item.meaning }, 15f, color(R.color.skin_muted), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+        }
+        val grid = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+        }
+        val panelViews = panels.mapIndexed { index, panel ->
+            DataComicPanelView(this).apply {
+                setPanel(panel, index, item.word)
+                setBackgroundSheet(backgroundSheet, comic.backgroundColumns, comic.backgroundRows)
+            }
+        }
+        panelViews.chunked(2).forEach { rowPanels ->
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+            }
+            rowPanels.forEachIndexed { indexInRow, view ->
+                row.addView(view, LinearLayout.LayoutParams(0, dp(250), 1f).withRightMargin(if (indexInRow == 0) dp(10) else 0))
+            }
+            grid.addView(row, matchWrap().withBottom(dp(10)))
+        }
+        val skip = pill("Skip").apply {
+            textSize = 13f
+        }
+
+        fun finish() {
+            if (!active) return
+            active = false
+            stopTts()
+            (overlay.parent as? ViewGroup)?.removeView(overlay)
+            onDone()
+        }
+
+        fun showStep(index: Int) {
+            if (!active) return
+            if (index >= panels.size) {
+                handler.postDelayed({ finish() }, 650L)
+                return
+            }
+            step = index
+            panelViews.forEachIndexed { panelIndex, view ->
+                view.setCurrent(panelIndex == step)
+            }
+            val caption = panels[index].caption.ifBlank { item.meaning }
+            speakComicText(caption, onDone = {
+                handler.postDelayed({ showStep(index + 1) }, 700L)
+            })
+        }
+
+        skip.setOnClickListener { finish() }
+        overlay.setOnClickListener { }
+        card.addView(title, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(38)))
+        card.addView(meaning, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(28)).withBottom(dp(8)))
+        card.addView(grid, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).withBottom(dp(4)))
+        card.addView(skip, fixed(dp(104), dp(40)).apply {
+            gravity = Gravity.CENTER_HORIZONTAL
+        })
+        overlay.addView(
+            card,
+            FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, min(dp(660), resources.displayMetrics.heightPixels - dp(100)), Gravity.CENTER).apply {
+                leftMargin = dp(14)
+                rightMargin = dp(14)
+            }
+        )
+        root.addView(overlay, matchFrame())
+        showStep(0)
+        return true
+    }
+
+    private fun showVocabComicSequence(lesson: Lesson, item: VocabStudyItem, onDone: () -> Unit): Boolean {
+        val comic = item.comic ?: return false
+        if (comic.panels.isNotEmpty()) {
+            return showDataComicSequence(lesson, item, comic, onDone)
+        }
+        val asset = lesson.imageAssets[comic.imageAssetId] ?: return false
+        val bitmap = loadBitmapAsset("${lesson.basePath}/${asset.file}") ?: return false
+        val panelCount = comic.panelCount.coerceAtLeast(1)
+        val narrations = comic.narrations.ifEmpty { List(panelCount) { item.meaning } }
+        val focusSteps = comic.focusSteps
+        var index = 0
+        var active = true
+        var waitToken = 0
+        var canTapAdvance = false
+        var pendingAdvance: (() -> Unit)? = null
+
+        val overlay = FrameLayout(this).apply {
+            setBackgroundColor(0x99000000.toInt())
+            isClickable = true
+            isFocusable = true
+        }
+        val card = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(18), dp(16), dp(18), dp(14))
+            background = rounded(color(R.color.skin_surface), dp(20), color(R.color.skin_primary), dp(1))
+            elevation = dp(14).toFloat()
+        }
+        val panelView = ComicPanelView(this).apply {
+            setComic(bitmap, panelCount, comic.layout)
+        }
+        val caption = text("", 18f, color(R.color.skin_ink), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+            setPadding(0, dp(10), 0, dp(4))
+        }
+        val progress = text("", 13f, color(R.color.skin_muted), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+        }
+        val feedback = text("", 15f, color(R.color.skin_primary_dark), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+            setPadding(0, dp(4), 0, dp(4))
+        }
+        val choiceBox = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER
+            visibility = View.GONE
+            setPadding(dp(28), 0, dp(28), 0)
+        }
+        val panelContainer = FrameLayout(this).apply {
+            isClickable = true
+            isFocusable = true
+        }
+        val choiceScrim = View(this).apply {
+            visibility = View.GONE
+            background = rounded(colorWithAlpha(color(R.color.skin_surface), 172), dp(18))
+        }
+        val skip = pill("건너뛰기").apply {
+            textSize = 13f
+        }
+
+        fun finish() {
+            if (!active) return
+            active = false
+            stopTts()
+            (overlay.parent as? ViewGroup)?.removeView(overlay)
+            bitmap.recycle()
+            onDone()
+        }
+
+        var showFocusStepRef: ((Int) -> Unit)? = null
+
+        fun tryTapAdvance() {
+            if (!active || !canTapAdvance) return
+            val action = pendingAdvance ?: return
+            waitToken++
+            canTapAdvance = false
+            pendingAdvance = null
+            feedback.text = ""
+            action()
+        }
+
+        fun scheduleAdvance(action: () -> Unit) {
+            waitToken++
+            val token = waitToken
+            canTapAdvance = false
+            pendingAdvance = action
+            handler.postDelayed({
+                if (active && token == waitToken) {
+                    canTapAdvance = false
+                    pendingAdvance = null
+                    feedback.text = ""
+                    action()
+                }
+            }, 700L)
+        }
+
+        fun setChoices(step: VocabComicFocusStep) {
+            choiceBox.removeAllViews()
+            feedback.text = ""
+            if (step.choices.isEmpty()) {
+                choiceBox.visibility = View.GONE
+                choiceScrim.visibility = View.GONE
+                return
+            }
+            choiceBox.visibility = View.VISIBLE
+            choiceScrim.visibility = View.VISIBLE
+            step.choices.forEachIndexed { optionIndex, option ->
+                val button = pill(option.text).apply {
+                    textSize = 16f
+                    background = rounded(colorWithAlpha(color(R.color.skin_surface), 232), dp(18), colorWithAlpha(color(R.color.skin_primary_dark), 95), dp(1))
+                    elevation = dp(8).toFloat()
+                    setOnClickListener {
+                        if (option.correct) {
+                            waitToken++
+                            val choiceToken = waitToken
+                            for (i in 0 until choiceBox.childCount) choiceBox.getChildAt(i).isEnabled = false
+                            val message = option.feedback.ifBlank { "That is a good idea!" }
+                            feedback.text = message
+                            panelView.setChoiceMark(true)
+                            val voiceDelay = playComicChoiceTone(correct = true)
+                            handler.postDelayed({
+                                if (!active || choiceToken != waitToken) return@postDelayed
+                                speakComicText(option.voiceText.ifBlank { message }, onDone = {
+                                    scheduleAdvance { showFocusStepRef?.invoke(index + 1) }
+                                })
+                            }, voiceDelay)
+                        } else {
+                            waitToken++
+                            val choiceToken = waitToken
+                            val message = option.feedback.ifBlank { "Uh-uh, think again." }
+                            feedback.text = message
+                            panelView.setChoiceMark(false)
+                            val voiceDelay = playComicChoiceTone(correct = false)
+                            handler.postDelayed({
+                                if (!active || choiceToken != waitToken) return@postDelayed
+                                speakComicText(option.voiceText.ifBlank { message })
+                            }, voiceDelay)
+                        }
+                    }
+                }
+                choiceBox.addView(button, LinearLayout.LayoutParams(0, dp(54), 1f).withRightMargin(if (optionIndex < step.choices.lastIndex) dp(12) else 0))
+            }
+        }
+
+        fun showFocusStep(nextIndex: Int) {
+            if (!active) return
+            if (nextIndex >= focusSteps.size) {
+                finish()
+                return
+            }
+            waitToken++
+            val token = waitToken
+            canTapAdvance = false
+            pendingAdvance = null
+            index = nextIndex
+            val step = focusSteps[index]
+            val narration = step.narration.ifBlank { item.meaning }
+            panelView.setPanel(step.panelIndex.coerceIn(0, panelCount - 1))
+            panelView.setFocusStep(step)
+            panelView.setChoiceMark(null)
+            caption.text = narration
+            progress.text = "${index + 1}/${focusSteps.size}"
+            setChoices(step)
+            handler.postDelayed({
+                if (!active || token != waitToken) return@postDelayed
+                speakComicText(narration, onDone = {
+                    if (step.choices.isEmpty()) {
+                        scheduleAdvance { showFocusStep(index + 1) }
+                    }
+                })
+            }, step.transitionMs.coerceAtLeast(850).toLong())
+        }
+
+        showFocusStepRef = { showFocusStep(it) }
+
+        fun showPanel(nextIndex: Int) {
+            if (!active) return
+            if (nextIndex >= panelCount) {
+                finish()
+                return
+            }
+            index = nextIndex
+            val narration = narrations.getOrNull(index).orEmpty().ifBlank { item.meaning }
+            panelView.setPanel(index)
+            panelView.setFocusStep(null)
+            panelView.setChoiceMark(null)
+            caption.text = narration
+            progress.text = "${index + 1}/$panelCount"
+            setChoices(
+                VocabComicFocusStep(
+                    id = "",
+                    panelIndex = index,
+                    narration = "",
+                    sourceBox = null,
+                    zoomScale = 1f,
+                    focusMode = "sparkle",
+                    dimAlpha = 0,
+                    transitionMs = 0,
+                    choices = emptyList()
+                )
+            )
+            speakComicText(narration, onDone = {
+                scheduleAdvance { showPanel(index + 1) }
+            })
+        }
+
+        overlay.setOnClickListener { tryTapAdvance() }
+        card.setOnClickListener { tryTapAdvance() }
+        panelView.setOnClickListener { tryTapAdvance() }
+        panelContainer.setOnClickListener { tryTapAdvance() }
+        skip.setOnClickListener { finish() }
+        panelContainer.addView(panelView, matchFrame())
+        panelContainer.addView(
+            choiceScrim,
+            FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(92), Gravity.BOTTOM).apply {
+                leftMargin = dp(18)
+                rightMargin = dp(18)
+                bottomMargin = dp(18)
+            }
+        )
+        panelContainer.addView(
+            choiceBox,
+            FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(70), Gravity.BOTTOM).apply {
+                leftMargin = dp(18)
+                rightMargin = dp(18)
+                bottomMargin = dp(28)
+            }
+        )
+        card.addView(text(item.word, 28f, color(R.color.skin_primary_dark), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(44)).withBottom(dp(8)))
+        card.addView(panelContainer, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(420)).withBottom(dp(8)))
+        card.addView(caption, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(64)))
+        card.addView(progress, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(24)).withBottom(dp(4)))
+        card.addView(feedback, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(44)).withBottom(dp(8)))
+        card.addView(skip, fixed(dp(128), dp(42)).apply {
+            gravity = Gravity.CENTER_HORIZONTAL
+        })
+        overlay.addView(
+            card,
+            FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, min(dp(650), resources.displayMetrics.heightPixels - dp(120)), Gravity.CENTER).apply {
+                leftMargin = dp(22)
+                rightMargin = dp(22)
+            }
+        )
+        root.addView(overlay, matchFrame())
+        if (focusSteps.isNotEmpty()) showFocusStep(0) else showPanel(0)
+        return true
+    }
+
     private fun showQuizStage(lesson: Lesson) {
         stopAllPlayback()
         currentLesson = lesson
         flatSentences = lesson.allSentences()
         masterSettings = activeMasterSettings(lesson.id)
+        if (masterSettings.vocabGameMode2Enabled) {
+            showFindKittyStage(lesson)
+            return
+        }
+        lesson.vocabReflexGame?.takeIf { it.allCards().isNotEmpty() }?.let { game ->
+            showVocabReflexStage(lesson, game)
+            return
+        }
         quizItems = buildQuizItems(lesson)
         quizIndex = 0
         if (quizItems.isEmpty()) {
@@ -854,6 +1802,734 @@ class MainActivity : Activity() {
             return
         }
         showQuizItem(lesson)
+    }
+
+    private fun showVocabReflexStage(
+        lesson: Lesson,
+        game: VocabReflexGame,
+        targetIds: Set<String>? = null
+    ) {
+        stopAllPlayback()
+        val activeTargets = targetIds ?: game.targetWords
+            .map { it.wordId }
+            .filterNot { isVocabReflexWordPassed(lesson.id, it) }
+            .toSet()
+        if (activeTargets.isEmpty()) {
+            showFirstListenStage(lesson)
+            return
+        }
+        val cards = game.playCardsFor(activeTargets)
+        if (cards.isEmpty()) {
+            showFirstListenStage(lesson)
+            return
+        }
+        showVocabReflexCard(lesson, game, cards, index = 0, results = mutableListOf())
+    }
+
+    private fun showVocabReflexCard(
+        lesson: Lesson,
+        game: VocabReflexGame,
+        cards: List<VocabReflexPlayCard>,
+        index: Int,
+        results: MutableList<VocabReflexResult>
+    ) {
+        val playCard = cards.getOrNull(index) ?: run {
+            finishVocabReflexRound(lesson, game, results)
+            return
+        }
+        val card = playCard.card
+        val options = card.options.take(2)
+        if (options.size != 2) {
+            handler.post { showVocabReflexCard(lesson, game, cards, index + 1, results) }
+            return
+        }
+        val startedAt = System.currentTimeMillis()
+        root.removeAllViews()
+        root.setBackgroundColor(color(R.color.skin_background))
+        val page = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(18), dp(20), dp(96))
+        }
+        root.addView(page, matchFrame())
+        addMasterButton()
+
+        val roundLabel = if (playCard.roundType == "echo") "Echo" else "Seed"
+        page.addView(flowHeader(lesson, "단어 카드", "$roundLabel ${index + 1}/${cards.size}"), matchWrap().withBottom(dp(12)))
+        page.addView(text("맞는 cue card를 빠르게 고르세요.", 15f, color(R.color.skin_muted), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+        }, matchWrap().withBottom(dp(8)))
+        page.addView(text(card.targetWord, 42f, color(R.color.skin_ink), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+            setPadding(0, dp(18), 0, dp(20))
+            background = rounded(color(R.color.skin_surface), dp(18), color(R.color.skin_line), dp(1))
+        }, matchWrap().withBottom(dp(16)))
+
+        val feedback = text("", 16f, color(R.color.skin_primary_dark), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+            minHeight = dp(62)
+        }
+        val optionRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER
+        }
+        val buttons = mutableListOf<TextView>()
+        options.forEach { option ->
+            val button = text(option.text, 24f, color(R.color.skin_ink), Typeface.BOLD).apply {
+                gravity = Gravity.CENTER
+                setPadding(dp(12), dp(22), dp(12), dp(22))
+                background = rounded(color(R.color.skin_surface), dp(20), color(R.color.skin_line), dp(1))
+                isClickable = true
+                isFocusable = true
+            }
+            buttons.add(button)
+            optionRow.addView(button, LinearLayout.LayoutParams(0, dp(178), 1f).withRightMargin(if (buttons.size == 1) dp(12) else 0))
+        }
+        page.addView(optionRow, matchWrap().withBottom(dp(14)))
+        page.addView(feedback, matchWrap().withBottom(dp(10)))
+        val bridge = text(card.readingBridge, 14f, color(R.color.skin_muted)).apply {
+            gravity = Gravity.CENTER
+            setPadding(dp(14), dp(10), dp(14), dp(10))
+            background = rounded(color(R.color.skin_surface_alt), dp(14))
+        }
+        page.addView(bridge, matchWrap())
+
+        buttons.forEachIndexed { optionIndex, button ->
+            val option = options[optionIndex]
+            button.setOnClickListener {
+                buttons.forEach { it.isEnabled = false; it.isClickable = false }
+                val reactionMs = (System.currentTimeMillis() - startedAt).toInt()
+                val correctOption = card.correctOption()
+                val correct = option.isCorrect
+                val status = vocabReflexStatus(correct, reactionMs, game.timing)
+                results.add(
+                    VocabReflexResult(
+                        cardId = card.id,
+                        targetWordId = card.targetWordId,
+                        targetWord = card.targetWord,
+                        chosenCue = option.text,
+                        correctCue = correctOption?.text.orEmpty(),
+                        reactionMs = reactionMs,
+                        status = status,
+                        cardType = card.cardType,
+                        errorTag = if (correct) "" else option.errorTag,
+                        feedbackWrong = card.feedbackWrong,
+                        readingBridge = card.readingBridge,
+                        correct = correct
+                    )
+                )
+                button.background = rounded(
+                    if (correct) 0xFFDFF1E7.toInt() else 0xFFF5DCDC.toInt(),
+                    dp(20),
+                    if (correct) 0xFF4A9E68.toInt() else 0xFFB75A5A.toInt(),
+                    dp(2)
+                )
+                buttons.forEachIndexed { idx, other ->
+                    if (options[idx].isCorrect) {
+                        other.background = rounded(0xFFDFF1E7.toInt(), dp(20), 0xFF4A9E68.toInt(), dp(2))
+                    }
+                }
+                feedback.text = buildString {
+                    append(if (correct) card.feedbackCorrect else card.feedbackWrong)
+                    append("\n")
+                    append("${reactionMs}ms · $status")
+                }
+                handler.postDelayed({
+                    showVocabReflexCard(lesson, game, cards, index + 1, results)
+                }, game.rules.moveNextDelayMs.toLong())
+            }
+        }
+        speakPopupText(card.targetWord)
+    }
+
+    private fun finishVocabReflexRound(
+        lesson: Lesson,
+        game: VocabReflexGame,
+        results: List<VocabReflexResult>
+    ) {
+        val grouped = results.groupBy { it.targetWordId }
+        val failedWordIds = mutableSetOf<String>()
+        game.targetWords.forEach { target ->
+            val wordResults = grouped[target.wordId].orEmpty()
+            if (wordResults.isEmpty()) return@forEach
+            val wrong = wordResults.count { !it.correct }
+            val averageMs = wordResults.map { it.reactionMs }.average().roundToInt()
+            val passed = wrong == 0 && averageMs <= game.timing.okayMsMax
+            saveVocabReflexWordStats(lesson.id, target.wordId, wordResults, passed)
+            if (passed) saveVocabKnown(lesson.id, target.wordId, true) else failedWordIds.add(target.wordId)
+        }
+        showVocabReflexSummary(lesson, game, results, failedWordIds)
+    }
+
+    private fun showVocabReflexSummary(
+        lesson: Lesson,
+        game: VocabReflexGame,
+        results: List<VocabReflexResult>,
+        failedWordIds: Set<String>
+    ) {
+        root.removeAllViews()
+        root.setBackgroundColor(color(R.color.skin_background))
+        val page = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(18), dp(20), dp(96))
+        }
+        root.addView(page, matchFrame())
+        addMasterButton()
+        val reviewItems = vocabReflexReviewItems(results, game)
+        page.addView(flowHeader(lesson, "단어 카드 결과", if (failedWordIds.isEmpty()) "통과" else "재도전 ${failedWordIds.size}개"), matchWrap().withBottom(dp(14)))
+        val average = results.map { it.reactionMs }.takeIf { it.isNotEmpty() }?.average()?.roundToInt() ?: 0
+        val wrong = results.count { !it.correct }
+        val slow = results.count { it.correct && it.reactionMs >= game.timing.slowMsMin }
+        page.addView(text("평균 ${average}ms · 틀림 ${wrong} · 느림 ${slow}", 22f, color(R.color.skin_ink), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+            setPadding(dp(18), dp(24), dp(18), dp(24))
+            background = rounded(color(R.color.skin_surface), dp(18), color(R.color.skin_line), dp(1))
+        }, matchWrap().withBottom(dp(14)))
+        val logText = game.targetWords.joinToString("\n") { target ->
+            val stats = loadVocabReflexWordStats(lesson.id, target.wordId)
+            "${target.word}: avg ${stats.averageMs}ms · wrong ${stats.wrong} · slow ${stats.slow} · ${if (stats.passed) "PASS" else "again"}"
+        }
+        page.addView(text(logText, 14f, color(R.color.skin_muted)).apply {
+            setPadding(dp(14), dp(12), dp(14), dp(12))
+            background = rounded(color(R.color.skin_surface_alt), dp(14))
+        }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).withBottom(dp(12)))
+        if (reviewItems.isNotEmpty()) {
+            page.addView(pill("느린/틀린 카드만 GPT 보이스 리뷰").apply {
+                textSize = 16f
+                background = rounded(color(R.color.skin_mark), dp(18), color(R.color.skin_primary), dp(1))
+                setOnClickListener { sendVocabReflexVoiceReview(lesson, reviewItems) }
+            }, matchWrap().withBottom(dp(10)))
+        }
+        if (failedWordIds.isEmpty()) {
+            page.addView(pill("본문으로").apply {
+                textSize = 16f
+                setOnClickListener { showFirstListenStage(lesson) }
+            }, matchWrap())
+        } else {
+            page.addView(pill("통과 못한 단어 다시").apply {
+                textSize = 16f
+                setOnClickListener { showVocabReflexStage(lesson, game, failedWordIds) }
+            }, matchWrap())
+        }
+    }
+
+    private fun vocabReflexStatus(correct: Boolean, reactionMs: Int, timing: VocabReflexTiming): String {
+        return when {
+            !correct -> "wrong"
+            reactionMs <= timing.fastMsMax -> "fast"
+            reactionMs <= timing.okayMsMax -> "okay"
+            else -> "slow"
+        }
+    }
+
+    private fun vocabReflexReviewItems(results: List<VocabReflexResult>, game: VocabReflexGame): List<VocabReflexResult> {
+        return results.filter { !it.correct || it.reactionMs >= game.timing.slowMsMin }
+    }
+
+    private fun sendVocabReflexVoiceReview(lesson: Lesson, reviewItems: List<VocabReflexResult>) {
+        if (reviewItems.isEmpty()) return
+        val items = JSONArray()
+        reviewItems.forEach { result ->
+            items.put(
+                JSONObject()
+                    .put("targetWordId", result.targetWordId)
+                    .put("targetWord", result.targetWord)
+                    .put("chosenCue", result.chosenCue)
+                    .put("correctCue", result.correctCue)
+                    .put("reactionMs", result.reactionMs)
+                    .put("status", if (result.correct) "slow" else "wrong")
+                    .put("cardType", result.cardType)
+                    .put("errorTag", result.errorTag)
+                    .put("feedbackWrong", result.feedbackWrong)
+                    .put("readingBridge", result.readingBridge)
+            )
+        }
+        val payload = JSONObject()
+            .put("mode", "vocab_reflex_voice_review")
+            .put("lessonId", lesson.id)
+            .put("items", items)
+        val prompt = """
+            You are a short voice review coach for a vocabulary reflex game.
+            Review only the wrong or slow items in this JSON.
+            Use Korean for explanation, but keep English words and cue words in English.
+            For each confusion, say the target word, the correct cue, why the chosen cue is not right, and one short bridge to the story.
+            After a few explanations, ask one quick A/B check.
+            Keep the review short.
+
+            ${payload.toString(2)}
+        """.trimIndent()
+        openChatGptWithPrompt(prompt, autoSend = true, voiceBeforePrompt = true, compactAfterSend = true)
+    }
+
+    private fun isVocabReflexWordPassed(lessonId: String, wordId: String): Boolean {
+        return getSharedPreferences("vocab_reflex_logs", MODE_PRIVATE)
+            .getBoolean("$lessonId|$wordId|passed", false)
+    }
+
+    private fun saveVocabReflexWordStats(
+        lessonId: String,
+        wordId: String,
+        results: List<VocabReflexResult>,
+        passed: Boolean
+    ) {
+        if (results.isEmpty()) return
+        val prefs = getSharedPreferences("vocab_reflex_logs", MODE_PRIVATE)
+        val prefix = "$lessonId|$wordId"
+        val attempts = prefs.getInt("$prefix|attempts", 0) + results.size
+        val totalMs = prefs.getLong("$prefix|totalMs", 0L) + results.sumOf { it.reactionMs.toLong() }
+        val wrong = prefs.getInt("$prefix|wrong", 0) + results.count { !it.correct }
+        val slow = prefs.getInt("$prefix|slow", 0) + results.count { it.correct && it.status == "slow" }
+        val lastAverage = results.map { it.reactionMs }.average().roundToInt()
+        val errorTags = results.filter { !it.correct && it.errorTag.isNotBlank() }
+            .groupingBy { it.errorTag }
+            .eachCount()
+            .entries
+            .sortedByDescending { it.value }
+            .joinToString(", ") { "${it.key}:${it.value}" }
+        prefs.edit()
+            .putInt("$prefix|attempts", attempts)
+            .putLong("$prefix|totalMs", totalMs)
+            .putInt("$prefix|wrong", wrong)
+            .putInt("$prefix|slow", slow)
+            .putInt("$prefix|lastAverageMs", lastAverage)
+            .putBoolean("$prefix|passed", passed)
+            .putString("$prefix|lastErrorTags", errorTags)
+            .apply()
+    }
+
+    private fun loadVocabReflexWordStats(lessonId: String, wordId: String): VocabReflexWordStats {
+        val prefs = getSharedPreferences("vocab_reflex_logs", MODE_PRIVATE)
+        val prefix = "$lessonId|$wordId"
+        val attempts = prefs.getInt("$prefix|attempts", 0)
+        val totalMs = prefs.getLong("$prefix|totalMs", 0L)
+        return VocabReflexWordStats(
+            attempts = attempts,
+            averageMs = if (attempts > 0) (totalMs / attempts).toInt() else 0,
+            lastAverageMs = prefs.getInt("$prefix|lastAverageMs", 0),
+            wrong = prefs.getInt("$prefix|wrong", 0),
+            slow = prefs.getInt("$prefix|slow", 0),
+            passed = prefs.getBoolean("$prefix|passed", false),
+            lastErrorTags = prefs.getString("$prefix|lastErrorTags", "") ?: ""
+        )
+    }
+
+    private fun VocabReflexGame.allCards(): List<VocabReflexCard> {
+        return sets.flatMap { it.cards }
+    }
+
+    private fun VocabReflexGame.playCardsFor(targetIds: Set<String>): List<VocabReflexPlayCard> {
+        return sets.flatMap { set ->
+            set.cards
+                .filter { it.targetWordId in targetIds }
+                .map { card -> VocabReflexPlayCard(set.id, set.roundType, card) }
+        }
+    }
+
+    private fun VocabReflexCard.correctOption(): VocabReflexOption? {
+        return options.firstOrNull { it.id == answerOptionId } ?: options.firstOrNull { it.isCorrect }
+    }
+
+    private fun showFindKittyStage(
+        lesson: Lesson,
+        deck: List<KittyWord> = findKittyWords(lesson).shuffled(),
+        round: Int = 0,
+        collected: List<KittyWord> = emptyList()
+    ) {
+        stopAllPlayback()
+        currentLesson = lesson
+        flatSentences = lesson.allSentences()
+        masterSettings = activeMasterSettings(lesson.id)
+
+        if (deck.isEmpty()) {
+            showFirstListenStage(lesson)
+            return
+        }
+        if (round >= deck.size) {
+            showFindKittyFinish(lesson, deck, collected)
+            return
+        }
+
+        val target = deck[round]
+        val options = (listOf(target) + deck.filter { it.id != target.id }.shuffled().take(3)).shuffled()
+        val cardButtons = mutableMapOf<String, View>()
+        var solved = false
+
+        root.removeAllViews()
+        root.background = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(0xFFFFFFFF.toInt(), 0xFFFDF6EC.toInt(), 0xFFFCE8D8.toInt())
+        )
+
+        val page = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(dp(18), dp(16), dp(18), dp(96))
+        }
+        root.addView(page, matchFrame())
+        addMasterButton()
+
+        val header = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.BOTTOM
+        }
+        header.addView(text("Find the Kitty 🐱", 28f, 0xFFEA6A22.toInt(), Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        header.addView(text("June 10th", 13f, 0xFFD98942.toInt(), Typeface.BOLD).apply {
+            gravity = Gravity.RIGHT or Gravity.BOTTOM
+        }, fixed(dp(90), dp(42)))
+        page.addView(header, matchWrap().withBottom(dp(6)))
+
+        page.addView(progressStrip(round, deck.size), matchWrap().withBottom(dp(14)))
+        page.addView(text(target.prompt, 21f, color(R.color.skin_ink), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+            setPadding(dp(16), dp(12), dp(16), dp(12))
+            background = rounded(color(R.color.skin_surface), dp(24), 0xFFFFE0BE.toInt(), dp(1))
+        }, matchWrap().withBottom(dp(14)))
+
+        val grid = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+        }
+        val sceneHeight = min(dp(190), max(dp(142), (resources.displayMetrics.widthPixels - dp(58)) / 2))
+        options.chunked(2).forEach { rowWords ->
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+            }
+            rowWords.forEachIndexed { indexInRow, word ->
+                val card = kittySceneCard(word).apply {
+                    setOnClickListener {
+                        if (solved) return@setOnClickListener
+                        val correct = word.id == target.id
+                        animate().scaleX(0.96f).scaleY(0.96f).setDuration(70L).withEndAction {
+                            animate().scaleX(1f).scaleY(1f).setDuration(90L).start()
+                        }.start()
+                        if (correct) {
+                            solved = true
+                            cardButtons.values.forEach { it.isEnabled = false; it.isClickable = false }
+                            cardButtons[target.id]?.let { setKittySceneCardState(it, target, "correct") }
+                            saveVocabKnown(lesson.id, target.id, true)
+                            showFindKittyFeedback(
+                                page = page,
+                                correct = true,
+                                target = target,
+                                picked = word,
+                                onNext = {
+                                    val nextCollected = if (collected.any { it.id == target.id }) collected else collected + target
+                                    showFindKittyStage(lesson, deck, round + 1, nextCollected)
+                                }
+                            )
+                            speakPopupText("Meow! You found it. ${target.word}. ${target.def}.")
+                        } else {
+                            setKittySceneCardState(this, word, "wrong")
+                            showFindKittyFeedback(page, correct = false, target = target, picked = word, onNext = {})
+                            speakPopupText("That one is ${word.word}. ${word.def}. Look again.")
+                        }
+                    }
+                }
+                cardButtons[word.id] = card
+                row.addView(card, LinearLayout.LayoutParams(0, sceneHeight, 1f).withRightMargin(if (indexInRow == 0) dp(10) else 0))
+            }
+            grid.addView(row, matchWrap().withBottom(dp(10)))
+        }
+        page.addView(grid, matchWrap())
+
+        val feedbackSlot = FrameLayout(this).apply {
+            tag = "kittyFeedback"
+            minimumHeight = dp(116)
+        }
+        page.addView(feedbackSlot, matchWrap().withBottom(dp(8)))
+
+        if (collected.isNotEmpty()) {
+            page.addView(findKittyCollectedShelf(collected), matchWrap())
+        }
+
+        speakPopupText(target.prompt)
+    }
+
+    private fun showFindKittyFeedback(
+        page: LinearLayout,
+        correct: Boolean,
+        target: KittyWord,
+        picked: KittyWord,
+        onNext: () -> Unit
+    ) {
+        val slot = findTaggedChild<FrameLayout>(page, "kittyFeedback") ?: return
+        slot.removeAllViews()
+        val box = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            setPadding(dp(16), dp(12), dp(16), dp(12))
+            background = rounded(
+                if (correct) 0xFFEAF8F0.toInt() else 0xFFFFF4DF.toInt(),
+                dp(24),
+                if (correct) 0xFFAADDC0.toInt() else 0xFFFFCF8A.toInt(),
+                dp(1)
+            )
+        }
+        if (correct) {
+            box.addView(text("Meow! You found it!", 19f, 0xFF28965A.toInt(), Typeface.BOLD).apply {
+                gravity = Gravity.CENTER
+            }, matchWrap())
+            box.addView(text("${target.word} (${target.pos}) = ${target.def}", 15f, color(R.color.skin_ink)).apply {
+                gravity = Gravity.CENTER
+            }, matchWrap().withTop(dp(2)))
+            box.addView(pill("Next kitty →").apply {
+                textSize = 16f
+                background = rounded(0xFF35A864.toInt(), dp(20))
+                setTextColor(0xFFFFFFFF.toInt())
+                setOnClickListener { onNext() }
+            }, fixed(dp(168), dp(44)).withTop(dp(8)))
+        } else {
+            box.addView(text("That one is ${picked.word}.", 17f, 0xFF9A6A16.toInt(), Typeface.BOLD).apply {
+                gravity = Gravity.CENTER
+            }, matchWrap())
+            box.addView(text(picked.def, 15f, color(R.color.skin_muted)).apply {
+                gravity = Gravity.CENTER
+            }, matchWrap().withTop(dp(2)))
+            box.addView(text("Look again.", 16f, 0xFFB57918.toInt(), Typeface.BOLD).apply {
+                gravity = Gravity.CENTER
+            }, matchWrap().withTop(dp(4)))
+        }
+        slot.addView(box, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+    }
+
+    private fun showFindKittyFinish(lesson: Lesson, deck: List<KittyWord>, collected: List<KittyWord>) {
+        stopAllPlayback()
+        root.removeAllViews()
+        root.background = GradientDrawable(
+            GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(0xFFFFFFFF.toInt(), 0xFFFDF6EC.toInt(), 0xFFFCE8D8.toInt())
+        )
+
+        val page = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            setPadding(dp(20), dp(22), dp(20), dp(96))
+        }
+        root.addView(page, matchFrame())
+        addMasterButton()
+        page.addView(text("🎉🐱🎉", 54f, 0xFFEA6A22.toInt(), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+        }, matchWrap().withBottom(dp(4)))
+        page.addView(text("You found all the kitties!", 25f, 0xFFEA6A22.toInt(), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+        }, matchWrap().withBottom(dp(4)))
+        page.addView(text("${deck.size} word cards collected", 15f, 0xFFD98942.toInt(), Typeface.BOLD).apply {
+            gravity = Gravity.CENTER
+        }, matchWrap().withBottom(dp(16)))
+
+        val scroll = ScrollView(this)
+        val list = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        deck.forEach { word ->
+            list.addView(text("${word.word}\n${word.def}", 16f, color(R.color.skin_ink), Typeface.BOLD).apply {
+                setPadding(dp(14), dp(10), dp(14), dp(10))
+                background = rounded(color(R.color.skin_surface), dp(16), 0xFFFFE0BE.toInt(), dp(1))
+            }, matchWrap().withBottom(dp(8)))
+        }
+        scroll.addView(list, matchWrap())
+        page.addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).withBottom(dp(12)))
+
+        val actions = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+        }
+        actions.addView(pill("Play again").apply {
+            textSize = 16f
+            setOnClickListener { showFindKittyStage(lesson) }
+        }, LinearLayout.LayoutParams(0, dp(48), 1f).withRightMargin(dp(10)))
+        actions.addView(pill(if (lesson.vocabReflexGame?.allCards()?.isNotEmpty() == true) "2카드로" else "본문으로").apply {
+            textSize = 16f
+            background = rounded(color(R.color.skin_mark), dp(18), color(R.color.skin_primary), dp(1))
+            setOnClickListener { showAfterComicQuizStage(lesson) }
+        }, LinearLayout.LayoutParams(0, dp(48), 1f))
+        page.addView(actions, matchWrap())
+        speakPopupText("You found all the kitties.")
+    }
+
+    private fun progressStrip(done: Int, total: Int): View {
+        val bar = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            background = rounded(0xFFFFE0BE.toInt(), dp(8))
+            clipToOutline = false
+        }
+        val completed = done.coerceIn(0, total)
+        if (completed > 0) {
+            bar.addView(View(this).apply {
+                background = rounded(0xFFF59A32.toInt(), dp(8))
+            }, LinearLayout.LayoutParams(0, dp(10), completed.toFloat()))
+        }
+        val remaining = (total - completed).coerceAtLeast(1)
+        bar.addView(View(this), LinearLayout.LayoutParams(0, dp(10), remaining.toFloat()))
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        row.addView(bar, LinearLayout.LayoutParams(0, dp(10), 1f).withRightMargin(dp(8)))
+        row.addView(text("$completed/$total", 12f, 0xFFD98942.toInt(), Typeface.BOLD), fixed(dp(48), dp(24)))
+        return row
+    }
+
+    private fun kittySceneCard(word: KittyWord): FrameLayout {
+        return FrameLayout(this).apply {
+            setPadding(dp(4), dp(4), dp(4), dp(4))
+            isClickable = true
+            isFocusable = true
+            word.cardPanel?.let { panel ->
+                addView(DataComicPanelView(this@MainActivity).apply {
+                    setPanel(panel, 0, word.word)
+                    setCurrent(false)
+                    setShowPanelNumber(false)
+                }, matchFrame())
+            } ?: addView(text(kittySceneText(word.sceneId, "idle"), 34f, color(R.color.skin_ink), Typeface.BOLD).apply {
+                gravity = Gravity.CENTER
+                setPadding(dp(8), dp(8), dp(8), dp(8))
+                includeFontPadding = false
+            }, matchFrame())
+            setKittySceneCardState(this, word, "idle")
+        }
+    }
+
+    private fun setKittySceneCardState(card: View, word: KittyWord, state: String) {
+        val stroke = when (state) {
+            "correct" -> 0xFF3DA868.toInt()
+            "wrong" -> 0xFFE07A7A.toInt()
+            else -> 0xFFFFE0BE.toInt()
+        }
+        val strokeWidth = if (state == "idle") dp(2) else dp(4)
+        val fill = if (word.cardPanel != null) 0xFFFFFBF4.toInt() else kittySceneColor(word.sceneId)
+        card.background = rounded(fill, dp(24), stroke, strokeWidth)
+        if (card is ViewGroup) {
+            val mood = when (state) {
+                "correct" -> "happy"
+                "wrong" -> "sad"
+                else -> "idle"
+            }
+            for (index in 0 until card.childCount) {
+                when (val child = card.getChildAt(index)) {
+                    is TextView -> child.text = kittySceneText(word.sceneId, mood)
+                    is DataComicPanelView -> child.setCurrent(state == "correct")
+                }
+            }
+        }
+    }
+
+    private fun kittySceneText(sceneId: String, mood: String): String {
+        val cat = when (mood) {
+            "happy" -> "😺"
+            "sad" -> "🙀"
+            else -> "🐱"
+        }
+        return when (sceneId) {
+            "freezing" -> "❄️     ❄️\n$cat\n🧊"
+            "enclosed" -> "📦\n$cat"
+            "active" -> "💨  $cat  🧶"
+            "volcano" -> "🌋  $cat"
+            "identity" -> "🎭\n$cat   ❓"
+            "destination" -> "$cat  · · ·  🚩🏠"
+            "wildlife" -> "🦉    🌳\n🌲  $cat  🦊"
+            "approach" -> "$cat  ➡️  🐦"
+            else -> cat
+        }
+    }
+
+    private fun kittySceneColor(sceneId: String): Int {
+        return when (sceneId) {
+            "freezing" -> 0xFFE8F2FF.toInt()
+            "enclosed" -> 0xFFFEF2D6.toInt()
+            "active" -> 0xFFFFF0DB.toInt()
+            "volcano" -> 0xFFFEE3E3.toInt()
+            "identity" -> 0xFFF1ECFF.toInt()
+            "destination" -> 0xFFE6FAEF.toInt()
+            "wildlife" -> 0xFFE8F8E8.toInt()
+            "approach" -> 0xFFFFF6D8.toInt()
+            else -> color(R.color.skin_surface)
+        }
+    }
+
+    private fun findKittyCollectedShelf(collected: List<KittyWord>): View {
+        val box = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+        }
+        box.addView(text("My word cards", 12f, 0xFFD98942.toInt(), Typeface.BOLD), matchWrap().withBottom(dp(4)))
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+        }
+        collected.take(4).forEach { word ->
+            row.addView(text(word.word, 13f, 0xFFB85F18.toInt(), Typeface.BOLD).apply {
+                gravity = Gravity.CENTER
+                setPadding(dp(8), 0, dp(8), 0)
+                background = rounded(0xFFFFE7C6.toInt(), dp(14))
+            }, LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dp(30)).withRightMargin(dp(6)))
+        }
+        if (collected.size > 4) {
+            row.addView(text("+${collected.size - 4}", 13f, 0xFFB85F18.toInt(), Typeface.BOLD).apply {
+                gravity = Gravity.CENTER
+            }, fixed(dp(42), dp(30)))
+        }
+        box.addView(row, matchWrap())
+        return box
+    }
+
+    private fun findKittyWords(lesson: Lesson): List<KittyWord> {
+        val studyItems = vocabStudyItems(lesson)
+        if (studyItems.size >= 4) {
+            return studyItems.mapIndexed { index, item ->
+                val vocab = lesson.vocabulary[item.id]
+                val definition = vocab?.comic?.meaning
+                    ?.ifBlank { item.meaning }
+                    ?: item.meaning
+                KittyWord(
+                    id = item.id,
+                    word = item.word,
+                    pos = vocab?.partOfSpeech?.ifBlank { "word" } ?: "word",
+                    def = definition.ifBlank { item.longMeaning }.ifBlank { "No definition yet." },
+                    prompt = "Find the ${item.word.uppercase(Locale.US)} kitty!",
+                    sceneId = kittySceneForWord(item.word, index),
+                    cardPanel = vocab?.quizPanel
+                        ?: vocab?.comic?.panels?.firstOrNull()?.copy(caption = "", bubble = null)
+                )
+            }
+        }
+        val vocabByWord = lesson.vocabulary.values.associateBy { normalizeKittyKey(it.word) }
+        return defaultKittyWords().map { base ->
+            val vocab = vocabByWord[base.id] ?: return@map base
+            val definition = vocab.easyEnglish
+                .ifBlank { lesson.explanations[vocab.explanationIds.firstOrNull().orEmpty()]?.easyEnglish.orEmpty() }
+                .ifBlank { base.def }
+            base.copy(
+                pos = vocab.partOfSpeech.ifBlank { base.pos },
+                def = definition
+            )
+        }
+    }
+
+    private fun kittySceneForWord(word: String, index: Int): String {
+        val key = normalizeKittyKey(word)
+        val known = defaultKittyWords().firstOrNull { it.id == key }?.sceneId
+        if (known != null) return known
+        val scenes = listOf("freezing", "enclosed", "active", "volcano", "identity", "destination", "wildlife", "approach")
+        return scenes[index % scenes.size]
+    }
+
+    private fun defaultKittyWords(): List<KittyWord> {
+        return listOf(
+            KittyWord("freezing", "freezing", "adjective", "being very cold", "Find the FREEZING kitty!", "freezing", null),
+            KittyWord("enclosed", "enclosed", "adjective", "being inside something", "Find the ENCLOSED kitty!", "enclosed", null),
+            KittyWord("active", "active", "adjective", "being full of action", "Find the ACTIVE kitty!", "active", null),
+            KittyWord("volcano", "volcano", "noun", "a mountain that shoots out lava", "Find the kitty by the VOLCANO!", "volcano", null),
+            KittyWord("identity", "identity", "noun", "who someone really is", "Find the kitty hiding its IDENTITY!", "identity", null),
+            KittyWord("destination", "destination", "noun", "the place you are going to", "Find the kitty's DESTINATION!", "destination", null),
+            KittyWord("wildlife", "wildlife", "noun", "animals that live in nature", "Find the WILDLIFE!", "wildlife", null),
+            KittyWord("approach", "approach", "verb", "to get closer to something", "Which kitty will APPROACH the bird?", "approach", null)
+        )
+    }
+
+    private fun normalizeKittyKey(value: String): String {
+        return value.lowercase(Locale.US).replace(Regex("[^a-z0-9]+"), "_").trim('_')
+    }
+
+    private inline fun <reified T : View> findTaggedChild(parent: ViewGroup, tagValue: String): T? {
+        for (i in 0 until parent.childCount) {
+            val child = parent.getChildAt(i)
+            if (child.tag == tagValue && child is T) return child
+        }
+        return null
     }
 
     private fun showQuizItem(lesson: Lesson) {
@@ -944,89 +2620,95 @@ class MainActivity : Activity() {
     }
 
     private fun saveVocabKnown(lessonId: String, vocabId: String, known: Boolean) {
-        getSharedPreferences("vocab_known", MODE_PRIVATE).edit()
-            .putBoolean("$lessonId|$vocabId", known)
-            .apply()
+        settingsStore.saveVocabKnown(lessonId, vocabId, known)
     }
 
     private fun showManualChunkMode(lesson: Lesson, sentenceIndex: Int) {
-        stopAllPlayback()
-        releasePlayer()
-        currentLesson = lesson
         flatSentences = lesson.allSentences()
-        masterSettings = activeMasterSettings(lesson.id)
-        firstListenMode = false
         val practiceIndices = manualPracticeSentenceIndices(lesson)
         if (practiceIndices.isEmpty()) {
             showSpeakListenStage(lesson, pass = 2, sentenceIndex = 0)
             return
         }
         val practicePosition = sentenceIndex.coerceIn(0, practiceIndices.lastIndex)
-        manualSentenceIndex = practiceIndices[practicePosition]
-        val sentence = flatSentences.getOrNull(manualSentenceIndex)?.sentence ?: run {
+        startManualChunkActivity(lesson, practiceIndices[practicePosition])
+    }
+
+    private fun startManualChunkActivity(lesson: Lesson, startSentenceIndex: Int? = null) {
+        if (startManualBodyModeInCurrentReader(lesson, startSentenceIndex, scrollToTarget = startSentenceIndex != null)) return
+        showReader(lesson)
+        readerScroll?.post { startManualBodyModeInCurrentReader(lesson, startSentenceIndex, scrollToTarget = startSentenceIndex != null) }
+    }
+
+    private fun startManualBodyModeInCurrentReader(lesson: Lesson, startSentenceIndex: Int? = null, scrollToTarget: Boolean = false): Boolean {
+        if (currentLesson?.id != lesson.id || paragraphBindings.isEmpty() || readerScroll == null) return false
+        if (flatSentences.isEmpty()) flatSentences = lesson.allSentences()
+        val practiceIndices = manualPracticeSentenceIndices(lesson)
+        if (practiceIndices.isEmpty()) {
             showSpeakListenStage(lesson, pass = 2, sentenceIndex = 0)
-            return
+            return true
         }
-        val tokens = wordTokens(sentence.text)
-        saveManualChunks(lesson.id, sentence.id, sentence.text, tokens, emptyList())
-        root.removeAllViews()
-        root.setBackgroundColor(color(R.color.skin_background))
-        val page = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(20), dp(18), dp(20), dp(96))
+        val requested = startSentenceIndex?.takeIf { it in practiceIndices }
+        val targetSentenceIndex = requested ?: practiceIndices.first()
+
+        stopAllPlayback()
+        manualBodyMode = true
+        clearManualBodyDraft()
+        activeMode = "sentence"
+        useTts = true
+        manualSentenceIndex = targetSentenceIndex
+        selectedSentenceIndex = targetSentenceIndex
+        currentSentenceIndex = targetSentenceIndex
+        currentChunkId = null
+        explicitSegmentEndMs = null
+        explicitSegmentNextStartMs = null
+        pendingStartMs = flatSentences.getOrNull(targetSentenceIndex)?.sentence?.startMs
+
+        readerScroll?.setOnTouchListener(null)
+        paragraphBindings.forEach { binding ->
+            binding.textView.setOnTouchListener(paragraphGesture(binding))
         }
-        root.addView(page, matchFrame())
-        addMasterButton()
-        page.addView(flowHeader(lesson, "직접 청크", "${practicePosition + 1}/${practiceIndices.size}"), matchWrap().withBottom(dp(12)))
-        page.addView(text("단어 수가 긴 5문장만 골랐어요. 버블을 끌어 단어 묶음을 만들면 TTS가 청크마다 끊어서 읽어줍니다.", 15f, color(R.color.skin_muted)).apply {
-            setPadding(0, 0, 0, dp(10))
+        installManualBodyControls(lesson)
+        refreshAllParagraphs()
+        if (scrollToTarget) scrollToSentence(targetSentenceIndex)
+        return true
+    }
+
+    private fun installManualBodyControls(lesson: Lesson) {
+        val host = readerActionHost ?: return
+        val practiceIndices = manualPracticeSentenceIndices(lesson)
+        val practicePosition = practiceIndices.indexOf(manualSentenceIndex).takeIf { it >= 0 } ?: 0
+        host.removeAllViews()
+        host.addView(text("청크 활동 ${practicePosition + 1}/${practiceIndices.size}. 진한 문장에서 바로 드래그해 청크를 나눠요.", 14f, color(R.color.skin_muted)).apply {
+            setPadding(dp(2), 0, dp(2), dp(8))
         }, matchWrap())
+        host.addView(manualBodyControls(lesson), matchWrap())
+    }
 
-        manualChunkView = ManualChunkView(this).apply manualView@ {
-            setSentence(sentence.text, tokens, emptyList())
-            onChanged = { chunks -> saveManualChunks(lesson.id, sentence.id, sentence.text, tokens, chunks) }
-            var completed = false
-            onCompleted = { chunks ->
-                if (!completed) {
-                completed = true
-                this@manualView.isEnabled = false
-                saveManualChunks(lesson.id, sentence.id, sentence.text, tokens, chunks)
-                speakManualChunks(sentence.text, tokens, chunks) {
-                    if (practicePosition == practiceIndices.lastIndex) {
-                        showSpeakListenStage(lesson, pass = 2, sentenceIndex = 0)
-                    } else {
-                        showManualChunkMode(lesson, practicePosition + 1)
-                    }
-                }
-                toast("청크 저장 완료")
-                }
-            }
+    private fun installReaderControls(lesson: Lesson) {
+        val host = readerActionHost ?: return
+        host.removeAllViews()
+        host.addView(controls(), matchWrap().withBottom(dp(8)))
+        if (masterSettings.manualChunkEnabled) {
+            host.addView(flowNextPanel(lesson), matchWrap())
         }
-        page.addView(manualChunkView, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).withBottom(dp(12)))
+    }
 
-        val row = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
+    private fun exitManualBodyModeInCurrentReader(lesson: Lesson) {
+        stopAllPlayback()
+        manualBodyMode = false
+        clearManualBodyDraft()
+        activeMode = "natural"
+        useTts = shouldUseTtsForMode(activeMode, lesson)
+        currentChunkId = null
+        readerScroll?.setOnTouchListener(null)
+        paragraphBindings.forEach { binding ->
+            binding.textView.setOnTouchListener(paragraphGesture(binding))
         }
-        row.addView(pill("초기화").apply {
-            setOnClickListener {
-                manualChunkView?.clearChunks()
-                saveManualChunks(lesson.id, sentence.id, sentence.text, tokens, emptyList())
-            }
-        }, LinearLayout.LayoutParams(0, dp(50), 1f).withRightMargin(dp(8)))
-        row.addView(pill("청크 듣기").apply {
-            setOnClickListener {
-                val chunks = manualChunkView?.currentChunks().orEmpty()
-                if (chunks.isEmpty()) toast("청크를 먼저 만들어 주세요.") else speakManualChunks(sentence.text, tokens, chunks)
-            }
-        }, LinearLayout.LayoutParams(0, dp(50), 1f).withRightMargin(dp(8)))
-        row.addView(pill(if (practicePosition == practiceIndices.lastIndex) "본문으로" else "다음 문장").apply {
-            background = rounded(color(R.color.skin_mark), dp(18), color(R.color.skin_primary), dp(1))
-            setOnClickListener {
-                if (practicePosition == practiceIndices.lastIndex) showSpeakListenStage(lesson, pass = 2, sentenceIndex = 0) else showManualChunkMode(lesson, practicePosition + 1)
-            }
-        }, LinearLayout.LayoutParams(0, dp(50), 1f))
-        page.addView(row, matchWrap())
+        installReaderControls(lesson)
+        refreshAllParagraphs()
+        refreshMode()
+        updatePlayIcon()
     }
 
     private fun manualPracticeSentenceIndices(lesson: Lesson): List<Int> {
@@ -1035,31 +2717,26 @@ class MainActivity : Activity() {
             it.sentence.text.trim().equals(lesson.title.trim(), ignoreCase = true)
         }
         val startIndex = if (titleIndex >= 0) titleIndex + 1 else 0
-        val candidates = flatSentences.mapIndexedNotNull { index, ref ->
+        val explicitOn = flatSentences.mapIndexedNotNull { index, ref ->
             if (index < startIndex) return@mapIndexedNotNull null
+            if (ref.sentence.chunkActivity == "on") index else null
+        }
+        val autoCandidates = flatSentences.mapIndexedNotNull { index, ref ->
+            if (index < startIndex) return@mapIndexedNotNull null
+            if (ref.sentence.chunkActivity != "auto") return@mapIndexedNotNull null
             val value = ref.sentence.text.trim()
             val wordCount = wordTokens(value).size
             val isHeading = value.isNotBlank() && value.all { !it.isLetter() || it.isUpperCase() }
             if (wordCount < 5 || isHeading) null else index to wordCount
         }
-        return candidates
+        if (explicitOn.isEmpty() && autoCandidates.isEmpty()) return emptyList()
+        val fillCount = max(0, 5 - explicitOn.size)
+        val fill = autoCandidates
             .sortedWith(compareByDescending<Pair<Int, Int>> { it.second }.thenBy { it.first })
-            .take(5)
+            .filterNot { it.first in explicitOn }
+            .take(fillCount)
             .map { it.first }
-            .sorted()
-            .ifEmpty { flatSentences.indices.take(min(5, flatSentences.size)).toList() }
-    }
-
-    private fun wordTokens(value: String): List<WordToken> {
-        return Regex("\\S+").findAll(value).map { match ->
-            WordToken(match.value, match.range.first, match.range.last + 1)
-        }.toList()
-    }
-
-    private fun chunkText(sentenceText: String, tokens: List<WordToken>, chunk: ManualChunk): String {
-        val start = tokens.getOrNull(chunk.startWord)?.startChar ?: return ""
-        val end = tokens.getOrNull(chunk.endWord)?.endChar ?: return ""
-        return sentenceText.substring(start, end)
+        return (explicitOn + fill).distinct().sorted()
     }
 
     private fun speakManualChunks(sentenceText: String, tokens: List<WordToken>, chunks: List<ManualChunk>, onDone: (() -> Unit)? = null) {
@@ -1107,11 +2784,21 @@ class MainActivity : Activity() {
         currentLesson = lesson
         flatSentences = lesson.allSentences()
         masterSettings = activeMasterSettings(lesson.id)
+        val manualPracticeIndices = if (manualMode) manualPracticeSentenceIndices(lesson) else emptyList()
+        if (manualMode && manualPracticeIndices.isEmpty()) {
+            showSpeakListenStage(lesson, pass = 2, sentenceIndex = 0)
+            return
+        }
         manualBodyMode = manualMode
-        firstListenMode = false
+        clearManualBodyDraft()
         activeMode = if (manualBodyMode) "sentence" else "natural"
         useTts = manualBodyMode || shouldUseTtsForMode(activeMode, lesson)
-        selectedSentenceIndex = startSentenceIndex.coerceIn(0, max(0, flatSentences.lastIndex))
+        val requestedSentenceIndex = startSentenceIndex.coerceIn(0, max(0, flatSentences.lastIndex))
+        val initialSentenceIndex = when {
+            manualBodyMode -> if (requestedSentenceIndex in manualPracticeIndices) requestedSentenceIndex else manualPracticeIndices.first()
+            else -> requestedSentenceIndex
+        }
+        selectedSentenceIndex = initialSentenceIndex
         currentSentenceIndex = selectedSentenceIndex
         manualSentenceIndex = selectedSentenceIndex
         currentChunkId = null
@@ -1134,13 +2821,13 @@ class MainActivity : Activity() {
 
         page.addView(topBar(lesson), matchWrap().withBottom(dp(10)))
         page.addView(unknownMarkBar(), matchWrap().withBottom(dp(10)))
+        page.addView(modeBar(lesson), matchWrap().withBottom(dp(10)))
+        page.addView(progressBar(), matchWrap().withBottom(dp(10)))
         if (manualBodyMode) {
-            page.addView(text("큰 본문에서 청크의 마지막 단어를 탭하세요. 저장된 청크는 바로 본문 위에 표시됩니다.", 15f, color(R.color.skin_muted)).apply {
+            val practicePosition = manualPracticeIndices.indexOf(manualSentenceIndex).takeIf { it >= 0 } ?: 0
+            page.addView(text("청크 활동 ${practicePosition + 1}/${manualPracticeIndices.size}. 진한 문장에서 청크의 마지막 단어를 탭하세요.", 15f, color(R.color.skin_muted)).apply {
                 setPadding(0, 0, 0, dp(8))
             }, matchWrap())
-        } else {
-            page.addView(modeBar(lesson), matchWrap().withBottom(dp(10)))
-            page.addView(progressBar(), matchWrap().withBottom(dp(10)))
         }
 
         val scroll = ScrollView(this).apply {
@@ -1155,14 +2842,21 @@ class MainActivity : Activity() {
         scroll.addView(paper, matchWrap())
         buildParagraphs(paper, lesson)
         page.addView(scroll, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).withBottom(dp(10)))
-        page.addView(if (manualBodyMode) manualBodyControls(lesson) else controls(), matchWrap().withBottom(dp(8)))
-        if (masterSettings.manualChunkEnabled && !manualBodyMode) {
-            page.addView(flowNextPanel(lesson), matchWrap())
+        val actionHost = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
         }
+        readerActionHost = actionHost
+        page.addView(actionHost, matchWrap())
+        when {
+            manualBodyMode -> installManualBodyControls(lesson)
+            else -> installReaderControls(lesson)
+        }
+        seekBar?.max = max(1, editableDurationMs())
 
         if (!manualBodyMode && lessonHasAudio(lesson)) preparePlayer(lesson) else handler.post(tick)
         refreshAllParagraphs()
         refreshMode()
+        if (manualBodyMode) scrollToSentence(manualSentenceIndex)
     }
 
     private fun topBar(lesson: Lesson): View {
@@ -1322,13 +3016,13 @@ class MainActivity : Activity() {
             val paragraphText = builder.toString()
             val tv = WavyTextView(this).apply {
                 textSize = when {
-                    manualBodyMode -> 26f
                     paragraph.type == "quiz" -> 17f
-                    else -> 19f
+                    else -> masterSettings.readerTextSizeSp
                 }
                 setTextColor(color(R.color.skin_ink))
                 includeFontPadding = true
-                setLineSpacing(dp(if (manualBodyMode) 10 else 6).toFloat(), if (manualBodyMode) 1.12f else 1.08f)
+                letterSpacing = masterSettings.readerLetterSpacing
+                setLineSpacing(masterSettings.readerLineSpacingDp * resources.displayMetrics.density, 1.08f)
                 setPadding(dp(6), dp(6), dp(6), dp(12))
             }
             val binding = ParagraphBinding(tv, paragraphIndex, paragraphText, ranges)
@@ -1340,49 +3034,29 @@ class MainActivity : Activity() {
     }
 
     private fun paragraphGesture(binding: ParagraphBinding): View.OnTouchListener {
-        if (firstListenMode) {
-            val lesson = currentLesson
-            val detector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
-                override fun onSingleTapUp(e: MotionEvent): Boolean {
-                    if (!firstListenStarted && lesson != null) toggleFirstListen(lesson)
-                    return true
-                }
-
-                override fun onLongPress(e: MotionEvent) {
-                    stopAllPlayback()
-                    val offset = offsetFor(binding.textView, e) ?: return
-                    val sentenceIndex = binding.sentenceAt(offset) ?: return
-                    selectedSentenceIndex = sentenceIndex
-                    val sentence = flatSentences[sentenceIndex].sentence
-                    showSentencePopup(sentence)
-                }
-            })
-            return View.OnTouchListener { _, event ->
-                if (unknownUnderlineMode) {
-                    handleUnknownUnderlineTouch(binding, event)
-                    return@OnTouchListener true
-                }
-                detector.onTouchEvent(event)
-                true
-            }
-        }
         if (manualBodyMode) {
             return View.OnTouchListener { _, event ->
                 if (unknownUnderlineMode) {
                     handleUnknownUnderlineTouch(binding, event)
                     return@OnTouchListener true
                 }
-                if (event.action == MotionEvent.ACTION_UP) {
-                    val offset = offsetFor(binding.textView, event) ?: return@OnTouchListener true
-                    handleManualBodyChunkTap(binding, offset)
-                }
-                true
+                handleManualBodyChunkTouch(binding, event)
             }
         }
         val detector = GestureDetector(this, object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapUp(e: MotionEvent): Boolean {
                 val offset = offsetFor(binding.textView, e) ?: return true
                 val sentenceIndex = binding.sentenceAt(offset) ?: return true
+                if (activeComprehensionCheck != null) {
+                    handleComprehensionChunkTap(binding, sentenceIndex, offset)
+                    return true
+                }
+                val lesson = currentLesson
+                val localOffset = binding.localOffset(sentenceIndex, offset)
+                val sentence = flatSentences.getOrNull(sentenceIndex)?.sentence
+                if (lesson != null && localOffset != null && sentence != null && speakTodayWordAt(sentence.text, localOffset, lesson, lesson.cinematicComic)) {
+                    return true
+                }
                 if (activeMode != "natural") {
                     playChunkAtOffset(sentenceIndex, binding.localOffset(sentenceIndex, offset))
                 } else {
@@ -1392,6 +3066,7 @@ class MainActivity : Activity() {
             }
 
             override fun onDoubleTap(e: MotionEvent): Boolean {
+                if (activeComprehensionCheck != null) return true
                 val offset = offsetFor(binding.textView, e) ?: return true
                 val sentenceIndex = binding.sentenceAt(offset) ?: return true
                 selectedSentenceIndex = sentenceIndex
@@ -1401,6 +3076,7 @@ class MainActivity : Activity() {
             }
 
             override fun onLongPress(e: MotionEvent) {
+                if (activeComprehensionCheck != null) return
                 val offset = offsetFor(binding.textView, e) ?: return
                 val sentenceIndex = binding.sentenceAt(offset) ?: return
                 val localOffset = binding.localOffset(sentenceIndex, offset) ?: return
@@ -1421,9 +3097,62 @@ class MainActivity : Activity() {
                 handleUnknownUnderlineTouch(binding, event)
                 return@OnTouchListener true
             }
+            if (activeComprehensionCheck != null) updateComprehensionPress(binding, event)
             detector.onTouchEvent(event)
             true
         }
+    }
+
+    private fun updateComprehensionPress(binding: ParagraphBinding, event: MotionEvent) {
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                val offset = offsetFor(binding.textView, event)
+                val sentenceIndex = offset?.let { binding.sentenceAt(it) }
+                val option = if (offset != null && sentenceIndex != null) comprehensionOptionAt(binding, sentenceIndex, offset) else null
+                if (option != null && sentenceIndex != null) {
+                    if (currentSentenceIndex != sentenceIndex || currentChunkId != option.chunkId) {
+                        currentSentenceIndex = sentenceIndex
+                        currentChunkId = option.chunkId
+                        refreshAllParagraphs()
+                    }
+                } else if (currentChunkId != null) {
+                    currentChunkId = null
+                    refreshAllParagraphs()
+                }
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                if (currentChunkId != null) {
+                    currentChunkId = null
+                    refreshAllParagraphs()
+                }
+            }
+        }
+    }
+
+    private fun comprehensionOptionAt(binding: ParagraphBinding, sentenceIndex: Int, paragraphOffset: Int): ComprehensionOption? {
+        val lesson = currentLesson ?: return null
+        val check = activeComprehensionCheck ?: return null
+        val localOffset = binding.localOffset(sentenceIndex, paragraphOffset) ?: return null
+        val sentence = flatSentences.getOrNull(sentenceIndex)?.sentence ?: return null
+        val chunkSetId = check.chunkSetId.ifBlank { lesson.defaultChunkSetId.ifBlank { "short" } }
+        return comprehensionSelectionAt(sentence, chunkSetId, localOffset)?.second
+    }
+
+    private fun comprehensionSelectionAt(
+        sentence: LessonSentence,
+        chunkSetId: String,
+        localOffset: Int
+    ): Pair<Chunk, ComprehensionOption>? {
+        val check = activeComprehensionCheck ?: return null
+        val optionByChunk = activeComprehensionOptions
+            .filter { it.sentenceId == sentence.id }
+            .associateBy { it.chunkId }
+        val matches = sentence.chunkSets[chunkSetId].orEmpty()
+            .filter { localOffset in it.startChar until it.endChar }
+            .mapNotNull { chunk -> optionByChunk[chunk.id]?.let { option -> chunk to option } }
+        if (matches.isEmpty()) return null
+        return matches.firstOrNull { (chunk, _) -> chunk.id == check.answerChunkId }
+            ?: matches.minByOrNull { (chunk, _) -> chunk.endChar - chunk.startChar }
     }
 
     private fun handleUnknownUnderlineTouch(binding: ParagraphBinding, event: MotionEvent) {
@@ -1524,40 +3253,110 @@ class MainActivity : Activity() {
             .apply()
     }
 
-    private fun handleManualBodyChunkTap(binding: ParagraphBinding, offset: Int) {
-        val lesson = currentLesson ?: return
-        val sentenceIndex = binding.sentenceAt(offset) ?: return
-        val localOffset = binding.localOffset(sentenceIndex, offset) ?: return
-        val sentence = flatSentences.getOrNull(sentenceIndex)?.sentence ?: return
-        val tokens = wordTokens(sentence.text)
-        if (tokens.isEmpty()) return
-        val wordIndex = tokens.indexOfFirst { localOffset in it.startChar until it.endChar }.takeIf { it >= 0 }
-            ?: tokens.indexOfLast { it.startChar <= localOffset }.coerceAtLeast(0)
+    private fun handleManualBodyChunkTouch(binding: ParagraphBinding, event: MotionEvent): Boolean {
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                val offset = offsetFor(binding.textView, event) ?: return false
+                if (!beginManualBodyChunkDraft(binding, offset)) return false
+                binding.textView.parent?.requestDisallowInterceptTouchEvent(true)
+                return true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                if (manualBodyDraftSentenceIndex == null) return false
+                offsetFor(binding.textView, event)?.let { updateManualBodyChunkDraft(binding, it) }
+                return true
+            }
+            MotionEvent.ACTION_UP -> {
+                if (manualBodyDraftSentenceIndex == null) return false
+                offsetFor(binding.textView, event)?.let { updateManualBodyChunkDraft(binding, it) }
+                commitManualBodyChunkDraft()
+                binding.textView.parent?.requestDisallowInterceptTouchEvent(false)
+                return true
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                if (manualBodyDraftSentenceIndex != null) {
+                    clearManualBodyDraft()
+                    refreshAllParagraphs()
+                }
+                binding.textView.parent?.requestDisallowInterceptTouchEvent(false)
+                return true
+            }
+        }
+        return false
+    }
 
-        manualSentenceIndex = sentenceIndex
+    private fun beginManualBodyChunkDraft(binding: ParagraphBinding, offset: Int): Boolean {
+        val lesson = currentLesson ?: return false
+        val sentenceIndex = binding.sentenceAt(offset) ?: return false
+        if (sentenceIndex != manualSentenceIndex) return false
+        val localOffset = binding.localOffset(sentenceIndex, offset) ?: return false
+        val sentence = flatSentences.getOrNull(sentenceIndex)?.sentence ?: return false
+        val tokens = wordTokens(sentence.text)
+        if (tokens.isEmpty()) return false
+        val wordIndex = wordIndexAt(tokens, localOffset) ?: return false
+        val chunks = loadManualChunks(lesson.id, sentence.id)
+        val editingIndex = chunks.indexOfFirst { wordIndex in it.startWord..it.endWord }.takeIf { it >= 0 }
+        val draftStart = editingIndex?.let { chunks[it].startWord } ?: ((chunks.maxOfOrNull { it.endWord } ?: -1) + 1)
+        if (draftStart !in tokens.indices) return false
+        val initialEnd = editingIndex?.let { chunks[it].endWord } ?: wordIndex
+
+        manualBodyDraftSentenceIndex = sentenceIndex
+        manualBodyDraftStartWord = draftStart
+        manualBodyDraftEndWord = max(draftStart, initialEnd).coerceAtMost(tokens.lastIndex)
+        manualBodyEditingChunkIndex = editingIndex
         selectedSentenceIndex = sentenceIndex
         currentSentenceIndex = sentenceIndex
         pendingStartMs = sentence.startMs
+        refreshAllParagraphs()
+        return true
+    }
+
+    private fun updateManualBodyChunkDraft(binding: ParagraphBinding, offset: Int) {
+        val sentenceIndex = manualBodyDraftSentenceIndex ?: return
+        if (binding.sentenceAt(offset) != sentenceIndex) return
+        val localOffset = binding.localOffset(sentenceIndex, offset) ?: return
+        val sentence = flatSentences.getOrNull(sentenceIndex)?.sentence ?: return
+        val tokens = wordTokens(sentence.text)
+        val wordIndex = wordIndexAt(tokens, localOffset) ?: return
+        val nextEnd = max(manualBodyDraftStartWord, wordIndex).coerceAtMost(tokens.lastIndex)
+        if (nextEnd != manualBodyDraftEndWord) {
+            manualBodyDraftEndWord = nextEnd
+            refreshAllParagraphs()
+        }
+    }
+
+    private fun commitManualBodyChunkDraft() {
+        val lesson = currentLesson ?: run {
+            clearManualBodyDraft()
+            return
+        }
+        val sentenceIndex = manualBodyDraftSentenceIndex ?: return
+        val sentence = flatSentences.getOrNull(sentenceIndex)?.sentence ?: run {
+            clearManualBodyDraft()
+            return
+        }
+        val tokens = wordTokens(sentence.text)
+        if (tokens.isEmpty() || manualBodyDraftStartWord !in tokens.indices || manualBodyDraftEndWord !in tokens.indices) {
+            clearManualBodyDraft()
+            refreshAllParagraphs()
+            return
+        }
 
         val chunks = loadManualChunks(lesson.id, sentence.id).toMutableList()
-        val editedIndex = chunks.indexOfFirst { wordIndex in it.startWord..it.endWord }
-        if (editedIndex >= 0) {
-            val old = chunks[editedIndex]
-            chunks[editedIndex] = ManualChunk(old.startWord, wordIndex)
-            while (chunks.size > editedIndex + 1) chunks.removeAt(chunks.lastIndex)
+        val edit = manualBodyEditingChunkIndex
+        if (edit != null && edit in chunks.indices) {
+            chunks[edit] = ManualChunk(chunks[edit].startWord, manualBodyDraftEndWord)
+            fixFollowingManualBodyChunks(chunks, edit, tokens.lastIndex)
         } else {
             val nextStart = (chunks.maxOfOrNull { it.endWord } ?: -1) + 1
-            if (wordIndex < nextStart) {
-                toast("다음 청크 끝 단어를 눌러주세요.")
-                refreshAllParagraphs()
-                scrollToSentence(sentenceIndex)
-                return
+            if (manualBodyDraftStartWord == nextStart) {
+                chunks.add(ManualChunk(manualBodyDraftStartWord, manualBodyDraftEndWord))
             }
-            chunks.add(ManualChunk(nextStart, wordIndex))
         }
 
         val normalized = normalizeManualChunks(tokens, chunks)
         saveManualChunks(lesson.id, sentence.id, sentence.text, tokens, normalized)
+        clearManualBodyDraft()
         refreshAllParagraphs()
         scrollToSentence(sentenceIndex)
 
@@ -1567,19 +3366,37 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun normalizeManualChunks(tokens: List<WordToken>, chunks: List<ManualChunk>): List<ManualChunk> {
-        if (tokens.isEmpty()) return emptyList()
-        val sorted = chunks.sortedBy { it.startWord }
-        val normalized = mutableListOf<ManualChunk>()
-        var nextStart = 0
-        sorted.forEach { chunk ->
-            val end = chunk.endWord.coerceIn(nextStart, tokens.lastIndex)
-            if (nextStart <= end) {
-                normalized.add(ManualChunk(nextStart, end))
-                nextStart = end + 1
+    private fun fixFollowingManualBodyChunks(chunks: MutableList<ManualChunk>, fromIndex: Int, lastWordIndex: Int) {
+        var previousEnd = chunks[fromIndex].endWord
+        var index = fromIndex + 1
+        while (index < chunks.size) {
+            val start = previousEnd + 1
+            if (start > lastWordIndex) {
+                while (chunks.size > index) chunks.removeAt(chunks.lastIndex)
+                break
             }
+            val old = chunks[index]
+            if (old.endWord < start) {
+                chunks.removeAt(index)
+                continue
+            }
+            val end = old.endWord.coerceAtMost(lastWordIndex)
+            chunks[index] = ManualChunk(start, end)
+            previousEnd = end
+            index += 1
         }
-        return normalized
+    }
+
+    private fun wordIndexAt(tokens: List<WordToken>, localOffset: Int): Int? {
+        return tokens.indexOfFirst { localOffset in it.startChar until it.endChar }.takeIf { it >= 0 }
+            ?: tokens.indexOfLast { it.startChar <= localOffset }.takeIf { it >= 0 }
+    }
+
+    private fun clearManualBodyDraft() {
+        manualBodyDraftSentenceIndex = null
+        manualBodyDraftStartWord = -1
+        manualBodyDraftEndWord = -1
+        manualBodyEditingChunkIndex = null
     }
 
     private fun manualBodyControls(lesson: Lesson): View {
@@ -1605,24 +3422,37 @@ class MainActivity : Activity() {
                 if (chunks.isEmpty()) toast("본문에서 청크 끝 단어를 먼저 눌러주세요.") else speakManualChunks(sentence.text, tokens, chunks)
             }
         }, LinearLayout.LayoutParams(0, dp(48), 1.1f).withRightMargin(dp(8)))
-        row.addView(pill("다음 문장").apply {
+        val practiceIndices = manualPracticeSentenceIndices(lesson)
+        val practicePosition = practiceIndices.indexOf(manualSentenceIndex).takeIf { it >= 0 } ?: 0
+        val isLastPractice = practicePosition >= practiceIndices.lastIndex
+        row.addView(pill(if (isLastPractice) "2차로" else "다음 문장").apply {
             setOnClickListener { moveManualBodySentence(lesson, 1) }
         }, LinearLayout.LayoutParams(0, dp(48), 1f).withRightMargin(dp(8)))
-        row.addView(pill("완료").apply {
+        row.addView(pill("본문으로").apply {
             background = rounded(color(R.color.skin_mark), dp(18), color(R.color.skin_primary), dp(1))
-            setOnClickListener {
-                manualBodyMode = false
-                showReader(lesson)
-            }
+            setOnClickListener { exitManualBodyModeInCurrentReader(lesson) }
         }, LinearLayout.LayoutParams(0, dp(48), 0.9f))
         return row
     }
 
     private fun moveManualBodySentence(lesson: Lesson, delta: Int) {
-        manualSentenceIndex = (manualSentenceIndex + delta).coerceIn(0, max(0, flatSentences.lastIndex))
+        val practiceIndices = manualPracticeSentenceIndices(lesson)
+        if (practiceIndices.isEmpty()) {
+            showSpeakListenStage(lesson, pass = 2, sentenceIndex = 0)
+            return
+        }
+        val currentPosition = practiceIndices.indexOf(manualSentenceIndex).takeIf { it >= 0 } ?: 0
+        val nextPosition = currentPosition + delta
+        if (nextPosition > practiceIndices.lastIndex) {
+            showSpeakListenStage(lesson, pass = 2, sentenceIndex = 0)
+            return
+        }
+        manualSentenceIndex = practiceIndices[nextPosition.coerceAtLeast(0)]
         selectedSentenceIndex = manualSentenceIndex
         currentSentenceIndex = manualSentenceIndex
         pendingStartMs = flatSentences.getOrNull(manualSentenceIndex)?.sentence?.startMs
+        clearManualBodyDraft()
+        installManualBodyControls(lesson)
         refreshAllParagraphs()
         scrollToSentence(manualSentenceIndex)
     }
@@ -1647,9 +3477,6 @@ class MainActivity : Activity() {
         row.addView(playButton, fixed(dp(56), dp(56)).withRightMargin(dp(8)))
         row.addView(iconButton(R.drawable.ic_next, "다음 문장").apply {
             setOnClickListener { moveSentence(1, play = true) }
-        }, fixed(dp(48), dp(48)).withRightMargin(dp(8)))
-        row.addView(iconButton(R.drawable.ic_chat, "GPT에 묻기").apply {
-            setOnClickListener { askGpt() }
         }, fixed(dp(48), dp(48)))
         return row
     }
@@ -1669,8 +3496,8 @@ class MainActivity : Activity() {
         panel.addView(adjustRange, matchWrap().withTop(dp(3)))
         panel.addView(waveformCalibrationRow(), matchWrap().withTop(dp(8)))
 
-        startProfileView = BoundaryProfileView(this, editsStart = true)
-        endProfileView = BoundaryProfileView(this, editsStart = false)
+        startProfileView = boundaryProfileView(editsStart = true)
+        endProfileView = boundaryProfileView(editsStart = false)
         panel.addView(boundaryEditor("시작", start = true, startProfileView!!), matchWrap().withTop(dp(8)))
         panel.addView(boundaryEditor("끝", start = false, endProfileView!!), matchWrap().withTop(dp(8)))
 
@@ -1717,6 +3544,19 @@ class MainActivity : Activity() {
         }, LinearLayout.LayoutParams(0, dp(40), 1f))
         panel.addView(exportRow, matchWrap().withTop(dp(6)))
         return panel
+    }
+
+    private fun boundaryProfileView(editsStart: Boolean): BoundaryProfileView {
+        return BoundaryProfileView(
+            context = this,
+            editsStart = editsStart,
+            waveformOffsetMs = { waveformOffsetMs },
+            activeAdjustSelection = { activeAdjustSelection() },
+            setBoundaryToTime = { selection, start, requestedMs, preview ->
+                setBoundaryToTime(selection, start, requestedMs, preview)
+            },
+            formatTimeMs = ::formatTimeMs
+        )
     }
 
     private fun waveformCalibrationRow(): View {
@@ -1797,14 +3637,16 @@ class MainActivity : Activity() {
             setPadding(dp(12), dp(10), dp(12), dp(10))
             background = rounded(color(R.color.skin_surface), dp(18), color(R.color.skin_line), dp(1))
         }
-        row.addView(text("단어 수가 긴 5문장을 골라 별도 창에서 청크를 만들어 볼 수 있어요.", 14f, color(R.color.skin_muted)), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
-        row.addView(pill("청크 5문장").apply {
-            setOnClickListener { showManualChunkMode(lesson, 0) }
+        row.addView(text("단어 수가 긴 5문장을 원래 본문 화면에서 차례대로 청크로 나눠 볼 수 있어요.", 14f, color(R.color.skin_muted)), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        row.addView(pill("청크 활동").apply {
+            setOnClickListener { startManualChunkActivity(lesson) }
         }, fixed(dp(150), dp(42)))
         return row
     }
 
     private fun addMasterButton() {
+        addChatGptAssistButton()
+
         val button = text("M", 18f, color(R.color.skin_primary_dark), Typeface.BOLD).apply {
             gravity = Gravity.CENTER
             background = rounded(color(R.color.skin_mark), dp(24), color(R.color.skin_primary), dp(1))
@@ -1818,6 +3660,69 @@ class MainActivity : Activity() {
             bottomMargin = dp(150)
         }
         root.addView(button, lp)
+    }
+
+    private fun addChatGptAssistButton() {
+        val button = ImageButton(this).apply {
+            setImageResource(R.drawable.ic_chat)
+            contentDescription = "ChatGPT 보조"
+            background = rounded(color(R.color.skin_surface), dp(24), color(R.color.skin_primary), dp(1))
+            elevation = dp(6).toFloat()
+            scaleType = ImageView.ScaleType.CENTER
+            isClickable = true
+            isFocusable = true
+            setOnClickListener { showChatGptAssistantDialog() }
+        }
+        val lp = FrameLayout.LayoutParams(dp(48), dp(48), Gravity.BOTTOM or Gravity.END).apply {
+            rightMargin = dp(18)
+            bottomMargin = dp(90)
+        }
+        root.addView(button, lp)
+    }
+
+    private fun maybeShowChatGptLoginSetup() {
+        if (settingsStore.isChatLoginChecked()) return
+        if (isFinishing || isDestroyed) return
+        showChatGptLoginSetupDialog()
+    }
+
+    private fun showChatGptLoginSetupDialog() {
+        val box = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(18), dp(20), dp(14))
+        }
+        box.addView(text("ChatGPT 로그인 확인", 20f, color(R.color.skin_ink), Typeface.BOLD), matchWrap())
+        box.addView(text("GPT 보이스를 쓰기 전에 ChatGPT 로그인과 마이크 권한을 먼저 확인해 둘게요.", 14f, color(R.color.skin_muted)).apply {
+            setPadding(0, dp(8), 0, dp(14))
+        }, matchWrap())
+        val actions = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        val dialog = AlertDialog.Builder(this)
+            .setView(box)
+            .create()
+        actions.addView(pill("나중에").apply {
+            textSize = 13f
+            setOnClickListener {
+                settingsStore.setChatLoginChecked(true)
+                dialog.dismiss()
+            }
+        }, LinearLayout.LayoutParams(0, dp(44), 1f).withRightMargin(dp(8)))
+        actions.addView(pill("로그인 확인하기").apply {
+            textSize = 13f
+            setOnClickListener {
+                settingsStore.setChatLoginChecked(true)
+                dialog.dismiss()
+                showChatGptAssistantDialog(loginSetup = true)
+            }
+        }, LinearLayout.LayoutParams(0, dp(44), 1.35f))
+        box.addView(actions, matchWrap())
+        dialog.show()
+        dialog.window?.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            setLayout((resources.displayMetrics.widthPixels * 0.86f).roundToInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
     }
 
     private fun requestMasterPassword() {
@@ -1846,25 +3751,41 @@ class MainActivity : Activity() {
         }
         val vocab = CheckBox(this).apply { text = "단어장 진행"; isChecked = active.vocabEnabled }
         val quiz = CheckBox(this).apply { text = "단어 퀴즈 진행"; isChecked = active.quizEnabled }
+        val kittyGame = CheckBox(this).apply { text = "단어게임모드2 Find the Kitty"; isChecked = active.vocabGameMode2Enabled }
         val choice = CheckBox(this).apply { text = "퀴즈는 사지선다"; isChecked = active.quizMode == "choice" }
         val manual = CheckBox(this).apply { text = "본문에서 직접 청크 모드"; isChecked = active.manualChunkEnabled }
         val alwaysNext = CheckBox(this).apply { text = "1차 다음 단계 항상 활성화"; isChecked = active.firstListenNextAlwaysEnabled }
-        listOf(vocab, quiz, choice, manual, alwaysNext).forEach { box.addView(it, matchWrap()) }
+        listOf(vocab, quiz, kittyGame, choice, manual, alwaysNext).forEach { box.addView(it, matchWrap()) }
 
         val firstPause = numberSettingInput("1차 문장 pause(초)", decimalSeconds(active.firstListenPauseMs), box)
         val firstRate = numberSettingInput("1차/말하기 TTS 속도", String.format(Locale.US, "%.2f", active.firstListenRate), box)
         val speakPause = numberSettingInput("2차 청크 pause(초)", decimalSeconds(active.speakChunkPauseMs), box)
+        val readerTextSize = numberSettingInput("본문 글씨 크기(sp)", String.format(Locale.US, "%.1f", active.readerTextSizeSp), box)
+        val readerLetterSpacing = numberSettingInput("본문 자간", String.format(Locale.US, "%.3f", active.readerLetterSpacing), box)
+        val readerSpaceScale = numberSettingInput("띄어쓰기 폭 배율", String.format(Locale.US, "%.2f", active.readerSpaceScale), box)
+        val readerLineSpacing = numberSettingInput("줄간격(dp)", String.format(Locale.US, "%.1f", active.readerLineSpacingDp), box)
+        if (lesson?.vocabReflexGame != null) {
+            box.addView(pill("단어 카드 로그 보기").apply {
+                textSize = 14f
+                setOnClickListener { showVocabReflexLogDialog(lesson) }
+            }, matchWrap().withTop(dp(12)))
+        }
 
         fun dialogSettings(): MasterSettings {
             return MasterSettings(
                 vocabEnabled = vocab.isChecked,
                 quizEnabled = quiz.isChecked,
+                vocabGameMode2Enabled = kittyGame.isChecked,
                 quizMode = if (choice.isChecked) "choice" else "speak",
                 manualChunkEnabled = manual.isChecked,
                 firstListenPauseMs = secondsInputMs(firstPause, 1500),
                 firstListenRate = firstRate.text.toString().toFloatOrNull()?.coerceIn(0.5f, 1.5f) ?: 0.9f,
                 speakChunkPauseMs = secondsInputMs(speakPause, 700),
-                firstListenNextAlwaysEnabled = alwaysNext.isChecked
+                firstListenNextAlwaysEnabled = alwaysNext.isChecked,
+                readerTextSizeSp = readerTextSize.text.toString().toFloatOrNull()?.coerceIn(14f, 32f) ?: 19f,
+                readerLetterSpacing = readerLetterSpacing.text.toString().toFloatOrNull()?.coerceIn(0f, 0.18f) ?: 0f,
+                readerSpaceScale = readerSpaceScale.text.toString().toFloatOrNull()?.coerceIn(0.7f, 2.4f) ?: 1f,
+                readerLineSpacingDp = readerLineSpacing.text.toString().toFloatOrNull()?.coerceIn(0f, 24f) ?: 6f
             )
         }
 
@@ -1875,6 +3796,7 @@ class MainActivity : Activity() {
                 val settings = dialogSettings()
                 saveMasterSettings("universal", settings)
                 masterSettings = lesson?.let { activeMasterSettings(it.id) } ?: settings
+                applyReaderTextSettings()
                 toast("전체 설정 저장")
             }
             .setNegativeButton("닫기", null)
@@ -1882,15 +3804,54 @@ class MainActivity : Activity() {
         if (lesson != null) {
             dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "이 콘텐츠 저장") { _, _ ->
                 val settings = dialogSettings()
-                getSharedPreferences("master_settings", MODE_PRIVATE).edit()
-                    .putBoolean("${lesson.id}|override", true)
-                    .apply()
+                settingsStore.setMasterOverride(lesson.id, true)
                 saveMasterSettings(lesson.id, settings)
                 masterSettings = settings
+                applyReaderTextSettings()
                 toast("콘텐츠별 설정 저장")
             }
         }
         dialog.show()
+    }
+
+    private fun applyReaderTextSettings() {
+        val lesson = currentLesson ?: return
+        paragraphBindings.forEach { binding ->
+            val paragraphType = lesson.paragraphs.getOrNull(binding.paragraphIndex)?.type
+            binding.textView.textSize = if (paragraphType == "quiz") 17f else masterSettings.readerTextSizeSp
+            binding.textView.letterSpacing = masterSettings.readerLetterSpacing
+            binding.textView.setLineSpacing(masterSettings.readerLineSpacingDp * resources.displayMetrics.density, 1.08f)
+        }
+        refreshAllParagraphs()
+    }
+
+    private fun showVocabReflexLogDialog(lesson: Lesson) {
+        val game = lesson.vocabReflexGame ?: return
+        val body = game.targetWords.joinToString("\n\n") { target ->
+            val stats = loadVocabReflexWordStats(lesson.id, target.wordId)
+            buildString {
+                append(target.word)
+                append(" · ")
+                append(if (stats.passed) "PASS" else "not yet")
+                append("\n")
+                append("avg ${stats.averageMs}ms, last ${stats.lastAverageMs}ms, attempts ${stats.attempts}")
+                append("\n")
+                append("wrong ${stats.wrong}, slow ${stats.slow}")
+                if (stats.lastErrorTags.isNotBlank()) {
+                    append("\nerrors: ")
+                    append(stats.lastErrorTags)
+                }
+            }
+        }
+        AlertDialog.Builder(this)
+            .setTitle("단어 카드 로그")
+            .setMessage(body.ifBlank { "아직 기록이 없어요." })
+            .setPositiveButton("닫기", null)
+            .setNegativeButton("초기화") { _, _ ->
+                getSharedPreferences("vocab_reflex_logs", MODE_PRIVATE).edit().clear().apply()
+                toast("단어 카드 로그 초기화")
+            }
+            .show()
     }
 
     private fun numberSettingInput(label: String, value: String, parent: LinearLayout): EditText {
@@ -1914,8 +3875,7 @@ class MainActivity : Activity() {
     }
 
     private fun activeMasterSettings(lessonId: String): MasterSettings {
-        val prefs = getSharedPreferences("master_settings", MODE_PRIVATE)
-        return if (prefs.getBoolean("$lessonId|override", false)) {
+        return if (settingsStore.hasMasterOverride(lessonId)) {
             loadMasterSettings(lessonId)
         } else {
             loadMasterSettings("universal")
@@ -1923,30 +3883,11 @@ class MainActivity : Activity() {
     }
 
     private fun loadMasterSettings(scope: String): MasterSettings {
-        val prefs = getSharedPreferences("master_settings", MODE_PRIVATE)
-        return MasterSettings(
-            vocabEnabled = prefs.getBoolean("$scope|vocab", true),
-            quizEnabled = prefs.getBoolean("$scope|quiz", true),
-            quizMode = prefs.getString("$scope|quizMode", "choice") ?: "choice",
-            manualChunkEnabled = prefs.getBoolean("$scope|manual", true),
-            firstListenPauseMs = prefs.getInt("$scope|firstPauseMs", 1500),
-            firstListenRate = prefs.getFloat("$scope|firstRate", 0.9f),
-            speakChunkPauseMs = prefs.getInt("$scope|speakChunkPauseMs", 700),
-            firstListenNextAlwaysEnabled = prefs.getBoolean("$scope|firstNextAlways", false)
-        )
+        return settingsStore.loadMasterSettings(scope)
     }
 
     private fun saveMasterSettings(scope: String, settings: MasterSettings) {
-        getSharedPreferences("master_settings", MODE_PRIVATE).edit()
-            .putBoolean("$scope|vocab", settings.vocabEnabled)
-            .putBoolean("$scope|quiz", settings.quizEnabled)
-            .putString("$scope|quizMode", settings.quizMode)
-            .putBoolean("$scope|manual", settings.manualChunkEnabled)
-            .putInt("$scope|firstPauseMs", settings.firstListenPauseMs)
-            .putFloat("$scope|firstRate", settings.firstListenRate)
-            .putInt("$scope|speakChunkPauseMs", settings.speakChunkPauseMs)
-            .putBoolean("$scope|firstNextAlways", settings.firstListenNextAlwaysEnabled)
-            .apply()
+        settingsStore.saveMasterSettings(scope, settings)
     }
 
     private fun toggleTtsMode() {
@@ -2200,8 +4141,18 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun speakComicText(value: String, onDone: (() -> Unit)? = null) {
+        ensureTts()
+        tts?.setSpeechRate(0.68f)
+        speakPopupText(value, onDone = {
+            tts?.setSpeechRate(0.9f)
+            onDone?.invoke()
+        })
+    }
+
     private fun stopTts() {
         tts?.stop()
+        tts?.setSpeechRate(0.9f)
         isTtsSpeaking = false
         ttsUtterances.clear()
         ttsLastUtteranceId = null
@@ -2267,7 +4218,7 @@ class MainActivity : Activity() {
         audioProfile = null
         updateAdjustPanel()
         Thread {
-            val profile = runCatching { decodeAudioProfile(lesson) }.getOrNull()
+            val profile = runCatching { audioProfileDecoder.decode(lesson) }.getOrNull()
             runOnUiThread {
                 if (currentLesson?.id == lesson.id) {
                     audioProfile = profile
@@ -2275,92 +4226,6 @@ class MainActivity : Activity() {
                 }
             }
         }.start()
-    }
-
-    private fun decodeAudioProfile(lesson: Lesson): AudioProfile {
-        val audio = lesson.audioAssets[lesson.defaultAudioId] ?: lesson.audioAssets.values.first()
-        val afd = assets.openFd("${lesson.basePath}/${audio.file}")
-        val extractor = MediaExtractor()
-        val codec: MediaCodec
-        var sampleRate = 44_100
-        try {
-            extractor.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
-            val trackIndex = (0 until extractor.trackCount).firstOrNull { index ->
-                extractor.getTrackFormat(index).getString(MediaFormat.KEY_MIME)?.startsWith("audio/") == true
-            } ?: error("audio track not found")
-            val format = extractor.getTrackFormat(trackIndex)
-            val mime = format.getString(MediaFormat.KEY_MIME) ?: error("audio mime not found")
-            sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
-            extractor.selectTrack(trackIndex)
-            codec = MediaCodec.createDecoderByType(mime)
-            codec.configure(format, null, null, 0)
-            codec.start()
-        } finally {
-            afd.close()
-        }
-
-        val windowMs = 20
-        val samplesPerWindow = max(1, sampleRate * windowMs / 1000)
-        val bufferInfo = MediaCodec.BufferInfo()
-        val profile = mutableListOf<Float>()
-        var sawInputEnd = false
-        var sawOutputEnd = false
-        var squareSum = 0.0
-        var sampleCount = 0
-
-        fun pushSample(value: Short) {
-            val normalized = value.toDouble() / Short.MAX_VALUE.toDouble()
-            squareSum += normalized * normalized
-            sampleCount += 1
-            if (sampleCount >= samplesPerWindow) {
-                profile.add(sqrt(squareSum / sampleCount).toFloat())
-                squareSum = 0.0
-                sampleCount = 0
-            }
-        }
-
-        try {
-            while (!sawOutputEnd) {
-                if (!sawInputEnd) {
-                    val inputIndex = codec.dequeueInputBuffer(10_000)
-                    if (inputIndex >= 0) {
-                        val inputBuffer = codec.getInputBuffer(inputIndex)
-                        val sampleSize = if (inputBuffer != null) extractor.readSampleData(inputBuffer, 0) else -1
-                        if (sampleSize < 0) {
-                            codec.queueInputBuffer(inputIndex, 0, 0, 0L, MediaCodec.BUFFER_FLAG_END_OF_STREAM)
-                            sawInputEnd = true
-                        } else {
-                            codec.queueInputBuffer(inputIndex, 0, sampleSize, extractor.sampleTime, 0)
-                            extractor.advance()
-                        }
-                    }
-                }
-
-                when (val outputIndex = codec.dequeueOutputBuffer(bufferInfo, 10_000)) {
-                    MediaCodec.INFO_TRY_AGAIN_LATER -> Unit
-                    MediaCodec.INFO_OUTPUT_FORMAT_CHANGED -> Unit
-                    else -> if (outputIndex >= 0) {
-                        val outputBuffer = codec.getOutputBuffer(outputIndex)
-                        if (outputBuffer != null && bufferInfo.size > 0) {
-                            val pcm = outputBuffer.duplicate().order(ByteOrder.LITTLE_ENDIAN)
-                            pcm.position(bufferInfo.offset)
-                            pcm.limit(bufferInfo.offset + bufferInfo.size)
-                            while (pcm.remaining() >= 2) pushSample(pcm.getShort())
-                        }
-                        sawOutputEnd = bufferInfo.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0
-                        codec.releaseOutputBuffer(outputIndex, false)
-                    }
-                }
-            }
-            if (sampleCount > 0) profile.add(sqrt(squareSum / sampleCount).toFloat())
-        } finally {
-            codec.stop()
-            codec.release()
-            extractor.release()
-        }
-
-        val durationMs = profile.size * windowMs
-        return AudioProfile(profile.toFloatArray(), windowMs, durationMs)
     }
 
     private fun playSentenceOnce(sentenceIndex: Int) {
@@ -2759,7 +4624,12 @@ class MainActivity : Activity() {
     private fun refreshAllParagraphs() {
         paragraphBindings.forEach { binding ->
             binding.textView.text = styledParagraph(binding)
-            (binding.textView as? WavyTextView)?.setWavyRanges(wavyRangesFor(binding))
+            (binding.textView as? WavyTextView)?.apply {
+                setWavyRanges(wavyRangesFor(binding))
+                setComprehensionBubbles(comprehensionBubblesFor(binding))
+                val manualOverlay = manualChunkOverlaysFor(binding)
+                setManualChunks(manualOverlay.first, manualOverlay.second)
+            }
         }
     }
 
@@ -2783,48 +4653,126 @@ class MainActivity : Activity() {
         return ranges
     }
 
+    private fun comprehensionBubblesFor(binding: ParagraphBinding): List<ComprehensionBubble> {
+        val lesson = currentLesson ?: return emptyList()
+        val check = activeComprehensionCheck ?: return emptyList()
+        val chunkSetId = check.chunkSetId.ifBlank { lesson.defaultChunkSetId.ifBlank { "short" } }
+        val bubbles = mutableListOf<ComprehensionBubble>()
+        activeComprehensionOptions.forEachIndexed { optionIndex, option ->
+            val range = binding.ranges.firstOrNull {
+                flatSentences.getOrNull(it.sentenceIndex)?.sentence?.id == option.sentenceId
+            } ?: return@forEachIndexed
+            val sentence = flatSentences.getOrNull(range.sentenceIndex)?.sentence ?: return@forEachIndexed
+            val chunk = sentence.chunkSets[chunkSetId].orEmpty().firstOrNull { it.id == option.chunkId } ?: return@forEachIndexed
+            val start = range.start + chunk.startChar
+            val end = min(range.start + chunk.endChar, range.end)
+            if (start in 0 until end && end <= binding.text.length) {
+                bubbles.add(
+                    ComprehensionBubble(
+                        range = start until end,
+                        color = comprehensionBubbleColor(optionIndex),
+                        pressed = range.sentenceIndex == currentSentenceIndex && chunk.id == currentChunkId
+                    )
+                )
+            }
+        }
+        return bubbles
+    }
+
+    private fun comprehensionBubbleColor(index: Int): Int {
+        return when (index % 5) {
+            0 -> colorWithAlpha(color(R.color.skin_surface_alt), 235)
+            1 -> colorWithAlpha(color(R.color.skin_mark), 220)
+            2 -> colorWithAlpha(color(R.color.skin_highlight), 220)
+            3 -> colorWithAlpha(color(R.color.skin_accent), 135)
+            else -> colorWithAlpha(color(R.color.skin_primary), 55)
+        }
+    }
+
+    private fun manualChunkOverlaysFor(binding: ParagraphBinding): Pair<List<ManualChunkBubble>, ManualChunkHint?> {
+        val lesson = currentLesson ?: return emptyList<ManualChunkBubble>() to null
+        if (!manualBodyMode) return emptyList<ManualChunkBubble>() to null
+        val chunks = mutableListOf<ManualChunkBubble>()
+        var hint: ManualChunkHint? = null
+        binding.ranges.forEach { range ->
+            if (range.sentenceIndex != manualSentenceIndex) return@forEach
+            val sentence = flatSentences.getOrNull(range.sentenceIndex)?.sentence ?: return@forEach
+            val tokens = wordTokens(sentence.text)
+            if (tokens.isEmpty()) return@forEach
+            val storedChunks = loadManualChunks(lesson.id, sentence.id)
+            val draftActive = manualBodyDraftSentenceIndex == range.sentenceIndex &&
+                manualBodyDraftStartWord in tokens.indices &&
+                manualBodyDraftEndWord in tokens.indices
+            val manualChunks = if (draftActive) {
+                val preview = storedChunks.toMutableList()
+                val edit = manualBodyEditingChunkIndex
+                if (edit != null && edit in preview.indices) {
+                    preview[edit] = ManualChunk(preview[edit].startWord, manualBodyDraftEndWord)
+                    fixFollowingManualBodyChunks(preview, edit, tokens.lastIndex)
+                } else {
+                    val nextStart = (preview.maxOfOrNull { it.endWord } ?: -1) + 1
+                    if (manualBodyDraftStartWord == nextStart) preview.add(ManualChunk(manualBodyDraftStartWord, manualBodyDraftEndWord))
+                }
+                normalizeManualChunks(tokens, preview)
+            } else {
+                storedChunks
+            }
+            val draftPreviewIndex = if (draftActive) {
+                manualChunks.indexOfFirst { it.startWord == manualBodyDraftStartWord && it.endWord == manualBodyDraftEndWord }
+                    .takeIf { it >= 0 }
+                    ?: manualChunks.indexOfFirst { manualBodyDraftStartWord in it.startWord..it.endWord }
+            } else {
+                -1
+            }
+            manualChunks.forEachIndexed { index, chunk ->
+                val startChar = tokens.getOrNull(chunk.startWord)?.startChar ?: return@forEachIndexed
+                val endChar = tokens.getOrNull(chunk.endWord)?.endChar ?: return@forEachIndexed
+                val start = (range.start + startChar).coerceIn(range.start, range.end)
+                val end = (range.start + endChar).coerceIn(start, range.end)
+                if (end > start && end <= binding.text.length) {
+                    chunks.add(
+                        ManualChunkBubble(
+                            range = start until end,
+                            color = if (index == draftPreviewIndex) colorWithAlpha(color(R.color.skin_accent), 180) else manualChunkColor(index),
+                            boundary = !draftActive && chunk.endWord < tokens.lastIndex
+                        )
+                    )
+                }
+            }
+            val nextStartWord = ((manualChunks.maxOfOrNull { it.endWord } ?: -1) + 1)
+            if (!draftActive && nextStartWord in tokens.indices) {
+                val nextToken = tokens[nextStartWord]
+                val start = (range.start + nextToken.startChar).coerceIn(range.start, range.end)
+                val end = (range.start + nextToken.endChar).coerceIn(start, range.end)
+                if (end > start && end <= binding.text.length) hint = ManualChunkHint(start until end)
+            }
+        }
+        return chunks to hint
+    }
+
+    private fun manualChunkColor(index: Int): Int {
+        return when (index % 3) {
+            0 -> colorWithAlpha(0xFF2563EB.toInt(), 96)
+            1 -> colorWithAlpha(0xFF059669.toInt(), 100)
+            else -> colorWithAlpha(0xFFDB2777.toInt(), 96)
+        }
+    }
+
     private fun styledParagraph(binding: ParagraphBinding): SpannableString {
         val span = SpannableString(binding.text)
         val lesson = currentLesson ?: return span
         binding.ranges.forEach { range ->
             val sentence = flatSentences[range.sentenceIndex].sentence
-            if (range.sentenceIndex == currentSentenceIndex) {
-                span.setSpan(BackgroundColorSpan(color(R.color.skin_highlight)), range.start, range.end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            } else if (range.sentenceIndex == selectedSentenceIndex) {
-                span.setSpan(BackgroundColorSpan(color(R.color.skin_surface_alt)), range.start, range.end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (activeComprehensionCheck == null && !manualBodyMode) {
+                if (range.sentenceIndex == currentSentenceIndex) {
+                    span.setSpan(BackgroundColorSpan(color(R.color.skin_highlight)), range.start, range.end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                } else if (range.sentenceIndex == selectedSentenceIndex) {
+                    span.setSpan(BackgroundColorSpan(color(R.color.skin_surface_alt)), range.start, range.end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
             }
 
             if (manualBodyMode) {
-                val tokens = wordTokens(sentence.text)
-                val manualChunks = loadManualChunks(lesson.id, sentence.id)
-                manualChunks.forEachIndexed { index, chunk ->
-                    val startChar = tokens.getOrNull(chunk.startWord)?.startChar ?: return@forEachIndexed
-                    val endChar = tokens.getOrNull(chunk.endWord)?.endChar ?: return@forEachIndexed
-                    val start = range.start + startChar
-                    val end = min(range.start + endChar, range.end)
-                    if (start in 0 until end && end <= span.length) {
-                        span.setSpan(
-                            BackgroundColorSpan(if (index % 2 == 0) color(R.color.skin_mark) else color(R.color.skin_highlight)),
-                            start,
-                            end,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                        span.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    }
-                }
-                if (range.sentenceIndex == manualSentenceIndex && tokens.isNotEmpty()) {
-                    val nextStartWord = ((manualChunks.maxOfOrNull { it.endWord } ?: -1) + 1).coerceIn(0, tokens.lastIndex)
-                    val nextToken = tokens.getOrNull(nextStartWord)
-                    if (nextToken != null && (manualChunks.maxOfOrNull { it.endWord } ?: -1) < tokens.lastIndex) {
-                        val start = range.start + nextToken.startChar
-                        val end = min(range.start + nextToken.endChar, range.end)
-                        if (start in 0 until end && end <= span.length) {
-                            span.setSpan(ForegroundColorSpan(color(R.color.skin_primary_dark)), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                            span.setSpan(UnderlineSpan(), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                            span.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
-                    }
-                }
+                // Manual chunk visuals are drawn by WavyTextView overlays so text metrics never change.
             }
 
             sentence.annotations.forEach { annotation ->
@@ -2836,9 +4784,10 @@ class MainActivity : Activity() {
                     span.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
             }
+            applyTodayWordSpans(span, sentence.text, range.start, range.end, lesson, lesson.cinematicComic)
 
             val currentChunk = sentence.chunkSets[activeMode].orEmpty().firstOrNull { it.id == currentChunkId }
-            if (range.sentenceIndex == currentSentenceIndex && currentChunk != null) {
+            if (!manualBodyMode && activeComprehensionCheck == null && range.sentenceIndex == currentSentenceIndex && currentChunk != null) {
                 val start = range.start + currentChunk.startChar
                 val end = min(range.start + currentChunk.endChar, range.end)
                 if (start in 0 until end && end <= span.length) {
@@ -2846,8 +4795,22 @@ class MainActivity : Activity() {
                     span.setSpan(StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
             }
+            if (manualBodyMode && range.sentenceIndex != manualSentenceIndex) {
+                span.setSpan(ForegroundColorSpan(color(R.color.skin_muted)), range.start, range.end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
         }
+        applyReaderSpaceScale(span)
         return span
+    }
+
+    private fun applyReaderSpaceScale(span: SpannableString) {
+        val scale = masterSettings.readerSpaceScale
+        if (abs(scale - 1f) < 0.01f) return
+        span.forEachIndexed { index, char ->
+            if (char == ' ') {
+                span.setSpan(ScaleXSpan(scale), index, index + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
     }
 
     private fun refreshMode() {
@@ -3046,6 +5009,7 @@ class MainActivity : Activity() {
         val message = buildString {
             vocab?.meaningKo?.takeIf { it.isNotBlank() }?.let { append("뜻: ").append(it).append("\n\n") }
             vocab?.easyEnglish?.takeIf { it.isNotBlank() }?.let { append("Easy English: ").append(it).append("\n\n") }
+            vocab?.easyEnglishLong?.takeIf { it.isNotBlank() }?.let { append("More: ").append(it).append("\n\n") }
             explanation?.textKo?.takeIf { it.isNotBlank() }?.let { append(it) }
         }.ifBlank { "아직 연결된 설명이 없습니다." }
         val dialog = AlertDialog.Builder(this)
@@ -3074,12 +5038,462 @@ class MainActivity : Activity() {
         dialog.setOnDismissListener { stopAllPlayback() }
     }
 
-    private fun askGpt() {
-        val sentence = flatSentences.getOrNull(selectedSentenceIndex)?.sentence ?: return
-        copyPrompt(sentence.text, "이 문장을 초등학생 영어 학습자에게 쉽게 설명해줘.")
+    private fun showChatGptAssistantDialog(loginSetup: Boolean = false) {
+        stopAllPlayback()
+        destroyChatWebView()
+        chatLoginSetupMode = loginSetup
+
+        var dialog: AlertDialog? = null
+        val status = text(
+            if (loginSetup) "ChatGPT 로그인 화면을 불러오는 중..." else "ChatGPT를 불러오는 중...",
+            12f,
+            color(R.color.skin_muted)
+        ).apply {
+            setPadding(dp(14), dp(6), dp(14), dp(6))
+        }
+        chatStatusLabel = status
+        val popupHeight = (resources.displayMetrics.heightPixels * 0.88f).roundToInt()
+        val webHeight = max(dp(520), popupHeight - dp(128))
+        val webView = chatGptWebView(status)
+        chatWebView = webView
+
+        val box = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(0, 0, 0, 0)
+            background = rounded(color(R.color.skin_surface), dp(18))
+            layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, popupHeight)
+            minimumHeight = popupHeight
+        }
+        chatDialogBox = box
+        val top = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(12), dp(10), dp(12), dp(8))
+            background = rounded(color(R.color.skin_surface_alt), dp(18))
+        }
+        top.addView(text(if (loginSetup) "ChatGPT 로그인" else "ChatGPT 보조", 17f, color(R.color.skin_ink), Typeface.BOLD), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        top.addView(pill("마이크").apply {
+            textSize = 12f
+            setOnClickListener { primeChatMicrophone() }
+        }, fixed(dp(78), dp(38)).withRightMargin(dp(6)))
+        top.addView(pill("문장 복사").apply {
+            textSize = 12f
+            setOnClickListener { copySelectedPromptForChat() }
+        }, fixed(dp(92), dp(38)).withRightMargin(dp(6)))
+        top.addView(pill("Chrome").apply {
+            textSize = 12f
+            setOnClickListener { openChatGptInChrome() }
+        }, fixed(dp(78), dp(38)).withRightMargin(dp(6)))
+        top.addView(pill("닫기").apply {
+            textSize = 12f
+            setOnClickListener { dialog?.dismiss() }
+        }, fixed(dp(64), dp(38)))
+
+        box.addView(top, matchWrap())
+        box.addView(status, matchWrap())
+        box.addView(webView, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, webHeight))
+
+        dialog = AlertDialog.Builder(this)
+            .setView(box)
+            .create()
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setOnDismissListener {
+            pendingChatPermissionRequest?.deny()
+            pendingChatPermissionRequest = null
+            pendingPrimeMicAfterPermission = false
+            pendingChatCompactAfterSend = false
+            chatLoginSetupMode = false
+            if (chatDialog === dialog) chatDialog = null
+            chatDialogBox = null
+            destroyChatWebView()
+        }
+        chatDialog = dialog
+        dialog.show()
+        dialog.window?.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            decorView.setPadding(0, 0, 0, 0)
+            clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED)
+            setLayout((resources.displayMetrics.widthPixels * 0.96f).roundToInt(), popupHeight)
+        }
+        webView.requestFocus()
+        webView.loadUrl("https://chatgpt.com/")
     }
 
-    private fun copyPrompt(target: String, context: String) {
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun chatGptWebView(status: TextView): WebView {
+        return WebView(this).apply {
+            setBackgroundColor(color(R.color.skin_surface))
+            isFocusable = true
+            isFocusableInTouchMode = true
+            descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            settings.databaseEnabled = true
+            settings.cacheMode = WebSettings.LOAD_DEFAULT
+            settings.mediaPlaybackRequiresUserGesture = false
+            settings.useWideViewPort = true
+            settings.loadWithOverviewMode = true
+            settings.mixedContentMode = WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
+            settings.javaScriptCanOpenWindowsAutomatically = true
+            settings.setSupportMultipleWindows(true)
+            settings.userAgentString = WebSettings.getDefaultUserAgent(this@MainActivity)
+                .replace("; wv", "")
+                .replace("Version/4.0 ", "")
+            CookieManager.getInstance().setAcceptCookie(true)
+            CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
+            webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    status.text = "마이크를 준비한 뒤 ChatGPT 화면 안의 음성 버튼을 눌러주세요."
+                    handler.postDelayed({
+                        if (chatWebView === view) {
+                            primeChatMicrophone(auto = true)
+                            if (chatLoginSetupMode && pendingChatPrompt == null) {
+                                status.text = "로그인 후 닫기를 누르면 준비가 끝나요."
+                            } else if (pendingChatVoiceBeforePrompt) {
+                                startChatVoiceBeforePromptFlow()
+                            } else {
+                                injectPendingChatPrompt()
+                            }
+                        }
+                    }, 700L)
+                }
+            }
+            webChromeClient = object : WebChromeClient() {
+                override fun onPermissionRequest(request: PermissionRequest) {
+                    handler.post { handleChatWebPermission(request) }
+                }
+            }
+            setOnTouchListener { view, event ->
+                if (event.action == MotionEvent.ACTION_DOWN || event.action == MotionEvent.ACTION_UP) {
+                    view.requestFocus()
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                }
+                false
+            }
+        }
+    }
+
+    private fun openChatGptWithPrompt(
+        prompt: String,
+        autoSend: Boolean,
+        voiceBeforePrompt: Boolean,
+        compactAfterSend: Boolean
+    ) {
+        pendingChatPrompt = prompt
+        pendingChatAutoSend = autoSend
+        pendingChatVoiceBeforePrompt = voiceBeforePrompt
+        pendingChatVoiceBeforePromptStarted = false
+        pendingChatCompactAfterSend = compactAfterSend
+        getSystemService(ClipboardManager::class.java)
+            .setPrimaryClip(ClipData.newPlainText("Seoin English GPT prompt", prompt))
+        showChatGptAssistantDialog()
+    }
+
+    private fun startChatVoiceBeforePromptFlow() {
+        if (pendingChatPrompt == null || pendingChatVoiceBeforePromptStarted) return
+        pendingChatVoiceBeforePromptStarted = true
+        chatStatusLabel?.text = "Voice 버튼을 기다린 뒤 프롬프트를 보낼게요."
+        handler.postDelayed({
+            if (pendingChatPrompt == null) return@postDelayed
+            triggerChatVoiceBeforePrompt(attempt = 0)
+        }, 900L)
+    }
+
+    private fun triggerChatVoiceBeforePrompt(attempt: Int) {
+        if (pendingChatPrompt == null) return
+        triggerChatVoiceButton { clicked ->
+            when {
+                clicked -> {
+                    chatStatusLabel?.text = "Voice를 열었어요. 잠깐 기다렸다가 프롬프트를 보낼게요."
+                    handler.postDelayed({
+                        if (pendingChatPrompt != null) injectPendingChatPrompt()
+                    }, 1800L)
+                }
+                attempt < 5 -> {
+                    chatStatusLabel?.text = "Voice 버튼을 찾는 중이에요."
+                    handler.postDelayed({
+                        triggerChatVoiceBeforePrompt(attempt + 1)
+                    }, 700L)
+                }
+                else -> {
+                    chatStatusLabel?.text = "Voice 버튼을 못 찾았어요. 프롬프트를 먼저 넣어둘게요."
+                    handler.postDelayed({
+                        if (pendingChatPrompt != null) injectPendingChatPrompt()
+                    }, 450L)
+                }
+            }
+        }
+    }
+
+    private fun injectPendingChatPrompt() {
+        val prompt = pendingChatPrompt ?: return
+        val webView = chatWebView ?: return
+        val autoSend = pendingChatAutoSend
+        val compactAfterSend = pendingChatCompactAfterSend
+        val promptLiteral = JSONObject.quote(prompt)
+        val script = """
+            (function() {
+              const text = $promptLiteral;
+              const editor =
+                document.querySelector('#prompt-textarea') ||
+                document.querySelector('[contenteditable="true"]') ||
+                document.querySelector('textarea');
+              if (!editor) return "NO_EDITOR";
+              editor.focus();
+              if (editor.isContentEditable) {
+                document.execCommand('selectAll', false, null);
+                document.execCommand('insertText', false, text);
+              } else {
+                editor.value = text;
+              }
+              editor.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
+              if (!$autoSend) return "OK";
+              function findSendButton() {
+                const buttons = Array.from(document.querySelectorAll('button'));
+                return document.querySelector('[data-testid="send-button"]') ||
+                  buttons.find(function(button) {
+                  const label = ((button.getAttribute('aria-label') || '') + ' ' + (button.getAttribute('title') || '') + ' ' + button.innerText).toLowerCase();
+                  return label.includes('send') || label.includes('\uBCF4\uB0B4\uAE30') || label.includes('\uC804\uC1A1');
+                });
+              }
+              function clickSendWhenReady(remaining) {
+                const send = findSendButton();
+                if (send && !send.disabled && send.getAttribute('aria-disabled') !== 'true') {
+                  send.click();
+                  return;
+                }
+                if (remaining > 0) {
+                  setTimeout(function() { clickSendWhenReady(remaining - 1); }, 420);
+                }
+              }
+              setTimeout(function() { clickSendWhenReady(6); }, 1050);
+              return "OK_SEND_SCHEDULED";
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            when {
+                result.contains("OK_SEND_SCHEDULED") -> {
+                    clearPendingChatPromptState()
+                    chatStatusLabel?.text = "프롬프트를 넣었어요. 보내기 버튼을 기다렸다가 누를게요."
+                    if (compactAfterSend) {
+                        handler.postDelayed({ compactChatGptAssistantDialog() }, 3200L)
+                    }
+                }
+                result.contains("OK") -> {
+                    clearPendingChatPromptState()
+                    chatStatusLabel?.text = if (autoSend) "프롬프트를 넣었어요." else "프롬프트를 입력창에 넣었어요."
+                }
+                result.contains("NO_EDITOR") -> {
+                    chatStatusLabel?.text = "로그인이 필요하면 로그인 후 다시 열어주세요. 프롬프트는 클립보드에도 복사됐어요."
+                }
+                else -> {
+                    chatStatusLabel?.text = "프롬프트 입력을 기다리는 중이에요."
+                }
+            }
+        }
+    }
+
+    private fun clearPendingChatPromptState() {
+        pendingChatPrompt = null
+        pendingChatAutoSend = false
+        pendingChatVoiceBeforePrompt = false
+        pendingChatVoiceBeforePromptStarted = false
+        pendingChatCompactAfterSend = false
+    }
+
+    private fun compactChatGptAssistantDialog() {
+        val dialog = chatDialog ?: return
+        val window = dialog.window ?: return
+        val height = dp(64)
+        val geometry = compactChatDialogGeometry(height)
+        chatStatusLabel?.text = "Voice ChatGPT"
+        compactChatDialogContent()
+        chatDialogBox?.apply {
+            minimumHeight = 0
+            layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height)
+            background = rounded(color(R.color.skin_surface), dp(10))
+            requestLayout()
+        }
+        window.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            decorView.setPadding(0, 0, 0, 0)
+            clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL)
+            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED)
+            setLayout(geometry.width, height)
+            attributes = attributes.apply {
+                gravity = Gravity.TOP or Gravity.START
+                x = geometry.x
+                this.y = geometry.y
+                dimAmount = 0f
+            }
+        }
+    }
+
+    private fun compactChatDialogContent() {
+        val box = chatDialogBox ?: return
+        val top = box.getChildAt(0) as? LinearLayout
+        val status = box.getChildAt(1)
+        val webView = box.getChildAt(2)
+        top?.apply {
+            setPadding(dp(10), dp(4), dp(10), dp(4))
+            background = rounded(color(R.color.skin_surface_alt), dp(10))
+            for (index in 0 until childCount) {
+                getChildAt(index)?.visibility = if (index == 0 || index == childCount - 1) View.VISIBLE else View.GONE
+            }
+            (getChildAt(0) as? TextView)?.apply {
+                text = "Voice ChatGPT"
+                textSize = 13f
+            }
+            getChildAt(childCount - 1)?.layoutParams = fixed(dp(52), dp(28))
+        }
+        status?.visibility = View.GONE
+        webView?.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(12))
+    }
+
+    private fun compactChatDialogGeometry(dialogHeight: Int): CompactDialogGeometry {
+        val metrics = resources.displayMetrics
+        val defaultMargin = dp(14)
+        var x = defaultMargin
+        var y = dp(116)
+        var width = metrics.widthPixels - defaultMargin * 2
+        val overlay = comprehensionOverlay ?: return CompactDialogGeometry(x = x, y = y, width = width)
+        val overlayLocation = IntArray(2)
+        if (overlay.width > 0 && overlay.height > 0) {
+            overlay.getLocationOnScreen(overlayLocation)
+            x = max(defaultMargin, overlayLocation[0])
+            width = min(overlay.width, metrics.widthPixels - x - defaultMargin)
+            y = overlayLocation[1] + overlay.height + dp(4)
+        }
+        y = y.coerceIn(dp(10), max(dp(10), metrics.heightPixels - dialogHeight - dp(10)))
+        return CompactDialogGeometry(x = x, y = y, width = max(dp(280), width))
+    }
+
+    private fun triggerChatVoiceButton(onDone: ((Boolean) -> Unit)? = null) {
+        val webView = chatWebView ?: run {
+            onDone?.invoke(false)
+            return
+        }
+        val script = """
+            (function() {
+              const buttons = Array.from(document.querySelectorAll('button')).reverse();
+              const explicit =
+                document.querySelector('[data-testid="voice-mode-button"]') ||
+                document.querySelector('[data-testid="composer-speech-button"]') ||
+                document.querySelector('[data-testid="voice-button"]');
+              const voice = explicit || buttons.find(function(button) {
+                const label = ((button.getAttribute('aria-label') || '') + ' ' + (button.getAttribute('title') || '') + ' ' + button.innerText).toLowerCase();
+                return label.includes('voice') ||
+                  label.includes('dictate') ||
+                  label.includes('speak') ||
+                  label.includes('microphone') ||
+                  label.includes('audio') ||
+                  label.includes('\uC74C\uC131') ||
+                  label.includes('\uB300\uD654') ||
+                  label.includes('\uB9C8\uC774\uD06C') ||
+                  label.includes('\uBCF4\uC774\uC2A4');
+              });
+              if (voice && !voice.disabled && voice.getAttribute('aria-disabled') !== 'true') {
+                voice.click();
+                return "VOICE_CLICKED";
+              }
+              return "NO_VOICE_BUTTON";
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            val clicked = result.contains("VOICE_CLICKED")
+            chatStatusLabel?.text = if (clicked) {
+                "보이스 채팅을 열었어요."
+            } else {
+                "마이크 준비 완료. 화면 안의 음성 버튼을 눌러주세요."
+            }
+            onDone?.invoke(clicked)
+        }
+    }
+
+    private fun primeChatMicrophone(auto: Boolean = false) {
+        val webView = chatWebView ?: return
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            pendingPrimeMicAfterPermission = true
+            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), chatMicPermissionRequestCode)
+            return
+        }
+        chatStatusLabel?.text = if (auto) {
+            "마이크 권한을 확인하는 중..."
+        } else {
+            "마이크를 준비하는 중..."
+        }
+        webView.requestFocus()
+        val script = """
+            (async function() {
+              try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                  return "NO_MEDIA_DEVICES";
+                }
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(function(track) { track.stop(); });
+                return "OK";
+              } catch (error) {
+                return "ERR:" + error.name + ":" + (error.message || "");
+              }
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            when {
+                result.contains("OK") -> chatStatusLabel?.text = "마이크 준비 완료. ChatGPT 화면 안의 음성 버튼을 눌러주세요."
+                result.contains("NO_MEDIA_DEVICES") -> chatStatusLabel?.text = "이 WebView에서 마이크 API를 찾지 못했어요. Chrome 버튼을 사용해주세요."
+                result.contains("NotAllowedError") || result.contains("Permission") -> chatStatusLabel?.text = "마이크가 차단됐어요. 위의 마이크 버튼을 다시 누르거나 Chrome으로 열어주세요."
+                else -> chatStatusLabel?.text = "마이크 확인 결과: $result"
+            }
+        }
+    }
+
+    private fun handleChatWebPermission(request: PermissionRequest) {
+        val needsMic = request.resources.contains(PermissionRequest.RESOURCE_AUDIO_CAPTURE)
+        if (needsMic && checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            pendingChatPermissionRequest?.deny()
+            pendingChatPermissionRequest = request
+            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), chatMicPermissionRequestCode)
+        } else {
+            val audioResources = request.resources
+                .filter { it == PermissionRequest.RESOURCE_AUDIO_CAPTURE }
+                .toTypedArray()
+            if (audioResources.isNotEmpty()) {
+                request.grant(audioResources)
+                chatStatusLabel?.text = "WebView 마이크 권한을 승인했어요."
+            } else {
+                request.deny()
+            }
+        }
+    }
+
+    private fun destroyChatWebView() {
+        chatWebView?.apply {
+            stopLoading()
+            loadUrl("about:blank")
+            removeAllViews()
+            destroy()
+        }
+        chatWebView = null
+        chatStatusLabel = null
+    }
+
+    private fun copySelectedPromptForChat() {
+        val (target, context) = selectedSentencePrompt() ?: run {
+            toast("선택된 문장이 없어요.")
+            return
+        }
+        copyPrompt(target, context, openChat = false)
+    }
+
+    private fun selectedSentencePrompt(): Pair<String, String>? {
+        val sentence = flatSentences.getOrNull(selectedSentenceIndex)?.sentence ?: return null
+        return sentence.text to "이 문장을 초등학생 영어 학습자에게 쉽게 설명해줘."
+    }
+
+    private fun copyPrompt(target: String, context: String, openChat: Boolean = true) {
         val prompt = """
             초등학생 영어 학습자에게 아래 표현을 쉽게 설명해줘.
             뜻, 중요한 단어, 문장 구조, 비슷한 예문 3개를 한국어로 알려줘.
@@ -3090,11 +5504,22 @@ class MainActivity : Activity() {
         getSystemService(ClipboardManager::class.java)
             .setPrimaryClip(ClipData.newPlainText("Seoin English GPT prompt", prompt))
         toast("GPT 프롬프트를 복사했어요.")
+        if (openChat) openChatGptWithPrompt(prompt, autoSend = false, voiceBeforePrompt = false, compactAfterSend = false)
+    }
+
+    private fun openChatGptInChrome() {
         val chrome = Intent(Intent.ACTION_VIEW, Uri.parse("https://chatgpt.com/")).apply {
             setPackage("com.android.chrome")
+            addCategory(Intent.CATEGORY_BROWSABLE)
         }
         runCatching { startActivity(chrome) }.getOrElse {
-            runCatching { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://chatgpt.com/"))) }
+            runCatching {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://chatgpt.com/")).apply {
+                    addCategory(Intent.CATEGORY_BROWSABLE)
+                })
+            }.getOrElse {
+                toast("Chrome 또는 브라우저를 열 수 없어요.")
+            }
         }
     }
 
@@ -3148,14 +5573,12 @@ class MainActivity : Activity() {
         flowAutoToken += 1L
         handler.removeCallbacks(tick)
         stopTts()
-        firstListenMode = false
         player?.release()
         player = null
         audioProfile = null
         playButton = null
         ttsModeButton = null
         unknownButton = null
-        firstListenNextButton = null
         unknownDraft = null
         seekBar = null
         timeLabel = null
@@ -3167,8 +5590,8 @@ class MainActivity : Activity() {
         waveformOffsetLabel = null
         startProfileView = null
         endProfileView = null
-        manualChunkView = null
         readerScroll = null
+        readerActionHost = null
         paragraphBindings = emptyList()
     }
 
@@ -3263,7 +5686,10 @@ class MainActivity : Activity() {
                 meaningKo = item.optString("meaningKo", ""),
                 simpleKo = item.optString("simpleKo", ""),
                 easyEnglish = item.optString("easyEnglish", ""),
+                easyEnglishLong = item.optString("easyEnglishLong", ""),
                 examples = directExamples,
+                comic = parseVocabComic(item.optJSONObject("comic")),
+                quizPanel = parseVocabQuizPanel(item.optJSONObject("quiz")),
                 highlight = item.optBoolean("highlight", false),
                 highlightStyle = item.optString("highlightStyle", ""),
                 sourceRefs = item.optJSONArray("sourceRefs").toVocabSourceRefs(),
@@ -3280,9 +5706,40 @@ class MainActivity : Activity() {
                 title = item.optString("title", ""),
                 textKo = item.optString("textKo", ""),
                 easyEnglish = item.optString("easyEnglish", ""),
+                easyEnglishLong = item.optString("easyEnglishLong", ""),
                 examples = item.optJSONArray("examples").toStringList()
             )
             explanations[explanation.id] = explanation
+        }
+        val vocabReflexGame = parseVocabReflexGame(json.optJSONObject("vocabReflexGame"))
+        val rootComicSource = json.optJSONObject("cinematicComic")
+            ?: json.optJSONObject("lessonComic")
+            ?: json.optJSONObject("comic")
+            ?: json.takeIf { it.has("panels") && it.has("words") }
+        val cinematicComic = parseVocabComic(rootComicSource)
+        val comprehensionChecks = mutableListOf<ComprehensionCheck>()
+        json.optJSONArray("comprehensionChecks").forEachObject { item ->
+            val sentenceId = item.optString("sentenceId", "")
+            comprehensionChecks.add(
+                ComprehensionCheck(
+                    id = item.optString("id", "check_${comprehensionChecks.size + 1}"),
+                    question = item.optString("question", ""),
+                    sentenceId = sentenceId,
+                    afterSentenceId = item.optString("afterSentenceId", sentenceId),
+                    chunkSetId = item.optString("chunkSetId", json.optString("defaultChunkSetId", "short")),
+                    answerChunkId = item.optString("answerChunkId", ""),
+                    answerText = item.optString("answerText", ""),
+                    correctFeedback = item.optString(
+                        "correctFeedback",
+                        item.optString(
+                            "feedbackCorrect",
+                            item.optString("correctAnswer", item.optString("answerFeedback", ""))
+                        )
+                    ),
+                    scopeSentenceIds = item.optJSONArray("scopeSentenceIds").toStringList(),
+                    promptNote = item.optString("promptNote", "")
+                )
+            )
         }
         val paragraphs = mutableListOf<LessonParagraph>()
         json.getJSONArray("paragraphs").forEachObject { p ->
@@ -3327,7 +5784,8 @@ class MainActivity : Activity() {
                         startMs = s.optInt("startMs", chunkSets.values.flatten().minOfOrNull { it.startMs } ?: 0),
                         endMs = s.optInt("endMs", chunkSets.values.flatten().maxOfOrNull { it.endMs } ?: 0),
                         chunkSets = chunkSets,
-                        annotations = annotations
+                        annotations = annotations,
+                        chunkActivity = s.optChunkActivityMode()
                     )
                 )
             }
@@ -3347,10 +5805,281 @@ class MainActivity : Activity() {
             profiles = profiles,
             paragraphs = paragraphs,
             vocabulary = vocabulary,
-            explanations = explanations
+            explanations = explanations,
+            vocabReflexGame = vocabReflexGame,
+            cinematicComic = cinematicComic,
+            comprehensionChecks = comprehensionChecks
         )
         applySavedAdjustments(lesson)
         return lesson
+    }
+
+    private fun parseVocabReflexGame(source: JSONObject?): VocabReflexGame? {
+        if (source == null) return null
+        val rulesJson = source.optJSONObject("rules")
+        val timingJson = source.optJSONObject("timingRules")
+        val rules = VocabReflexRules(
+            moveNextDelayMs = rulesJson?.optInt("moveNextDelayMs", 650) ?: 650
+        )
+        val timing = VocabReflexTiming(
+            fastMsMax = timingJson?.optInt("fastMsMax", 1500) ?: 1500,
+            okayMsMax = timingJson?.optInt("okayMsMax", 3000) ?: 3000,
+            slowMsMin = timingJson?.optInt("slowMsMin", 3001) ?: 3001
+        )
+        val targets = mutableListOf<VocabReflexTargetWord>()
+        source.optJSONArray("targetWords").forEachObject { item ->
+            targets.add(
+                VocabReflexTargetWord(
+                    wordId = item.optString("wordId", ""),
+                    word = item.optString("word", ""),
+                    coreCue = item.optString("coreCue", ""),
+                    readingBridge = item.optString("readingBridge", "")
+                )
+            )
+        }
+        val sets = mutableListOf<VocabReflexSet>()
+        source.optJSONArray("sets").forEachObject { setJson ->
+            val cards = mutableListOf<VocabReflexCard>()
+            setJson.optJSONArray("cards").forEachObject { cardJson ->
+                val options = mutableListOf<VocabReflexOption>()
+                cardJson.optJSONArray("options").forEachObject { optionJson ->
+                    options.add(
+                        VocabReflexOption(
+                            id = optionJson.optString("id", ""),
+                            text = optionJson.optString("text", ""),
+                            isCorrect = optionJson.optBoolean("isCorrect", false),
+                            cueType = optionJson.optString("cueType", ""),
+                            distractorStrategy = optionJson.optString("distractorStrategy", ""),
+                            linkedWordId = optionJson.optString("linkedWordId", ""),
+                            errorTag = optionJson.optString("errorTag", "")
+                        )
+                    )
+                }
+                cards.add(
+                    VocabReflexCard(
+                        id = cardJson.optString("id", ""),
+                        targetWordId = cardJson.optString("targetWordId", ""),
+                        targetWord = cardJson.optString("targetWord", ""),
+                        options = options,
+                        answerOptionId = cardJson.optString("answerOptionId", ""),
+                        cardType = cardJson.optString("cardType", ""),
+                        feedbackCorrect = cardJson.optString("feedbackCorrect", ""),
+                        feedbackWrong = cardJson.optString("feedbackWrong", ""),
+                        readingBridge = cardJson.optString("readingBridge", ""),
+                        echoCardId = cardJson.optString("echoCardId", ""),
+                        echoOfCardId = cardJson.optString("echoOfCardId", "")
+                    )
+                )
+            }
+            sets.add(
+                VocabReflexSet(
+                    id = setJson.optString("id", ""),
+                    roundType = setJson.optString("roundType", "seed"),
+                    sourceSetId = setJson.optString("sourceSetId", ""),
+                    cards = cards
+                )
+            )
+        }
+        return VocabReflexGame(
+            version = source.optString("version", "1.0"),
+            lessonId = source.optString("lessonId", ""),
+            title = source.optString("title", ""),
+            rules = rules,
+            timing = timing,
+            targetWords = targets,
+            sets = sets
+        )
+    }
+
+    private fun parseVocabComic(source: JSONObject?): VocabComic? {
+        if (source == null) return null
+        val imageAssetId = source.optString("imageAssetId", "")
+        val backgroundSheet = source.optJSONObject("backgroundSheet")
+        val backgroundImageAssetId = source.optString("backgroundImageAssetId", "")
+            .ifBlank { source.optString("backgroundAssetId", "") }
+            .ifBlank { source.optString("backgroundSheetAssetId", "") }
+        val panels = source.optJSONArray("panels").toComicPanels()
+        if (imageAssetId.isBlank() && backgroundImageAssetId.isBlank() && panels.isEmpty()) return null
+        val narrations = source.optJSONArray("narration").toStringList()
+            .ifEmpty { source.optJSONArray("panelNarrations").toStringList() }
+            .ifEmpty { source.optJSONArray("panels").toPanelNarrations() }
+        return VocabComic(
+            word = source.optString("word", ""),
+            meaning = source.optString("meaning", ""),
+            imageAssetId = imageAssetId,
+            backgroundImageAssetId = backgroundImageAssetId,
+            backgroundColumns = source.optInt("backgroundColumns", backgroundSheet?.optInt("columns", 2) ?: 2).coerceAtLeast(1),
+            backgroundRows = source.optInt("backgroundRows", backgroundSheet?.optInt("rows", 2) ?: 2).coerceAtLeast(1),
+            panelCount = source.optInt("panelCount", narrations.size.takeIf { it > 0 } ?: 3),
+            layout = source.optString("layout", "horizontal"),
+            words = source.optJSONArray("words").toStringList(),
+            wordExplanations = source.optJSONObject("wordExplanations").toNormalizedStringMap(),
+            narrations = narrations,
+            panels = panels,
+            focusSteps = source.optJSONArray("focusSteps").toVocabComicFocusSteps(),
+            readDefinitionAfter = source.optBoolean("readDefinitionAfter", false)
+        )
+    }
+
+    private fun parseVocabQuizPanel(source: JSONObject?): ComicPanel? {
+        if (source == null) return null
+        return source.toComicPanel(includeText = false).takeIf { it.sprites.isNotEmpty() }
+    }
+
+    private fun JSONArray?.toComicPanels(): List<ComicPanel> {
+        if (this == null) return emptyList()
+        val result = mutableListOf<ComicPanel>()
+        for (i in 0 until length()) {
+            val item = optJSONObject(i) ?: continue
+            result.add(item.toComicPanel(includeText = true, fallbackFrame = i % 4))
+        }
+        return result
+    }
+
+    private fun JSONObject.toComicPanel(includeText: Boolean, fallbackFrame: Int = -1): ComicPanel {
+        val sprites = mutableListOf<ComicSprite>()
+        optJSONArray("sprites").forEachObject { sprite ->
+            sprites.add(
+                ComicSprite(
+                    char = sprite.optString("char", ""),
+                    src = sprite.optString("src", ""),
+                    x = sprite.optDouble("x", 50.0).toFloat(),
+                    y = sprite.optDouble("y", 60.0).toFloat(),
+                    scale = sprite.optDouble("scale", 1.0).toFloat(),
+                    rotate = sprite.optDouble("rotate", 0.0).toFloat(),
+                    flip = sprite.optBoolean("flip", false),
+                    anim = sprite.optString("anim", "none").takeIf { it in comicAnimNames } ?: "none"
+                )
+            )
+        }
+        val bubble = if (includeText) {
+            optJSONObject("bubble")?.let { bubbleSource ->
+                ComicBubble(
+                    anchor = bubbleSource.optInt("anchor", 0),
+                    x = bubbleSource.optDouble("x", -1.0).toFloat(),
+                    y = bubbleSource.optDouble("y", -1.0).toFloat(),
+                    text = bubbleSource.optString("text", "")
+                )
+            }
+        } else {
+            null
+        }
+        return ComicPanel(
+            sceneId = optString("sceneId", ""),
+            bg = optString("bg", "plain").takeIf { it in comicBgNames } ?: "plain",
+            bgFrame = optFrameIndex(fallbackFrame),
+            mood = optString("mood", ""),
+            shot = optString("shot", ""),
+            climax = optBoolean("climax", false),
+            fx = optString("fx", ""),
+            zoom = optJSONObject("zoom")?.toComicZoom(),
+            sfx = optJSONArray("sfx").toComicSfxList(),
+            caption = if (includeText) optString("caption", "") else "",
+            sprites = sprites,
+            bubble = bubble?.takeIf { it.text.isNotBlank() }
+        )
+    }
+
+    private fun JSONObject.toComicZoom(): ComicZoom {
+        return ComicZoom(
+            type = optString("type", ""),
+            scale = optDouble("scale", 1.35).toFloat(),
+            originX = optDouble("originX", 50.0).toFloat(),
+            originY = optDouble("originY", 55.0).toFloat()
+        )
+    }
+
+    private fun JSONArray?.toComicSfxList(): List<ComicSfx> {
+        if (this == null) return emptyList()
+        val result = mutableListOf<ComicSfx>()
+        for (i in 0 until length()) {
+            val item = optJSONObject(i) ?: continue
+            val text = item.optString("text", "")
+            if (text.isBlank()) continue
+            result.add(
+                ComicSfx(
+                    text = text,
+                    x = item.optDouble("x", 50.0).toFloat(),
+                    y = item.optDouble("y", 50.0).toFloat(),
+                    size = item.optDouble("size", 9.0).toFloat(),
+                    rotate = item.optDouble("rotate", -8.0).toFloat(),
+                    color = parseColorSafe(item.optString("color", "#fde047"), 0xFFFDE047.toInt())
+                )
+            )
+        }
+        return result
+    }
+
+    private fun JSONObject.optFrameIndex(defaultValue: Int): Int {
+        val names = listOf("bgFrame", "backgroundFrame", "sceneFrame", "frameIndex", "sceneIndex")
+        names.forEach { name ->
+            if (has(name)) return optInt(name, defaultValue)
+        }
+        return defaultValue
+    }
+
+    private fun JSONObject?.toNormalizedStringMap(): Map<String, String> {
+        if (this == null) return emptyMap()
+        val result = mutableMapOf<String, String>()
+        keys().forEach { key ->
+            val value = optString(key, "")
+            if (key.isNotBlank() && value.isNotBlank()) {
+                result[normalizeKittyKey(key)] = value
+                result[key.lowercase(Locale.US)] = value
+            }
+        }
+        return result
+    }
+
+    private fun JSONArray?.toVocabComicFocusSteps(): List<VocabComicFocusStep> {
+        if (this == null) return emptyList()
+        val result = mutableListOf<VocabComicFocusStep>()
+        for (i in 0 until length()) {
+            val item = optJSONObject(i) ?: continue
+            val panelIndex = item.optInt("panelIndex", panelIdToIndex(item.optString("panelId", "")))
+            val effect = item.optJSONObject("effect")
+            val style = effect?.optString("highlightStyle", "") ?: ""
+            val focusMode = item.optString(
+                "focusMode",
+                effect?.optString(
+                    "focusMode",
+                    if (style.contains("camera", ignoreCase = true)) "camera" else "sparkle"
+                ) ?: "sparkle"
+            )
+            val dimAlpha = ((effect?.optDouble("dimOpacity", 0.55) ?: 0.55) * 255.0).roundToInt()
+            val choices = mutableListOf<VocabComicChoice>()
+            item.optJSONObject("choice")?.optJSONArray("options").forEachObject { option ->
+                choices.add(
+                    VocabComicChoice(
+                        text = option.optString("text", ""),
+                        correct = option.optBoolean("isCorrect", false),
+                        feedback = option.optString("feedback", ""),
+                        voiceText = option.optString("voiceText", "")
+                    )
+                )
+            }
+            result.add(
+                VocabComicFocusStep(
+                    id = item.optString("id", "step_${i + 1}"),
+                    panelIndex = panelIndex,
+                    narration = item.optJSONObject("narration")?.optString("text", "")
+                        ?: item.optString("narration", ""),
+                    sourceBox = item.optPixelBox("sourceBboxPx"),
+                    zoomScale = (effect?.optDouble("zoomScale", 1.45) ?: 1.45).toFloat(),
+                    focusMode = focusMode,
+                    dimAlpha = dimAlpha,
+                    transitionMs = effect?.optInt("transitionMs", 900) ?: 900,
+                    glow = style.contains("glow", ignoreCase = true),
+                    choices = choices
+                )
+            )
+        }
+        return result
+    }
+
+    private fun panelIdToIndex(panelId: String): Int {
+        val number = Regex("(\\d+)").find(panelId)?.value?.toIntOrNull() ?: 1
+        return (number - 1).coerceAtLeast(0)
     }
 
     private fun Lesson.allSentences(): List<SentenceRef> {
@@ -3370,50 +6099,35 @@ class MainActivity : Activity() {
         }.getOrDefault(false)
     }
 
-    private fun text(value: String, sizeSp: Float, textColor: Int, style: Int = Typeface.NORMAL): TextView {
-        return TextView(this).apply {
-            text = value
-            textSize = sizeSp
-            setTextColor(textColor)
-            typeface = Typeface.create(Typeface.DEFAULT, style)
-            includeFontPadding = true
-        }
+    private fun loadBitmapAsset(path: String): Bitmap? {
+        return runCatching {
+            assets.open(path).use { BitmapFactory.decodeStream(it) }
+        }.getOrNull()
     }
 
-    private fun chip(value: String): TextView {
-        return text(value, 13f, color(R.color.skin_primary), Typeface.BOLD).apply {
-            setPadding(dp(12), dp(7), dp(12), dp(7))
-            background = rounded(color(R.color.skin_surface_alt), dp(14), color(R.color.skin_line), dp(1))
-        }
+    private fun playTinyTone(toneType: Int, durationMs: Int) {
+        val tone = runCatching { ToneGenerator(AudioManager.STREAM_MUSIC, 100) }.getOrNull() ?: return
+        tone.startTone(toneType, durationMs)
+        handler.postDelayed({ tone.release() }, (durationMs + 80).toLong())
     }
 
-    private fun pill(value: String): TextView {
-        return text(value, 14f, color(R.color.skin_ink), Typeface.BOLD).apply {
-            gravity = Gravity.CENTER
-            setPadding(dp(14), 0, dp(14), 0)
-            background = rounded(color(R.color.skin_surface), dp(16), color(R.color.skin_line), dp(1))
-            isClickable = true
-            isFocusable = true
+    private fun playToneSequence(tones: List<Int>, durationMs: Int = 150, gapMs: Int = 70) {
+        val tone = runCatching { ToneGenerator(AudioManager.STREAM_MUSIC, 100) }.getOrNull() ?: return
+        tones.forEachIndexed { index, toneType ->
+            handler.postDelayed({ tone.startTone(toneType, durationMs) }, (index * (durationMs + gapMs)).toLong())
         }
+        handler.postDelayed({ tone.release() }, (tones.size * (durationMs + gapMs) + 90).toLong())
     }
 
-    private fun iconButton(icon: Int, description: String): ImageButton {
-        return ImageButton(this).apply {
-            setImageResource(icon)
-            contentDescription = description
-            background = rounded(color(R.color.skin_surface_alt), dp(16))
-            scaleType = ImageView.ScaleType.CENTER
-            isClickable = true
-            isFocusable = true
-        }
-    }
-
-    private fun rounded(fill: Int, radius: Int, stroke: Int? = null, strokeWidth: Int = 0): GradientDrawable {
-        return GradientDrawable().apply {
-            shape = GradientDrawable.RECTANGLE
-            setColor(fill)
-            cornerRadius = radius.toFloat()
-            if (stroke != null && strokeWidth > 0) setStroke(strokeWidth, stroke)
+    private fun playComicChoiceTone(correct: Boolean): Long {
+        return if (correct) {
+            playTinyTone(ToneGenerator.TONE_PROP_ACK, 220)
+            handler.postDelayed({ playToneSequence(listOf(ToneGenerator.TONE_DTMF_3, ToneGenerator.TONE_DTMF_6, ToneGenerator.TONE_DTMF_9), durationMs = 185, gapMs = 38) }, 120L)
+            820L
+        } else {
+            playTinyTone(ToneGenerator.TONE_PROP_NACK, 260)
+            handler.postDelayed({ playToneSequence(listOf(ToneGenerator.TONE_PROP_BEEP, ToneGenerator.TONE_DTMF_1), durationMs = 190, gapMs = 45) }, 90L)
+            520L
         }
     }
 
@@ -3422,62 +6136,6 @@ class MainActivity : Activity() {
         lp.leftMargin = left
         lp.rightMargin = right
         view.layoutParams = lp
-    }
-
-    private fun color(id: Int): Int = getColor(id)
-    private fun dp(value: Int): Int = (value * resources.displayMetrics.density).roundToInt()
-    private fun fixed(w: Int, h: Int) = LinearLayout.LayoutParams(w, h)
-    private fun matchWrap() = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-    private fun wrapWrap() = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-    private fun weightWrap() = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
-    private fun matchFrame() = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-
-    private fun LinearLayout.LayoutParams.withBottom(value: Int): LinearLayout.LayoutParams {
-        bottomMargin = value
-        return this
-    }
-
-    private fun LinearLayout.LayoutParams.withTop(value: Int): LinearLayout.LayoutParams {
-        topMargin = value
-        return this
-    }
-
-    private fun LinearLayout.LayoutParams.withRightMargin(value: Int): LinearLayout.LayoutParams {
-        rightMargin = value
-        return this
-    }
-
-    private fun JSONArray?.forEachObject(block: (JSONObject) -> Unit) {
-        if (this == null) return
-        for (i in 0 until length()) block(getJSONObject(i))
-    }
-
-    private fun JSONArray?.toStringList(): List<String> {
-        if (this == null) return emptyList()
-        return List(length()) { getString(it) }
-    }
-
-    private fun JSONArray?.toVocabSourceRefs(): List<VocabSourceRef> {
-        if (this == null) return emptyList()
-        return List(length()) { index ->
-            val item = getJSONObject(index)
-            VocabSourceRef(
-                sourceId = item.optString("sourceId", ""),
-                rowId = item.optString("rowId", ""),
-                rowIndex = item.optInt("rowIndex", 0),
-                box = item.optSourceBox("box")
-            )
-        }
-    }
-
-    private fun JSONObject.optSourceBox(name: String): SourceBox? {
-        val box = optJSONObject(name) ?: return null
-        return SourceBox(
-            x = box.optDouble("x", 0.0).toFloat(),
-            y = box.optDouble("y", 0.0).toFloat(),
-            w = box.optDouble("w", 0.0).toFloat(),
-            h = box.optDouble("h", 0.0).toFloat()
-        )
     }
 
     private fun formatTime(ms: Int): String {
@@ -3499,470 +6157,4 @@ class MainActivity : Activity() {
     private fun toast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
-
-    private inner class WavyTextView(context: Context) : TextView(context) {
-        private val wavePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = color(R.color.skin_accent)
-            strokeWidth = dp(2).toFloat()
-            style = Paint.Style.STROKE
-        }
-        private val wavePath = Path()
-        private var wavyRanges: List<IntRange> = emptyList()
-
-        fun setWavyRanges(ranges: List<IntRange>) {
-            wavyRanges = ranges
-            invalidate()
-        }
-
-        override fun onDraw(canvas: Canvas) {
-            super.onDraw(canvas)
-            val textLayout = layout ?: return
-            if (wavyRanges.isEmpty()) return
-            val leftPad = totalPaddingLeft.toFloat()
-            val topPad = totalPaddingTop.toFloat()
-            wavyRanges.forEach { range ->
-                val safeStart = range.first.coerceIn(0, text.length)
-                val safeEnd = (range.last + 1).coerceIn(safeStart, text.length)
-                if (safeEnd <= safeStart) return@forEach
-                val startLine = textLayout.getLineForOffset(safeStart)
-                val endLine = textLayout.getLineForOffset(safeEnd)
-                for (line in startLine..endLine) {
-                    val lineStart = textLayout.getLineStart(line)
-                    val lineEnd = textLayout.getLineEnd(line)
-                    val partStart = max(safeStart, lineStart)
-                    val partEnd = min(safeEnd, lineEnd)
-                    if (partEnd <= partStart) continue
-                    val x1 = leftPad + textLayout.getPrimaryHorizontal(partStart)
-                    val x2 = leftPad + textLayout.getPrimaryHorizontal(partEnd)
-                    val y = topPad + textLayout.getLineBaseline(line) + dp(4)
-                    drawWave(canvas, min(x1, x2), max(x1, x2), y.toFloat())
-                }
-            }
-        }
-
-        private fun drawWave(canvas: Canvas, startX: Float, endX: Float, y: Float) {
-            if (endX - startX < dp(3)) return
-            val step = dp(7).toFloat()
-            val amp = dp(3).toFloat()
-            wavePath.reset()
-            wavePath.moveTo(startX, y)
-            var x = startX
-            var up = true
-            while (x < endX) {
-                val nextX = min(endX, x + step)
-                val midX = (x + nextX) / 2f
-                wavePath.quadTo(midX, y + if (up) -amp else amp, nextX, y)
-                x = nextX
-                up = !up
-            }
-            canvas.drawPath(wavePath, wavePaint)
-        }
-    }
-
-    private inner class ManualChunkView(context: Context) : View(context) {
-        var onChanged: ((List<ManualChunk>) -> Unit)? = null
-        var onCompleted: ((List<ManualChunk>) -> Unit)? = null
-
-        private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textSize = dp(25).toFloat()
-            color = color(R.color.skin_ink)
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        }
-        private val smallPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textSize = dp(13).toFloat()
-            color = color(R.color.skin_muted)
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        }
-        private val bubblePaint = Paint(Paint.ANTI_ALIAS_FLAG)
-        private var sentenceText: String = ""
-        private var tokens: List<WordToken> = emptyList()
-        private var chunks: MutableList<ManualChunk> = mutableListOf()
-        private val wordRects = mutableListOf<RectF>()
-        private var draftStart = -1
-        private var draftEnd = -1
-        private var editingIndex: Int? = null
-
-        fun setSentence(text: String, tokens: List<WordToken>, savedChunks: List<ManualChunk>) {
-            sentenceText = text
-            this.tokens = tokens
-            chunks = savedChunks
-                .filter { it.startWord in tokens.indices && it.endWord in tokens.indices && it.startWord <= it.endWord }
-                .sortedBy { it.startWord }
-                .toMutableList()
-            draftStart = nextStartWord()
-            draftEnd = draftStart
-            editingIndex = null
-            invalidate()
-        }
-
-        fun clearChunks() {
-            chunks.clear()
-            draftStart = nextStartWord()
-            draftEnd = draftStart
-            editingIndex = null
-            onChanged?.invoke(currentChunks())
-            invalidate()
-        }
-
-        fun currentChunks(): List<ManualChunk> = chunks.map { it.copy() }
-
-        override fun onTouchEvent(event: MotionEvent): Boolean {
-            if (tokens.isEmpty()) return true
-            parent?.requestDisallowInterceptTouchEvent(true)
-            val word = wordAt(event.x, event.y)
-            when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    val edit = word?.let { touched -> chunks.indexOfFirst { touched in it.startWord..it.endWord } } ?: -1
-                    if (edit >= 0) {
-                        editingIndex = edit
-                        draftStart = chunks[edit].startWord
-                        draftEnd = max(draftStart, word ?: draftStart)
-                    } else {
-                        editingIndex = null
-                        draftStart = nextStartWord()
-                        draftEnd = max(draftStart, word ?: draftStart)
-                    }
-                    invalidate()
-                    return true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    if (draftStart >= 0) {
-                        draftEnd = max(draftStart, word ?: draftEnd).coerceAtMost(tokens.lastIndex)
-                        invalidate()
-                    }
-                    return true
-                }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    commitDraft()
-                    parent?.requestDisallowInterceptTouchEvent(false)
-                    return true
-                }
-            }
-            return true
-        }
-
-        override fun onDraw(canvas: Canvas) {
-            super.onDraw(canvas)
-            layoutWords(width)
-            bubblePaint.color = color(R.color.skin_surface)
-            canvas.drawRoundRect(0f, 0f, width.toFloat(), height.toFloat(), dp(18).toFloat(), dp(18).toFloat(), bubblePaint)
-            chunks.forEachIndexed { index, chunk ->
-                drawBubble(canvas, chunk.startWord, chunk.endWord, if (index % 2 == 0) color(R.color.skin_mark) else color(R.color.skin_highlight), false)
-            }
-            if (draftStart in tokens.indices && draftEnd in tokens.indices) {
-                drawBubble(canvas, draftStart, draftEnd, color(R.color.skin_accent), true)
-            }
-            tokens.forEachIndexed { index, token ->
-                val rect = wordRects.getOrNull(index) ?: return@forEachIndexed
-                canvas.drawText(token.text, rect.left + dp(10), rect.bottom - dp(10), textPaint)
-            }
-            drawHandle(canvas)
-            smallPaint.color = color(R.color.skin_muted)
-            canvas.drawText("${chunks.size} chunks", dp(16).toFloat(), height - dp(18).toFloat(), smallPaint)
-        }
-
-        private fun layoutWords(viewWidth: Int) {
-            wordRects.clear()
-            if (viewWidth <= 0) return
-            val leftPad = dp(18).toFloat()
-            val rightPad = dp(18).toFloat()
-            var x = leftPad
-            var y = dp(28).toFloat()
-            val rowHeight = dp(50).toFloat()
-            tokens.forEach { token ->
-                val wordWidth = textPaint.measureText(token.text) + dp(22)
-                if (x + wordWidth > viewWidth - rightPad && x > leftPad) {
-                    x = leftPad
-                    y += rowHeight
-                }
-                wordRects.add(RectF(x, y, x + wordWidth, y + dp(40)))
-                x += wordWidth + dp(6)
-            }
-        }
-
-        private fun drawBubble(canvas: Canvas, start: Int, end: Int, fill: Int, active: Boolean) {
-            val safeStart = start.coerceIn(0, max(0, wordRects.lastIndex))
-            val safeEnd = end.coerceIn(safeStart, max(safeStart, wordRects.lastIndex))
-            bubblePaint.color = fill
-            bubblePaint.alpha = if (active) 220 else 185
-            for (index in safeStart..safeEnd) {
-                val rect = RectF(wordRects[index]).apply { inset(-dp(2).toFloat(), -dp(2).toFloat()) }
-                canvas.drawRoundRect(rect, dp(18).toFloat(), dp(18).toFloat(), bubblePaint)
-                val next = wordRects.getOrNull(index + 1)
-                if (next != null && index < safeEnd && abs(next.top - rect.top) < 4f) {
-                    canvas.drawRect(rect.right - dp(12), rect.top, next.left + dp(12), rect.bottom, bubblePaint)
-                }
-            }
-            bubblePaint.alpha = 255
-        }
-
-        private fun drawHandle(canvas: Canvas) {
-            val next = nextStartWord()
-            val rect = wordRects.getOrNull(next) ?: return
-            bubblePaint.color = color(R.color.skin_primary)
-            canvas.drawRoundRect(rect.left, rect.top - dp(18), rect.left + dp(34), rect.top + dp(10), dp(14).toFloat(), dp(14).toFloat(), bubblePaint)
-            smallPaint.color = color(R.color.skin_surface)
-            canvas.drawText("+", rect.left + dp(11), rect.top + dp(2), smallPaint)
-        }
-
-        private fun wordAt(x: Float, y: Float): Int? {
-            return wordRects.indexOfFirst { it.contains(x, y) }.takeIf { it >= 0 }
-                ?: wordRects.withIndex().minByOrNull { (_, rect) ->
-                    val cx = (rect.left + rect.right) / 2f
-                    val cy = (rect.top + rect.bottom) / 2f
-                    abs(cx - x) + abs(cy - y)
-                }?.index
-        }
-
-        private fun nextStartWord(): Int {
-            return (chunks.maxOfOrNull { it.endWord } ?: -1) + 1
-        }
-
-        private fun commitDraft() {
-            if (draftStart !in tokens.indices || draftEnd !in tokens.indices) return
-            val edit = editingIndex
-            if (edit != null && edit in chunks.indices) {
-                chunks[edit] = ManualChunk(chunks[edit].startWord, draftEnd)
-                fixFollowingChunks(edit)
-            } else if (draftStart == nextStartWord()) {
-                chunks.add(ManualChunk(draftStart, draftEnd))
-            }
-            chunks = chunks.filter { it.startWord <= it.endWord && it.startWord in tokens.indices }.toMutableList()
-            draftStart = nextStartWord()
-            draftEnd = draftStart
-            editingIndex = null
-            onChanged?.invoke(currentChunks())
-            invalidate()
-            if (chunks.isNotEmpty() && nextStartWord() > tokens.lastIndex) onCompleted?.invoke(currentChunks())
-        }
-
-        private fun fixFollowingChunks(fromIndex: Int) {
-            var previousEnd = chunks[fromIndex].endWord
-            val fixed = chunks.take(fromIndex + 1).toMutableList()
-            for (index in fromIndex + 1 until chunks.size) {
-                val old = chunks[index]
-                val start = previousEnd + 1
-                if (start > tokens.lastIndex) break
-                val end = max(start, old.endWord).coerceAtMost(tokens.lastIndex)
-                fixed.add(ManualChunk(start, end))
-                previousEnd = end
-            }
-            chunks = fixed
-        }
-    }
-
-    private inner class BoundaryProfileView(context: Context, private val editsStart: Boolean) : View(context) {
-        private val barPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-        private val markerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-        private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            textSize = dp(11).toFloat()
-            typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        }
-
-        private var profile: AudioProfile? = null
-        private var label: String = ""
-        private var centerMs: Int = 0
-        private var candidateMs: Int? = null
-        private var lowerMs: Int = 0
-        private var upperMs: Int = 0
-        private var displayStartMs: Int = 0
-        private var displayEndMs: Int = 0
-
-        fun setBoundary(profile: AudioProfile?, label: String, centerMs: Int, candidateMs: Int?, lowerMs: Int, upperMs: Int) {
-            this.profile = profile
-            this.label = label
-            this.centerMs = centerMs
-            this.candidateMs = candidateMs
-            this.lowerMs = lowerMs
-            this.upperMs = upperMs
-            invalidate()
-        }
-
-        override fun onTouchEvent(event: MotionEvent): Boolean {
-            if (profile == null || displayEndMs <= displayStartMs) return true
-            parent?.requestDisallowInterceptTouchEvent(true)
-            val clampedX = event.x.coerceIn(0f, width.toFloat())
-            val touchedProfileMs = (displayStartMs + (clampedX / max(1f, width.toFloat()) * (displayEndMs - displayStartMs))).roundToInt()
-            val touchedMs = touchedProfileMs - waveformOffsetMs
-            val selection = activeAdjustSelection() ?: return true
-            when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
-                    setBoundaryToTime(selection, editsStart, touchedMs, preview = false)
-                    return true
-                }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    setBoundaryToTime(selection, editsStart, touchedMs, preview = true)
-                    parent?.requestDisallowInterceptTouchEvent(false)
-                    return true
-                }
-            }
-            return true
-        }
-
-        override fun onDraw(canvas: Canvas) {
-            super.onDraw(canvas)
-            val profile = profile
-            val width = width.toFloat()
-            val height = height.toFloat()
-            barPaint.color = color(R.color.skin_surface_alt)
-            canvas.drawRoundRect(0f, 0f, width, height, dp(8).toFloat(), dp(8).toFloat(), barPaint)
-            textPaint.color = color(R.color.skin_muted)
-            canvas.drawText(label, dp(6).toFloat(), dp(14).toFloat(), textPaint)
-            if (profile == null || profile.samples.isEmpty()) {
-                canvas.drawText("프로파일 준비 중", dp(64).toFloat(), dp(14).toFloat(), textPaint)
-                return
-            }
-
-            val centerProfileMs = centerMs + waveformOffsetMs
-            val displayStart = max(0, centerProfileMs - 650)
-            val displayEnd = min(profile.durationMs, centerProfileMs + 650)
-            if (displayEnd <= displayStart) return
-            displayStartMs = displayStart
-            displayEndMs = displayEnd
-
-            val startIndex = (displayStart / profile.windowMs).coerceIn(0, profile.samples.lastIndex)
-            val endIndex = (displayEnd / profile.windowMs).coerceIn(startIndex, profile.samples.lastIndex)
-            var localMax = 0.001f
-            for (index in startIndex..endIndex) localMax = max(localMax, profile.samples[index])
-
-            val top = dp(20).toFloat()
-            val bottom = height - dp(8)
-            val centerY = (top + bottom) / 2f
-            val halfHeight = (bottom - top) / 2f
-            barPaint.strokeWidth = dp(1).toFloat()
-            barPaint.color = color(R.color.skin_line)
-            canvas.drawLine(0f, centerY, width, centerY, barPaint)
-
-            val allowedStart = max(lowerMs + waveformOffsetMs, displayStart)
-            val allowedEnd = min(upperMs + waveformOffsetMs, displayEnd)
-            if (allowedEnd > allowedStart) {
-                val left = ((allowedStart - displayStart).toFloat() / (displayEnd - displayStart).toFloat()) * width
-                val right = ((allowedEnd - displayStart).toFloat() / (displayEnd - displayStart).toFloat()) * width
-                barPaint.color = color(R.color.skin_highlight)
-                barPaint.alpha = 70
-                canvas.drawRect(left, top, right, bottom, barPaint)
-                barPaint.alpha = 255
-            }
-
-            barPaint.color = color(R.color.skin_primary_dark)
-            barPaint.strokeWidth = dp(2).toFloat()
-            for (index in startIndex..endIndex) {
-                val time = index * profile.windowMs
-                val x = ((time - displayStart).toFloat() / (displayEnd - displayStart).toFloat()) * width
-                val normalized = (profile.samples[index] / localMax).coerceIn(0f, 1f)
-                val barHeight = max(1f, normalized * halfHeight)
-                canvas.drawLine(x, centerY - barHeight, x, centerY + barHeight, barPaint)
-            }
-
-            markerPaint.strokeWidth = dp(2).toFloat()
-            markerPaint.color = color(R.color.skin_accent)
-            drawMarker(canvas, centerMs + waveformOffsetMs, displayStart, displayEnd, height, markerPaint)
-            candidateMs?.let {
-                markerPaint.color = color(R.color.skin_primary_dark)
-                drawMarker(canvas, it + waveformOffsetMs, displayStart, displayEnd, height, markerPaint)
-            }
-
-            textPaint.color = color(R.color.skin_ink)
-            val candidateText = candidateMs?.let { "  후보 ${formatTimeMs(it)}" } ?: ""
-            canvas.drawText("${formatTimeMs(centerMs)}$candidateText", dp(64).toFloat(), dp(14).toFloat(), textPaint)
-        }
-
-        private fun drawMarker(canvas: Canvas, timeMs: Int, displayStart: Int, displayEnd: Int, height: Float, paint: Paint) {
-            if (timeMs !in displayStart..displayEnd) return
-            val x = ((timeMs - displayStart).toFloat() / (displayEnd - displayStart).toFloat()) * width.toFloat()
-            canvas.drawLine(x, dp(18).toFloat(), x, height - dp(4), paint)
-        }
-    }
-
-    private data class LessonMeta(val id: String, val title: String, val subtitle: String?, val level: String?, val path: String)
-    private data class ImageAsset(val id: String, val file: String, val role: String, val label: String, val page: Int)
-    private data class AudioAsset(val id: String, val file: String, val role: String, val language: String)
-    private data class ChunkProfile(val id: String, val label: String, val pauseBehavior: String)
-    private data class SourceBox(val x: Float, val y: Float, val w: Float, val h: Float)
-    private data class VocabSourceRef(val sourceId: String, val rowId: String, val rowIndex: Int, val box: SourceBox?)
-    private data class VocabularySourceItem(val vocabId: String, val sourceText: String, val meaningText: String, val rowIndex: Int, val box: SourceBox?)
-    private data class VocabularySource(val id: String, val type: String, val label: String, val imageId: String, val items: List<VocabularySourceItem>)
-    private data class Vocab(
-        val id: String,
-        val word: String,
-        val lemma: String,
-        val forms: List<String>,
-        val partOfSpeech: String,
-        val meaningKo: String,
-        val simpleKo: String,
-        val easyEnglish: String,
-        val examples: List<String>,
-        val highlight: Boolean,
-        val highlightStyle: String,
-        val sourceRefs: List<VocabSourceRef>,
-        val explanationIds: List<String>
-    )
-    private data class Explanation(val id: String, val targetType: String, val targetId: String, val title: String, val textKo: String, val easyEnglish: String, val examples: List<String>)
-    private data class VocabStudyItem(val id: String, val word: String, val meaning: String, val note: String, val examples: List<String>)
-    private data class Annotation(val id: String, val type: String, val wordId: String, val text: String, val startChar: Int, val endChar: Int, val explanationIds: List<String>)
-    private data class Chunk(
-        val id: String,
-        val text: String,
-        val startChar: Int,
-        val endChar: Int,
-        var startMs: Int,
-        var endMs: Int,
-        val originalStartMs: Int = startMs,
-        val originalEndMs: Int = endMs
-    )
-    private data class LessonSentence(val id: String, val text: String, val audioId: String, val startMs: Int, val endMs: Int, val chunkSets: Map<String, List<Chunk>>, val annotations: List<Annotation>)
-    private data class LessonParagraph(val id: String, val type: String, val sentences: List<LessonSentence>)
-    private data class Lesson(
-        val id: String,
-        val title: String,
-        val subtitle: String,
-        val level: String,
-        val basePath: String,
-        val defaultAudioId: String,
-        val defaultChunkSetId: String,
-        val imageAssets: Map<String, ImageAsset>,
-        val audioAssets: Map<String, AudioAsset>,
-        val vocabularySources: Map<String, VocabularySource>,
-        val profiles: Map<String, ChunkProfile>,
-        val paragraphs: List<LessonParagraph>,
-        val vocabulary: Map<String, Vocab>,
-        val explanations: Map<String, Explanation>
-    )
-    private data class SentenceRef(val paragraphIndex: Int, val sentence: LessonSentence)
-    private data class SentenceRange(val sentenceIndex: Int, val start: Int, val end: Int)
-    private data class ParagraphBinding(val textView: TextView, val paragraphIndex: Int, val text: String, val ranges: List<SentenceRange>) {
-        fun sentenceAt(offset: Int): Int? = ranges.firstOrNull { offset in it.start until it.end }?.sentenceIndex
-        fun localOffset(sentenceIndex: Int, offset: Int): Int? = ranges.firstOrNull { it.sentenceIndex == sentenceIndex }?.let { offset - it.start }
-    }
-    private data class TtsSegment(
-        val sentenceIndex: Int,
-        val chunkId: String?,
-        val text: String,
-        val startMs: Int,
-        val endMs: Int
-    )
-    private data class MasterSettings(
-        val vocabEnabled: Boolean = true,
-        val quizEnabled: Boolean = true,
-        val quizMode: String = "choice",
-        val manualChunkEnabled: Boolean = true,
-        val firstListenPauseMs: Int = 1500,
-        val firstListenRate: Float = 0.9f,
-        val speakChunkPauseMs: Int = 700,
-        val firstListenNextAlwaysEnabled: Boolean = false
-    )
-    private data class QuizItem(val word: String, val answer: String, val options: List<String>)
-    private data class WordToken(val text: String, val startChar: Int, val endChar: Int)
-    private data class ManualChunk(val startWord: Int, val endWord: Int)
-    private data class UnknownUnderline(val startChar: Int, val endChar: Int)
-    private data class UnknownDraft(val binding: ParagraphBinding, val startOffset: Int, var currentOffset: Int)
-    private data class PlaybackBoundary(val endMs: Int, val nextStartMs: Int, val nextSentenceIndex: Int?)
-    private data class AudioProfile(val samples: FloatArray, val windowMs: Int, val durationMs: Int)
-    private data class AdjustSelection(
-        val sentenceIndex: Int,
-        val chunkIndex: Int,
-        val sentence: LessonSentence,
-        val chunk: Chunk,
-        val chunks: List<Chunk>
-    )
 }

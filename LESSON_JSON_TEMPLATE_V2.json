@@ -123,6 +123,7 @@
       ],
       "partOfSpeech": "noun",
       "easyEnglish": "A person you like and know well.",
+      "easyEnglishLong": "A friend is someone you enjoy spending time with. You know this person well, and this person can help you, play with you, or talk with you.",
       "meaningKo": "친구",
       "simpleKo": "좋아하고 잘 아는 사람",
       "examples": [
@@ -156,6 +157,7 @@
       "targetId": "w_friend",
       "title": "friend 뜻",
       "easyEnglish": "A person you like and know well.",
+      "easyEnglishLong": "A friend is someone you enjoy spending time with. You know this person well, and this person can help you, play with you, or talk with you.",
       "textKo": "friend는 좋아하고 잘 아는 사람, 즉 친구라는 뜻이에요.",
       "examples": [
         "My best friend Paul and I were excited."
