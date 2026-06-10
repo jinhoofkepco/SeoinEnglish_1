@@ -20,13 +20,10 @@ import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.media.AudioFormat
 import android.media.AudioManager
-import android.media.AudioRecord
 import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
-import android.media.MediaRecorder
 import android.media.ToneGenerator
 import android.os.Build
 import android.net.Uri
@@ -95,7 +92,6 @@ import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.log10
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -232,9 +228,6 @@ class MainActivity : Activity() {
     private var readingCoachDebugLabel: TextView? = null
     private var readingCoachStateButton: TextView? = null
     private var readingCoachDebugText = ""
-    private var nativeAudioProbe: AudioRecord? = null
-    @Volatile private var nativeAudioProbeRunning = false
-    private var nativeAudioProbeThread: Thread? = null
     private var webRtcDebugSummary = ""
     private val questionPromptPrimedLessons = mutableSetOf<String>()
     private val answeredComprehensionChecks = mutableSetOf<String>()
@@ -2875,6 +2868,8 @@ class MainActivity : Activity() {
         clearPendingChatPromptState()
         updateReadingCoachStatus("Opening ChatGPT voice mode...")
         installWebRtcDebugObserver("before-voice-request")
+        ensureWebRtcAudioContext("before-voice-request")
+        logActiveRecordingConfigurations("before-voice-request")
         requestCoachVoiceMode(token, retries = 35) { clicked ->
             if (!readingCoachActive || token != readingCoachFlowToken) return@requestCoachVoiceMode
             if (!clicked) {
@@ -2883,6 +2878,7 @@ class MainActivity : Activity() {
                 return@requestCoachVoiceMode
             }
             bringChatGptDialogToForegroundForVoice("voice-button-clicked")
+            logActiveRecordingConfigurations("voice-button-clicked")
             readingCoachFallbackTts = false
             readingCoachState = ReadingCoachState.VOICE_SHELL_READY
             Log.d("SeoinCoach", "voice mode requested")
@@ -2904,6 +2900,8 @@ class MainActivity : Activity() {
                     return@waitForCoachVoiceUiReady
                 }
                 bringChatGptDialogToForegroundForVoice("voice-ready-before-prime")
+                ensureWebRtcAudioContext("voice-ready-before-prime")
+                logActiveRecordingConfigurations("voice-ready-before-prime")
                 updateReadingCoachStatus("Microphone is ready. Priming coach...")
                 setCoachMicOpen(false) { micReady ->
                     Log.d("SeoinCoach", "initial mic closed before prime ready=$micReady")
@@ -2912,6 +2910,8 @@ class MainActivity : Activity() {
                         if (!readingCoachActive || token != readingCoachFlowToken || readingCoachFallbackTts) return@postDelayed
                         Log.d("SeoinCoach", "voice settle before prime finished delayMs=1000")
                         bringChatGptDialogToForegroundForVoice("prime-inject")
+                        ensureWebRtcAudioContext("prime-inject")
+                        logActiveRecordingConfigurations("prime-inject")
                         readLastAssistantText { baseline ->
                             if (!readingCoachActive || token != readingCoachFlowToken || readingCoachFallbackTts) return@readLastAssistantText
                             injectCoachMessage(prime, marker, attempt = 0, maxAttempts = 0, visibleTimeoutMs = 20_000L) { visible ->
@@ -2991,6 +2991,8 @@ class MainActivity : Activity() {
             After Seoin repeats it, give one very short friendly tip.
             Chunk: "${chunk.text}"
         """.trimIndent()
+        ensureWebRtcAudioContext("chunk-inject")
+        logActiveRecordingConfigurations("chunk-inject")
         readLastAssistantText { baseline ->
             if (!readingCoachActive || token != readingCoachChunkToken) return@readLastAssistantText
             injectCoachMessage(prompt, marker, attempt = 0) { visible ->
@@ -3014,159 +3016,24 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun startNativeAudioLevelProbe(token: Long) {
-        stopNativeAudioLevelProbe("restart")
-        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            updateReadingCoachDebug(turnStage = "child speaking", audioStage = "native mic no permission")
-            Log.d("SeoinCoach", "native audio probe blocked reason=no-record-audio-permission")
-            return
-        }
-        val sampleRate = 16_000
-        val minBuffer = AudioRecord.getMinBufferSize(
-            sampleRate,
-            AudioFormat.CHANNEL_IN_MONO,
-            AudioFormat.ENCODING_PCM_16BIT
-        )
-        if (minBuffer <= 0) {
-            updateReadingCoachDebug(turnStage = "child speaking", audioStage = "native mic init failed min=$minBuffer")
-            Log.d("SeoinCoach", "native audio probe blocked reason=bad-min-buffer minBuffer=$minBuffer")
-            return
-        }
-        val bufferSize = max(minBuffer * 2, sampleRate / 2)
-        val source = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            MediaRecorder.AudioSource.UNPROCESSED
-        } else {
-            MediaRecorder.AudioSource.MIC
-        }
-        val record = runCatching {
-            val format = AudioFormat.Builder()
-                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                .setSampleRate(sampleRate)
-                .setChannelMask(AudioFormat.CHANNEL_IN_MONO)
-                .build()
-            val builder = AudioRecord.Builder()
-                .setAudioSource(source)
-                .setAudioFormat(format)
-                .setBufferSizeInBytes(bufferSize)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                builder.setPrivacySensitive(false)
-            }
-            builder.build()
-        }.getOrElse { error ->
-            updateReadingCoachDebug(turnStage = "child speaking", audioStage = "native mic build error")
-            Log.d("SeoinCoach", "native audio probe build error=${error.message}")
-            return
-        }
-        if (record.state != AudioRecord.STATE_INITIALIZED) {
-            updateReadingCoachDebug(turnStage = "child speaking", audioStage = "native mic uninitialized")
-            Log.d("SeoinCoach", "native audio probe uninitialized state=${record.state}")
-            record.release()
-            return
-        }
-        nativeAudioProbe = record
-        nativeAudioProbeRunning = true
-        nativeAudioProbeThread = Thread({
-            val buffer = ShortArray(bufferSize / 2)
-            var totalReads = 0
-            var lastUiAt = 0L
-            var lastSoundAt = 0L
-            runCatching { record.startRecording() }.onFailure { error ->
-                nativeAudioProbeRunning = false
-                handler.post {
-                    updateReadingCoachDebug(turnStage = "child speaking", audioStage = "native mic start error")
-                }
-                Log.d("SeoinCoach", "native audio probe start error=${error.message}")
-            }
-            Log.d(
-                "SeoinCoach",
-                "native audio probe start state=${record.state} recordingState=${record.recordingState} source=$source sampleRate=$sampleRate buffer=$bufferSize"
-            )
-            while (nativeAudioProbeRunning && readingCoachActive && token == readingCoachChunkToken) {
-                val read = runCatching { record.read(buffer, 0, buffer.size, AudioRecord.READ_BLOCKING) }.getOrElse { error ->
-                    Log.d("SeoinCoach", "native audio probe read error=${error.message}")
-                    -1
-                }
-                val now = System.currentTimeMillis()
-                totalReads += 1
-                var rms = 0.0
-                var peak = 0.0
-                if (read > 0) {
-                    var sum = 0.0
-                    var maxAbs = 0
-                    for (index in 0 until read) {
-                        val value = buffer[index].toInt()
-                        val absValue = if (value == Short.MIN_VALUE.toInt()) Short.MAX_VALUE.toInt() else kotlin.math.abs(value)
-                        if (absValue > maxAbs) maxAbs = absValue
-                        val normalized = value / 32768.0
-                        sum += normalized * normalized
-                    }
-                    rms = sqrt(sum / read)
-                    peak = maxAbs / 32768.0
-                    if (rms >= 0.001 || peak >= 0.004) {
-                        lastSoundAt = now
-                    }
-                }
-                val db = if (rms > 0.0000001) 20.0 * log10(rms) else -120.0
-                val soundAge = if (lastSoundAt > 0L) now - lastSoundAt else -1L
-                if (now - lastUiAt >= 250L || read <= 0) {
-                    lastUiAt = now
-                    val message = "native rms=${"%.4f".format(rms)} peak=${"%.4f".format(peak)} db=${"%.1f".format(db)} read=$read age=${soundAge}ms"
-                    handler.post {
-                        if (readingCoachActive && token == readingCoachChunkToken) {
-                            updateReadingCoachDebug(
-                                turnStage = "child speaking",
-                                audioStage = message,
-                                detail = "AudioRecord debug only"
-                            )
-                        }
-                    }
-                    Log.d(
-                        "SeoinCoach",
-                        "native audio probe sample read=$read rms=${"%.6f".format(rms)} peak=${"%.6f".format(peak)} db=${"%.1f".format(db)} soundAgeMs=$soundAge totalReads=$totalReads recordingState=${record.recordingState}"
-                    )
-                }
-                if (read <= 0) {
-                    Thread.sleep(80L)
-                }
-            }
-            runCatching { record.stop() }
-            record.release()
-            if (nativeAudioProbe === record) nativeAudioProbe = null
-            Log.d("SeoinCoach", "native audio probe stopped totalReads=$totalReads")
-        }, "SeoinNativeAudioProbe").apply {
-            isDaemon = true
-            start()
-        }
-    }
-
-    private fun stopNativeAudioLevelProbe(reason: String) {
-        if (!nativeAudioProbeRunning && nativeAudioProbe == null) return
-        Log.d("SeoinCoach", "native audio probe stop request reason=$reason")
-        nativeAudioProbeRunning = false
-        nativeAudioProbeThread?.interrupt()
-        nativeAudioProbeThread = null
-        nativeAudioProbe?.let { record ->
-            runCatching { record.stop() }
-            runCatching { record.release() }
-        }
-        nativeAudioProbe = null
-    }
-
     private fun openCoachTalkTurn(lesson: Lesson, token: Long) {
         if (!readingCoachActive || token != readingCoachChunkToken) return
         readingCoachState = ReadingCoachState.CHILD_TURN
         readingCoachChildTurnStartedAtMs = System.currentTimeMillis()
         updateReadingCoachStatus("Your turn. Speak now.")
-        updateReadingCoachDebug(textStage = "done", turnStage = "child speaking", audioStage = "mic open", detail = "minWait=5000ms")
-        startNativeAudioLevelProbe(token)
+        updateReadingCoachDebug(textStage = "done", turnStage = "child speaking", audioStage = "mic opening", detail = "WebView clone VAD; minWait=5000ms")
+        ensureWebRtcAudioContext("talk-turn-start")
+        logActiveRecordingConfigurations("before-talk-open")
         setCoachMicOpen(open = true) { clicked ->
             Log.d("SeoinCoach", "talk open clicked=$clicked")
+            logActiveRecordingConfigurations("after-talk-open")
             val talkToken = readingCoachChunkToken
             handler.postDelayed({
                 if (!readingCoachActive || talkToken != readingCoachChunkToken) return@postDelayed
-                stopNativeAudioLevelProbe("talk-window-ending")
+                logActiveRecordingConfigurations("before-talk-close")
                 setCoachMicOpen(open = false) { muteClicked ->
                     Log.d("SeoinCoach", "talk window ended; mic close clicked=$muteClicked")
+                    logActiveRecordingConfigurations("after-talk-close")
                     if (!readingCoachActive || talkToken != readingCoachChunkToken) return@setCoachMicOpen
                     readingCoachState = ReadingCoachState.FEEDBACK
                     updateReadingCoachStatus("Coach feedback...")
@@ -3255,7 +3122,6 @@ class MainActivity : Activity() {
     }
 
     private fun resetReadingCoachStateOnly() {
-        stopNativeAudioLevelProbe("coach-reset")
         readingCoachFlowToken += 1L
         readingCoachChunkToken += 1L
         readingCoachActive = false
@@ -3396,6 +3262,26 @@ class MainActivity : Activity() {
                 if (!readingCoachActive) return@post
                 webRtcDebugSummary = "ai-end quiet=${quietMs}ms rms=${"%.4f".format(rms)}"
                 updateReadingCoachDebug(turnStage = "webrtc", audioStage = webRtcDebugSummary)
+            }
+        }
+
+        @JavascriptInterface
+        fun onKidSpeechStart(rms: Double, summary: String?) {
+            Log.d("SeoinCoach", "rtc kid speech start rms=$rms summary=${summary.orEmpty().take(180)}")
+            handler.post {
+                if (!readingCoachActive) return@post
+                webRtcDebugSummary = "kid-start rms=${"%.4f".format(rms)} ${summary.orEmpty().take(120)}"
+                updateReadingCoachDebug(turnStage = "child speaking", audioStage = webRtcDebugSummary)
+            }
+        }
+
+        @JavascriptInterface
+        fun onKidSpeechEnd(rms: Double, quietMs: Long, summary: String?) {
+            Log.d("SeoinCoach", "rtc kid speech end rms=$rms quietMs=$quietMs summary=${summary.orEmpty().take(180)}")
+            handler.post {
+                if (!readingCoachActive) return@post
+                webRtcDebugSummary = "kid-end quiet=${quietMs}ms rms=${"%.4f".format(rms)}"
+                updateReadingCoachDebug(turnStage = "child speaking", audioStage = webRtcDebugSummary)
             }
         }
     }
@@ -6810,6 +6696,20 @@ class MainActivity : Activity() {
 
     private fun buildCoachVoiceInputProbeScript(): String = """
             (function() {
+              const T = window.__seoinRtcObserver;
+              if (T && T.snapshot) {
+                const snap = T.snapshot();
+                const now = Date.now();
+                const active = !!snap.kidSpeaking || (T.kidLastLoudAt && now - T.kidLastLoudAt < 650);
+                return JSON.stringify({
+                  active: !!active,
+                  summary: "kidVad detectors=" + snap.kidDetectors +
+                    " active=" + active +
+                    " quietMs=" + snap.kidQuietMs +
+                    " ctx=" + snap.ctx +
+                    " " + (snap.kidSummary || "")
+                });
+              }
               const visible = function(el) {
                 if (!el) return false;
                 const rect = el.getBoundingClientRect();
@@ -6873,6 +6773,23 @@ class MainActivity : Activity() {
     private fun buildMediaPlaybackProbeScript(): String = """
             (function() {
               const now = Date.now();
+              const rtc = window.__seoinRtcObserver;
+              if (rtc && rtc.snapshot) {
+                const snap = rtc.snapshot();
+                if (snap.aiDetectors > 0) {
+                  const recent = !!snap.aiSpeaking || (rtc.aiLastLoudAt && now - rtc.aiLastLoudAt < 450);
+                  return JSON.stringify({
+                    count: snap.aiDetectors,
+                    hasProbe: true,
+                    recentActive: !!recent,
+                    summary: "aiVad detectors=" + snap.aiDetectors +
+                      " active=" + recent +
+                      " quietMs=" + snap.aiQuietMs +
+                      " ctx=" + snap.ctx +
+                      " " + (snap.aiSummary || "")
+                  });
+                }
+              }
               const AudioCtx = window.AudioContext || window.webkitAudioContext;
               const state = window.__seoinMediaProbe || (window.__seoinMediaProbe = {
                 entries: new WeakMap(),
@@ -7104,24 +7021,81 @@ class MainActivity : Activity() {
         val webView = chatWebView ?: return
         webView.evaluateJavascript(buildWebRtcDebugObserverScript()) { result ->
             Log.d("SeoinCoach", "rtc observer install reason=$reason result=${jsStringValue(result)}")
+            ensureWebRtcAudioContext("observer-installed-$reason")
+        }
+    }
+
+    private fun ensureWebRtcAudioContext(reason: String) {
+        val webView = chatWebView ?: return
+        val safeReason = JSONObject.quote(reason)
+        val script = """
+            (function() {
+              const reason = $safeReason;
+              const T = window.__seoinRtcObserver;
+              if (!T || !T.ensureCtx) return "NO_OBSERVER";
+              const state = T.ensureCtx(reason);
+              return String(state);
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            Log.d("SeoinCoach", "rtc ctx ensure reason=$reason result=${jsStringValue(result)}")
+        }
+    }
+
+    private fun logActiveRecordingConfigurations(reason: String) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            Log.d("SeoinCoach", "recording config reason=$reason unsupported api=${Build.VERSION.SDK_INT}")
+            return
+        }
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+        val configs = runCatching { audioManager?.activeRecordingConfigurations.orEmpty() }
+            .getOrElse { error ->
+                Log.d("SeoinCoach", "recording config reason=$reason error=${error.message}")
+                emptyList()
+            }
+        if (configs.isEmpty()) {
+            Log.d("SeoinCoach", "recording config reason=$reason count=0")
+            return
+        }
+        configs.forEachIndexed { index, config ->
+            val silenced = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                runCatching { config.isClientSilenced }.getOrNull()?.toString() ?: "unknown"
+            } else {
+                "n/a"
+            }
+            Log.d(
+                "SeoinCoach",
+                "recording config reason=$reason #$index session=${config.clientAudioSessionId} source=${config.clientAudioSource} silenced=$silenced"
+            )
         }
     }
 
     private fun buildWebRtcDebugObserverScript(): String = """
         (function() {
-          if (window.__seoinRtcObserver && window.__seoinRtcObserver.installed) {
+          if (window.__seoinRtcObserver && window.__seoinRtcObserver.version === 2) {
             if (window.AndroidRtcDebug && AndroidRtcDebug.onRtcDebug) {
-              AndroidRtcDebug.onRtcDebug("install-skip", "already installed micTracks=" + window.__seoinRtcObserver.micTracks.length + " remote=" + window.__seoinRtcObserver.remoteCount);
+              AndroidRtcDebug.onRtcDebug("install-skip", "v2 micTracks=" + window.__seoinRtcObserver.micTracks.length + " probes=" + window.__seoinRtcObserver.probeTracks.length + " ai=" + window.__seoinRtcObserver.aiDetectorCount);
             }
             return "ALREADY_INSTALLED";
           }
           const T = window.__seoinRtcObserver = {
             installed: true,
+            version: 2,
             micTracks: [],
-            remoteCount: 0,
+            probeTracks: [],
+            aiDetectorCount: 0,
+            kidDetectorCount: 0,
             detectors: [],
-            originalGum: navigator.mediaDevices && navigator.mediaDevices.getUserMedia,
-            originalPc: window.RTCPeerConnection
+            nodes: [],
+            mediaEls: [],
+            ctx: null,
+            kidSpeaking: false,
+            aiSpeaking: false,
+            kidLastLoudAt: 0,
+            aiLastLoudAt: 0,
+            kidSummary: "",
+            aiSummary: "",
+            originalGum: navigator.mediaDevices && navigator.mediaDevices.getUserMedia
           };
           const report = function(kind, payload) {
             try {
@@ -7140,13 +7114,180 @@ class MainActivity : Activity() {
               "label=" + (track.label || "").slice(0, 80)
             ].join(",");
           };
+          const audioTracksOf = function(stream) {
+            try {
+              return stream && stream.getAudioTracks ? stream.getAudioTracks() : [];
+            } catch (e) {
+              return [];
+            }
+          };
+          const ensureCtx = function(reason) {
+            try {
+              const AudioCtx = window.AudioContext || window.webkitAudioContext;
+              if (!AudioCtx) {
+                report("ctx", "missing reason=" + reason);
+                return "missing";
+              }
+              if (!T.ctx) {
+                T.ctx = new AudioCtx();
+                report("ctx", "created reason=" + reason + " state=" + T.ctx.state);
+              }
+              if (T.ctx.state === "suspended") {
+                try {
+                  const resumeResult = T.ctx.resume();
+                  if (resumeResult && resumeResult.then) {
+                    resumeResult.then(function() {
+                      report("ctx", "resumed reason=" + reason + " state=" + T.ctx.state);
+                    }).catch(function(error) {
+                      report("ctx", "resume-fail reason=" + reason + " error=" + (error && error.message ? error.message : error));
+                    });
+                  }
+                } catch (e) {
+                  report("ctx", "resume-error reason=" + reason + " error=" + (e && e.message ? e.message : e));
+                }
+              }
+              return T.ctx.state;
+            } catch (e) {
+              report("ctx", "error reason=" + reason + " error=" + (e && e.message ? e.message : e));
+              return "error";
+            }
+          };
+          T.ensureCtx = ensureCtx;
+
+          const attachVad = function(stream, label, type) {
+            try {
+              const tracks = audioTracksOf(stream);
+              if (!stream || tracks.length === 0) {
+                report(type + "-vad", "skip no-audio label=" + label);
+                return false;
+              }
+              const key = "__seoinVad" + type;
+              if (stream[key]) {
+                return true;
+              }
+              try {
+                Object.defineProperty(stream, key, { value: true, configurable: true });
+              } catch (e) {
+                stream[key] = true;
+              }
+              const ctxState = ensureCtx(type + "-" + label);
+              if (!T.ctx) return false;
+              const source = T.ctx.createMediaStreamSource(stream);
+              const analyser = T.ctx.createAnalyser();
+              analyser.fftSize = 2048;
+              analyser.smoothingTimeConstant = 0.12;
+              source.connect(analyser);
+              const buffer = new Float32Array(analyser.fftSize);
+              let speaking = false;
+              let lastLoud = 0;
+              let lastReport = 0;
+              let noise = type === "kid" ? 0.0015 : 0.004;
+              let peakFloor = type === "kid" ? 0.004 : 0.012;
+              const minRms = type === "kid" ? 0.003 : 0.010;
+              const minPeak = type === "kid" ? 0.012 : 0.035;
+              const multiplier = type === "kid" ? 2.8 : 2.6;
+              const quietMs = type === "kid" ? 900 : 700;
+              const reportEveryMs = type === "kid" ? 350 : 700;
+              const interval = setInterval(function() {
+                try {
+                  if (!T.ctx || T.ctx.state === "closed") return;
+                  analyser.getFloatTimeDomainData(buffer);
+                  let sum = 0;
+                  let peak = 0;
+                  for (let i = 0; i < buffer.length; i += 1) {
+                    const v = buffer[i];
+                    const abs = Math.abs(v);
+                    if (abs > peak) peak = abs;
+                    sum += v * v;
+                  }
+                  const rms = Math.sqrt(sum / buffer.length);
+                  const now = Date.now();
+                  const rmsThreshold = Math.max(minRms, noise * multiplier);
+                  const peakThreshold = Math.max(minPeak, peakFloor * multiplier);
+                  const loud = rms >= rmsThreshold || peak >= peakThreshold;
+                  if (!speaking) {
+                    const floorAlpha = loud ? 0.005 : 0.045;
+                    noise = Math.max(0.0005, noise * (1 - floorAlpha) + Math.max(rms, 0.0005) * floorAlpha);
+                    peakFloor = Math.max(0.001, peakFloor * (1 - floorAlpha) + Math.max(peak, 0.001) * floorAlpha);
+                  }
+                  const summary = label +
+                    " rms=" + rms.toFixed(5) +
+                    " peak=" + peak.toFixed(5) +
+                    " floor=" + noise.toFixed(5) +
+                    " th=" + rmsThreshold.toFixed(5) +
+                    " speaking=" + speaking +
+                    " ctx=" + (T.ctx ? T.ctx.state : "none");
+                  if (loud) {
+                    lastLoud = now;
+                    if (type === "kid") {
+                      T.kidLastLoudAt = now;
+                      T.kidSummary = summary;
+                    } else {
+                      T.aiLastLoudAt = now;
+                      T.aiSummary = summary;
+                    }
+                    if (!speaking) {
+                      speaking = true;
+                      if (type === "kid") {
+                        T.kidSpeaking = true;
+                        if (window.AndroidRtcDebug && AndroidRtcDebug.onKidSpeechStart) AndroidRtcDebug.onKidSpeechStart(rms, summary);
+                      } else {
+                        T.aiSpeaking = true;
+                        if (window.AndroidRtcDebug && AndroidRtcDebug.onAiSpeechStart) AndroidRtcDebug.onAiSpeechStart(rms, summary);
+                      }
+                    }
+                  } else if (speaking && now - lastLoud > quietMs) {
+                    speaking = false;
+                    if (type === "kid") {
+                      T.kidSpeaking = false;
+                      T.kidSummary = summary;
+                      if (window.AndroidRtcDebug && AndroidRtcDebug.onKidSpeechEnd) AndroidRtcDebug.onKidSpeechEnd(rms, now - lastLoud, summary);
+                    } else {
+                      T.aiSpeaking = false;
+                      T.aiSummary = summary;
+                      if (window.AndroidRtcDebug && AndroidRtcDebug.onAiSpeechEnd) AndroidRtcDebug.onAiSpeechEnd(rms, now - lastLoud, summary);
+                    }
+                  }
+                  if (now - lastReport >= reportEveryMs) {
+                    lastReport = now;
+                    report(type + "-rms", summary + " quietMs=" + (lastLoud ? now - lastLoud : -1));
+                  }
+                } catch (e) {
+                  report(type + "-vad-error", label + " " + (e && e.message ? e.message : e));
+                }
+              }, 50);
+              T.detectors.push(interval);
+              T.nodes.push(source);
+              T.nodes.push(analyser);
+              if (type === "kid") T.kidDetectorCount += 1; else T.aiDetectorCount += 1;
+              report(type + "-vad", "attached label=" + label + " tracks=" + tracks.length + " ctx=" + ctxState);
+              return true;
+            } catch (e) {
+              report(type + "-vad-error", label + " " + (e && e.message ? e.message : e));
+              return false;
+            }
+          };
+
           if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && !navigator.mediaDevices.__seoinGumWrapped) {
             const gum = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
             navigator.mediaDevices.getUserMedia = async function(constraints) {
               report("gum-request", JSON.stringify(constraints || {}));
               const stream = await gum(constraints);
               stream.getAudioTracks().forEach(function(track) {
-                if (T.micTracks.indexOf(track) < 0) T.micTracks.push(track);
+                if (T.micTracks.indexOf(track) < 0) {
+                  T.micTracks.push(track);
+                  try {
+                    const probe = track.clone();
+                    probe.enabled = true;
+                    T.probeTracks.push(probe);
+                    attachVad(new MediaStream([probe]), "kid-clone#" + T.probeTracks.length, "kid");
+                    probe.addEventListener("mute", function() { report("kid-probe-mute", trackSummary(probe)); });
+                    probe.addEventListener("unmute", function() { report("kid-probe-unmute", trackSummary(probe)); });
+                    probe.addEventListener("ended", function() { report("kid-probe-ended", trackSummary(probe)); });
+                  } catch (e) {
+                    report("kid-clone-error", String(e && e.message ? e.message : e));
+                  }
+                }
                 report("mic-track", trackSummary(track));
                 track.addEventListener("mute", function() { report("mic-mute", trackSummary(track)); });
                 track.addEventListener("unmute", function() { report("mic-unmute", trackSummary(track)); });
@@ -7160,95 +7301,82 @@ class MainActivity : Activity() {
             report("gum-wrap", "missing-or-already");
           }
 
-          const attachSilenceDetector = function(stream, label) {
+          const tapMediaStream = function(stream, label) {
             try {
-              const AudioCtx = window.AudioContext || window.webkitAudioContext;
-              if (!AudioCtx || !stream) {
-                report("remote-detector", "no-audio-context-or-stream label=" + label);
-                return;
+              if (!stream || audioTracksOf(stream).length === 0) return false;
+              if (stream.__seoinAiVadTapped) return true;
+              try {
+                Object.defineProperty(stream, "__seoinAiVadTapped", { value: true, configurable: true });
+              } catch (e) {
+                stream.__seoinAiVadTapped = true;
               }
-              const ctx = new AudioCtx();
-              if (ctx.state === "suspended") {
-                try { ctx.resume(); } catch (e) {}
-              }
-              const analyser = ctx.createAnalyser();
-              analyser.fftSize = 2048;
-              analyser.smoothingTimeConstant = 0.15;
-              ctx.createMediaStreamSource(stream).connect(analyser);
-              const buf = new Float32Array(analyser.fftSize);
-              let speaking = false;
-              let lastLoud = 0;
-              let lastReport = 0;
-              const detector = setInterval(function() {
-                try {
-                  analyser.getFloatTimeDomainData(buf);
-                  let sum = 0;
-                  let peak = 0;
-                  for (let i = 0; i < buf.length; i += 1) {
-                    const v = buf[i];
-                    const a = Math.abs(v);
-                    if (a > peak) peak = a;
-                    sum += v * v;
-                  }
-                  const rms = Math.sqrt(sum / buf.length);
-                  const now = Date.now();
-                  if (rms > 0.012 || peak > 0.04) {
-                    lastLoud = now;
-                    if (!speaking) {
-                      speaking = true;
-                      if (window.AndroidRtcDebug && AndroidRtcDebug.onAiSpeechStart) {
-                        AndroidRtcDebug.onAiSpeechStart(rms, label + " peak=" + peak.toFixed(4));
-                      }
-                    }
-                  } else if (speaking && now - lastLoud > 700) {
-                    speaking = false;
-                    if (window.AndroidRtcDebug && AndroidRtcDebug.onAiSpeechEnd) {
-                      AndroidRtcDebug.onAiSpeechEnd(rms, now - lastLoud, label + " peak=" + peak.toFixed(4));
-                    }
-                  }
-                  if (now - lastReport > 1000) {
-                    lastReport = now;
-                    report("remote-rms", label + " rms=" + rms.toFixed(5) + " peak=" + peak.toFixed(5) + " speaking=" + speaking + " quietMs=" + (lastLoud ? now - lastLoud : -1));
-                  }
-                } catch (e) {
-                  report("remote-detector-error", String(e && e.message ? e.message : e));
-                }
-              }, 50);
-              T.detectors.push(detector);
-              report("remote-detector", "attached " + label);
+              return attachVad(stream, label, "ai");
             } catch (e) {
-              report("remote-detector-error", String(e && e.message ? e.message : e));
+              report("ai-tap-error", label + " " + (e && e.message ? e.message : e));
+              return false;
             }
           };
 
-          const PC = window.RTCPeerConnection;
-          if (PC && !PC.__seoinWrapped) {
-            const WrappedPC = new Proxy(PC, {
-              construct: function(target, args) {
-                const pc = new target(...args);
-                T.remoteCount += 1;
-                const pcLabel = "pc#" + T.remoteCount;
-                report("pc-create", pcLabel);
-                pc.addEventListener("track", function(event) {
-                  const track = event.track;
-                  report("pc-track", pcLabel + " " + trackSummary(track));
-                  if (track && track.kind === "audio") {
-                    const stream = (event.streams && event.streams[0]) || new MediaStream([track]);
-                    attachSilenceDetector(stream, pcLabel);
-                  }
-                });
-                pc.addEventListener("connectionstatechange", function() { report("pc-state", pcLabel + " connection=" + pc.connectionState); });
-                pc.addEventListener("iceconnectionstatechange", function() { report("pc-ice", pcLabel + " ice=" + pc.iceConnectionState); });
-                return pc;
+          if (window.HTMLMediaElement && window.HTMLMediaElement.prototype && !window.HTMLMediaElement.prototype.__seoinPlayWrappedV2) {
+            const originalPlay = window.HTMLMediaElement.prototype.play;
+            window.HTMLMediaElement.prototype.play = function() {
+              try {
+                if (T.mediaEls.indexOf(this) < 0) T.mediaEls.push(this);
+                if (this.srcObject) tapMediaStream(this.srcObject, "media-play#" + T.mediaEls.length);
+              } catch (e) {
+                report("media-play-hook-error", String(e && e.message ? e.message : e));
               }
-            });
-            WrappedPC.prototype = PC.prototype;
-            WrappedPC.__seoinWrapped = true;
-            window.RTCPeerConnection = WrappedPC;
-            report("pc-wrap", "ok");
-          } else {
-            report("pc-wrap", PC ? "already" : "missing");
+              return originalPlay.apply(this, arguments);
+            };
+            window.HTMLMediaElement.prototype.__seoinPlayWrappedV2 = true;
+            report("media-play-wrap", "ok");
           }
+
+          try {
+            const mediaProto = window.HTMLMediaElement && window.HTMLMediaElement.prototype;
+            const desc = mediaProto && Object.getOwnPropertyDescriptor(mediaProto, "srcObject");
+            if (mediaProto && desc && desc.set && !mediaProto.__seoinSrcObjectWrappedV2) {
+              Object.defineProperty(mediaProto, "srcObject", {
+                configurable: true,
+                enumerable: desc.enumerable,
+                get: function() {
+                  return desc.get ? desc.get.call(this) : undefined;
+                },
+                set: function(value) {
+                  const result = desc.set.call(this, value);
+                  try {
+                    if (value) tapMediaStream(value, "media-srcObject");
+                  } catch (e) {
+                    report("media-srcObject-hook-error", String(e && e.message ? e.message : e));
+                  }
+                  return result;
+                }
+              });
+              mediaProto.__seoinSrcObjectWrappedV2 = true;
+              report("media-srcObject-wrap", "ok");
+            } else {
+              report("media-srcObject-wrap", desc ? "already-or-no-set" : "missing-desc");
+            }
+          } catch (e) {
+            report("media-srcObject-wrap-error", String(e && e.message ? e.message : e));
+          }
+          T.snapshot = function() {
+            const now = Date.now();
+            return {
+              ctx: T.ctx ? T.ctx.state : "none",
+              micTracks: T.micTracks.length,
+              probeTracks: T.probeTracks.length,
+              kidDetectors: T.kidDetectorCount,
+              aiDetectors: T.aiDetectorCount,
+              kidSpeaking: T.kidSpeaking,
+              aiSpeaking: T.aiSpeaking,
+              kidQuietMs: T.kidLastLoudAt ? now - T.kidLastLoudAt : -1,
+              aiQuietMs: T.aiLastLoudAt ? now - T.aiLastLoudAt : -1,
+              kidSummary: T.kidSummary,
+              aiSummary: T.aiSummary
+            };
+          };
+          report("install", "v2 complete gumWrapped=" + !!(navigator.mediaDevices && navigator.mediaDevices.__seoinGumWrapped) + " playWrapped=" + !!(window.HTMLMediaElement && window.HTMLMediaElement.prototype.__seoinPlayWrappedV2));
           return "INSTALLED";
         })();
     """.trimIndent()
