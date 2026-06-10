@@ -230,6 +230,7 @@ class MainActivity : Activity() {
     private var readingCoachEndSpeakingButton: TextView? = null
     private var readingCoachDebugText = ""
     private var readingCoachEndSpeakingRequestedToken = 0L
+    private var readingCoachTurnPurpose = "sentence"
     private var webRtcDebugSummary = ""
     private val questionPromptPrimedLessons = mutableSetOf<String>()
     private val answeredComprehensionChecks = mutableSetOf<String>()
@@ -2770,7 +2771,7 @@ class MainActivity : Activity() {
             setPadding(dp(12), dp(10), dp(12), dp(10))
             background = rounded(color(R.color.skin_surface_alt), dp(18), color(R.color.skin_line), dp(1))
         }
-        row.addView(text("ChatGPT voice coach reads each chunk, then Seoin shadows it.", 14f, color(R.color.skin_muted)), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        row.addView(text("ChatGPT voice teacher explains sentences and asks short checks.", 14f, color(R.color.skin_muted)), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
         row.addView(pill("낭독 코치").apply {
             background = rounded(color(R.color.skin_mark), dp(18), color(R.color.skin_primary), dp(1))
             setOnClickListener { startReadingCoachMode(lesson) }
@@ -2785,10 +2786,10 @@ class MainActivity : Activity() {
         readingCoachPreviousUseTts = useTts
         readingCoachPreferredChunkSetId = coachChunkSetId(lesson)
         readingCoachChunkSetId = readingCoachPreferredChunkSetId
-        val firstPosition = firstCoachPosition(lesson, selectedSentenceIndex)
-            ?: firstCoachPosition(lesson, 0)
+        val firstSentenceIndex = firstCoachSentenceIndex(lesson, selectedSentenceIndex)
+            ?: firstCoachSentenceIndex(lesson, 0)
             ?: run {
-                toast("No chunks for coach.")
+                toast("No sentences for coach.")
                 return
             }
         stopAllPlayback()
@@ -2800,12 +2801,13 @@ class MainActivity : Activity() {
         readingCoachFirstVoiceChunkStarted = false
         readingCoachKeyboardPrimed = false
         readingCoachChildTurnStartedAtMs = 0L
-        readingCoachSentenceIndex = firstPosition.first
-        readingCoachChunkIndex = firstPosition.second
+        readingCoachTurnPurpose = "sentence"
+        readingCoachSentenceIndex = firstSentenceIndex
+        readingCoachChunkIndex = 0
         readingCoachFlowToken += 1L
         readingCoachChunkToken += 1L
         useTts = true
-        updateReadingCoachSelection(lesson, readingCoachSentenceIndex, readingCoachChunkIndex)
+        updateReadingCoachSentenceSelection(lesson, readingCoachSentenceIndex)
         refreshAllParagraphs()
         scrollToSentence(readingCoachSentenceIndex)
         installReadingCoachControls(lesson)
@@ -2848,12 +2850,11 @@ class MainActivity : Activity() {
         }
         row.addView(readingCoachEndSpeakingButton, LinearLayout.LayoutParams(0, dp(46), 0.85f).withRightMargin(dp(6)))
         row.addView(pill("다음 청크").apply {
-            setOnClickListener { moveReadingCoachChunk(lesson, 1, autoRead = true) }
+            setOnClickListener { moveReadingCoachSentence(lesson, 1, autoRead = true) }
         }, LinearLayout.LayoutParams(0, dp(46), 1f).withRightMargin(dp(6)))
         row.addView(pill("문장 반복").apply {
             setOnClickListener {
-                readingCoachChunkIndex = 0
-                readCurrentCoachChunk(lesson, forceTts = readingCoachFallbackTts)
+                askParagraphCheck(lesson)
             }
         }, LinearLayout.LayoutParams(0, dp(46), 1f).withRightMargin(dp(6)))
         row.addView(pill("끝내기").apply {
@@ -2861,6 +2862,21 @@ class MainActivity : Activity() {
             setOnClickListener { endReadingCoachMode(lesson) }
         }, LinearLayout.LayoutParams(0, dp(46), 0.8f))
         box.addView(row, matchWrap())
+        val testRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        testRow.addView(pill("Ask / Answer").apply {
+            background = rounded(0xFFEAF3FF.toInt(), dp(18), 0xFF7CB7FF.toInt(), dp(1))
+            setOnClickListener { openCoachTalkTurn(lesson, readingCoachChunkToken) }
+        }, LinearLayout.LayoutParams(0, dp(42), 1f).withRightMargin(dp(6)))
+        testRow.addView(pill("Next Sentence").apply {
+            setOnClickListener { moveReadingCoachSentence(lesson, 1, autoRead = true) }
+        }, LinearLayout.LayoutParams(0, dp(42), 1f).withRightMargin(dp(6)))
+        testRow.addView(pill("Paragraph Check").apply {
+            setOnClickListener { askParagraphCheck(lesson) }
+        }, LinearLayout.LayoutParams(0, dp(42), 1f))
+        box.addView(testRow, matchWrap().withTop(dp(8)))
         readingCoachStateButton = pill("").apply {
             setOnClickListener { retryReadingCoachVoice(lesson) }
         }
@@ -2899,7 +2915,8 @@ class MainActivity : Activity() {
             val prime = """
                 You are Seoin's kind English reading teacher.
                 Speak in very easy English. Be warm, short, and calm.
-                In coaching mode: read one chunk slowly, ask Seoin to repeat, listen, then give one tiny pronunciation or chunking tip.
+                In teacher mode: read sentences, explain important chunks and their roles, ask short comprehension questions, and check if Seoin has questions.
+                Do not do pronunciation scoring or shadowing practice.
                 Do not answer this setup message out loud if possible. If you must respond, keep it silent and short.
             """.trimIndent()
             updateReadingCoachStatus("Voice clicked. Waiting for voice screen...")
@@ -2955,18 +2972,16 @@ class MainActivity : Activity() {
 
     private fun readCurrentCoachChunk(lesson: Lesson, forceTts: Boolean = false) {
         val token = ++readingCoachChunkToken
-        val position = currentCoachPosition(lesson) ?: run {
+        val sentenceIndex = currentCoachSentenceIndex(lesson) ?: run {
             finishReadingCoach(lesson)
             return
         }
-        val (sentenceIndex, chunkIndex) = position
-        val chunk = updateReadingCoachSelection(lesson, sentenceIndex, chunkIndex) ?: run {
-            finishReadingCoach(lesson)
-            return
-        }
+        val sentence = updateReadingCoachSentenceSelection(lesson, sentenceIndex)
         refreshAllParagraphs()
         scrollToSentence(sentenceIndex)
-        updateReadingCoachStatus("Coach is reading: ${chunk.text}")
+        val mode = coachSentenceMode(lesson, sentenceIndex)
+        val chunks = coachChunksFor(lesson, sentenceIndex)
+        updateReadingCoachStatus("Teacher mode: ${mode.uppercase(Locale.US)} sentence ${sentenceIndex + 1}")
 
         if (forceTts || readingCoachFallbackTts || !readingCoachPrimed || chatWebView == null) {
             if (blockReadingCoachTtsFallbackForDebug) {
@@ -2981,47 +2996,56 @@ class MainActivity : Activity() {
             }
             readingCoachFallbackTts = true
             readingCoachState = ReadingCoachState.FALLBACK_TTS
-            updateReadingCoachStatus("TTS fallback reading. Repeat after it, then press Next.")
+            updateReadingCoachStatus("TTS fallback: reading current sentence.")
             speakTtsSegments(
-                listOf(chunkTtsSegment(sentenceIndex, chunk)),
+                listOfNotNull(sentenceTtsSegment(sentenceIndex)),
                 pauseAfterMs = 0,
                 speechRate = masterSettings.firstListenRate,
                 onDone = {
                     if (!readingCoachActive || token != readingCoachChunkToken) return@speakTtsSegments
-                    readingCoachState = ReadingCoachState.CHILD_TURN
-                    updateReadingCoachStatus("Your turn. Read it out loud, then press Next Chunk.")
+                    readingCoachState = ReadingCoachState.CONVERSATION_READY
+                    updateReadingCoachStatus("Fallback done. Press Next or Check.")
                 }
             )
             return
         }
 
         readingCoachState = ReadingCoachState.COACHING
-        updateReadingCoachStatus("Coach is speaking. Wait for your turn.")
-        val marker = coachMarker("chunk_${sentenceIndex}_${readingCoachChunkIndex}")
-        val prompt = """
-            Read this part slowly one time, then say: "Now your turn, Seoin."
-            After Seoin repeats it, give one very short friendly tip.
-            Chunk: "${chunk.text}"
-        """.trimIndent()
-        ensureWebRtcAudioContext("chunk-inject")
-        logActiveRecordingConfigurations("chunk-inject")
+        readingCoachTurnPurpose = if (mode == "explain") "sentence_question" else "read_sentence"
+        updateReadingCoachStatus("Teacher is working on sentence ${sentenceIndex + 1}.")
+        val marker = coachMarker("sentence_${sentenceIndex}_${mode}")
+        val prompt = buildSentenceCoachPrompt(lesson, sentenceIndex, sentence.text, chunks, mode)
+        ensureWebRtcAudioContext("sentence-coach-inject")
+        logActiveRecordingConfigurations("sentence-coach-inject")
         readLastAssistantText { baseline ->
             if (!readingCoachActive || token != readingCoachChunkToken) return@readLastAssistantText
             injectCoachMessage(prompt, marker, attempt = 0) { visible ->
                 if (!readingCoachActive || token != readingCoachChunkToken) return@injectCoachMessage
                 if (!visible) {
-                    switchReadingCoachToTtsFallback(lesson, "chunk inject not visible")
+                    switchReadingCoachToTtsFallback(lesson, "sentence inject not visible")
                     return@injectCoachMessage
                 }
                 if (!readingCoachFirstVoiceChunkStarted) {
                     readingCoachFirstVoiceChunkStarted = true
-                    Log.d("SeoinCoach", "first voice chunk started marker=$marker")
+                    Log.d("SeoinCoach", "first teacher sentence started marker=$marker")
                 }
                 waitForCoachTextCompleteAfter(token, baseline, timeoutMs = 9000L) { spokenText ->
                     if (!readingCoachActive || token != readingCoachChunkToken) return@waitForCoachTextCompleteAfter
                     waitForCoachMediaQuiet(token, spokenText) {
                         if (!readingCoachActive || token != readingCoachChunkToken) return@waitForCoachMediaQuiet
-                        openCoachTalkTurn(lesson, token)
+                        readingCoachState = ReadingCoachState.CONVERSATION_READY
+                        val atParagraphEnd = isCoachParagraphEnd(lesson, sentenceIndex)
+                        val message = when {
+                            mode == "explain" -> "Explanation done. Press Answer if Seoin has a question, or Next."
+                            atParagraphEnd -> "Paragraph ended. Press Check for a short question, or Next."
+                            else -> "Sentence done. Press Next."
+                        }
+                        updateReadingCoachStatus(message)
+                        if (mode == "explain") {
+                            updateReadingCoachDebug(textStage = "stable", turnStage = "question optional", audioStage = "mic closed", detail = "Answer button opens child turn")
+                        } else {
+                            updateReadingCoachDebug(textStage = "stable", turnStage = "read-only", audioStage = "mic closed", detail = "No child audio for read sentence")
+                        }
                     }
                 }
             }
@@ -3061,8 +3085,7 @@ class MainActivity : Activity() {
                                 waitForCoachVoiceInputIdle(talkToken) {
                                     if (!readingCoachActive || talkToken != readingCoachChunkToken) return@waitForCoachVoiceInputIdle
                                     readingCoachState = ReadingCoachState.CONVERSATION_READY
-                                    Log.d("SeoinCoach", "coach handoff next-chunk")
-                                    moveReadingCoachChunk(lesson, 1, autoRead = true)
+                                    handleCoachPostTalkDecision(lesson, feedbackText)
                                 }
                             }
                         }
@@ -3139,28 +3162,151 @@ class MainActivity : Activity() {
         poll()
     }
 
+    private fun buildSentenceCoachPrompt(
+        lesson: Lesson,
+        sentenceIndex: Int,
+        sentenceText: String,
+        chunks: List<Chunk>,
+        mode: String
+    ): String {
+        val chunkLines = chunks.takeIf { it.isNotEmpty() }
+            ?.joinToString("\n") { "- ${it.text}" }
+            ?: "- ${sentenceText}"
+        val paragraphText = coachParagraphText(lesson, flatSentences.getOrNull(sentenceIndex)?.paragraphIndex ?: 0)
+        return if (mode == "read") {
+            """
+                You are Seoin's kind English reading teacher.
+                Read this sentence one time, slowly and clearly.
+                Do not ask Seoin to repeat.
+                Do not open the microphone turn.
+                After reading, stop and wait.
+
+                Sentence:
+                "$sentenceText"
+            """.trimIndent()
+        } else {
+            """
+                You are Seoin's kind English reading teacher.
+                First, read this sentence one time, slowly.
+                Then explain it in very easy English.
+                Focus on what each chunk does in the sentence.
+                Keep it short: 3 to 5 simple sentences.
+                Then ask: "Do you have any questions about this sentence?"
+                If Seoin answers later:
+                - If she has a question, answer it simply.
+                - If she says no or seems okay, say one short encouragement.
+                At the very end of your text response only, add [SEOIN_NEXT] if you think she is ready to move on.
+                Add [SEOIN_WAIT] if you answered a question and should wait for the app button.
+                Do not say the bracket tag out loud.
+
+                Sentence:
+                "$sentenceText"
+
+                Chunks:
+                $chunkLines
+
+                Paragraph context:
+                $paragraphText
+            """.trimIndent()
+        }
+    }
+
+    private fun askParagraphCheck(lesson: Lesson) {
+        if (!readingCoachActive) return
+        val sentenceIndex = readingCoachSentenceIndex.coerceIn(0, max(0, flatSentences.lastIndex))
+        val paragraphIndex = flatSentences.getOrNull(sentenceIndex)?.paragraphIndex ?: return
+        val paragraphText = coachParagraphText(lesson, paragraphIndex)
+        if (paragraphText.isBlank()) return
+        val token = ++readingCoachChunkToken
+        readingCoachTurnPurpose = "paragraph_check"
+        readingCoachState = ReadingCoachState.COACHING
+        currentChunkId = null
+        refreshAllParagraphs()
+        updateReadingCoachStatus("Teacher is asking a paragraph check.")
+        val marker = coachMarker("paragraph_${paragraphIndex}_check")
+        val prompt = """
+            You are Seoin's kind English reading teacher.
+            Ask ONE very short comprehension question about this paragraph.
+            After Seoin answers, judge gently.
+            If she seems to understand, praise her and end your text response with [SEOIN_NEXT].
+            If she seems confused or wrong, explain one small part and ask a DIFFERENT short question. End with [SEOIN_RETRY].
+            Do not say the bracket tag out loud.
+
+            Paragraph:
+            $paragraphText
+        """.trimIndent()
+        readLastAssistantText { baseline ->
+            if (!readingCoachActive || token != readingCoachChunkToken) return@readLastAssistantText
+            injectCoachMessage(prompt, marker, attempt = 0) { visible ->
+                if (!readingCoachActive || token != readingCoachChunkToken) return@injectCoachMessage
+                if (!visible) {
+                    switchReadingCoachToTtsFallback(lesson, "paragraph check inject not visible")
+                    return@injectCoachMessage
+                }
+                waitForCoachTextCompleteAfter(token, baseline, timeoutMs = 9000L) { questionText ->
+                    if (!readingCoachActive || token != readingCoachChunkToken) return@waitForCoachTextCompleteAfter
+                    waitForCoachMediaQuiet(token, questionText) {
+                        if (!readingCoachActive || token != readingCoachChunkToken) return@waitForCoachMediaQuiet
+                        openCoachTalkTurn(lesson, token)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleCoachPostTalkDecision(lesson: Lesson, feedbackText: String) {
+        val normalized = feedbackText.uppercase(Locale.US)
+        when {
+            "[SEOIN_NEXT]" in normalized -> {
+                Log.d("SeoinCoach", "coach decision next purpose=$readingCoachTurnPurpose")
+                moveReadingCoachSentence(lesson, 1, autoRead = true)
+            }
+            "[SEOIN_RETRY]" in normalized -> {
+                Log.d("SeoinCoach", "coach decision retry purpose=$readingCoachTurnPurpose")
+                updateReadingCoachStatus("Teacher wants one more check.")
+                askParagraphCheck(lesson)
+            }
+            else -> {
+                Log.d("SeoinCoach", "coach decision wait purpose=$readingCoachTurnPurpose")
+                updateReadingCoachStatus("Teacher response done. Press Next, Check, or Answer.")
+                updateReadingCoachDebug(turnStage = "teacher done", audioStage = "mic closed", detail = "No auto tag found")
+            }
+        }
+    }
+
+    private fun coachParagraphText(lesson: Lesson, paragraphIndex: Int): String {
+        return lesson.paragraphs.getOrNull(paragraphIndex)
+            ?.sentences
+            ?.joinToString(" ") { it.text.trim() }
+            .orEmpty()
+            .trim()
+    }
+
     private fun moveReadingCoachChunk(lesson: Lesson, delta: Int, autoRead: Boolean) {
+        moveReadingCoachSentence(lesson, delta, autoRead)
+    }
+
+    private fun moveReadingCoachSentence(lesson: Lesson, delta: Int, autoRead: Boolean) {
         if (autoRead && (readingCoachState == ReadingCoachState.CHILD_TURN || readingCoachState == ReadingCoachState.FEEDBACK)) {
             Log.d("SeoinCoach", "coach next prompt blocked state=$readingCoachState")
             updateReadingCoachStatus("Waiting for your turn or coach feedback before the next prompt.")
             updateReadingCoachDebug(turnStage = "blocked", audioStage = "input/feedback active")
             return
         }
-        val currentChunks = coachChunksFor(lesson, readingCoachSentenceIndex)
-        var nextSentence = readingCoachSentenceIndex
-        var nextChunk = readingCoachChunkIndex + delta
-        if (nextChunk !in currentChunks.indices) {
-            val nextPosition = firstCoachPosition(lesson, readingCoachSentenceIndex + 1)
-            if (nextPosition == null) {
-                finishReadingCoach(lesson)
-                return
-            }
-            nextSentence = nextPosition.first
-            nextChunk = nextPosition.second
+        val start = (readingCoachSentenceIndex + delta).coerceAtLeast(0)
+        val nextSentence = if (delta >= 0) {
+            firstCoachSentenceIndex(lesson, start)
+        } else {
+            previousCoachSentenceIndex(lesson, start)
+        }
+        if (nextSentence == null) {
+            finishReadingCoach(lesson)
+            return
         }
         readingCoachSentenceIndex = nextSentence
-        readingCoachChunkIndex = nextChunk.coerceAtLeast(0)
-        updateReadingCoachSelection(lesson, readingCoachSentenceIndex, readingCoachChunkIndex)
+        readingCoachChunkIndex = 0
+        readingCoachTurnPurpose = "sentence"
+        updateReadingCoachSentenceSelection(lesson, readingCoachSentenceIndex)
         refreshAllParagraphs()
         scrollToSentence(readingCoachSentenceIndex)
         updateReadingCoachStatus()
@@ -3273,8 +3419,13 @@ class MainActivity : Activity() {
     }
 
     private fun updateReadingCoachStatus(extra: String? = null) {
-        val chunk = coachChunksFor(currentLesson ?: return, readingCoachSentenceIndex).getOrNull(readingCoachChunkIndex)
-        val total = coachChunksFor(currentLesson ?: return, readingCoachSentenceIndex).size
+        val lesson = currentLesson ?: return
+        val sentence = flatSentences.getOrNull(readingCoachSentenceIndex)?.sentence
+        val paragraphIndex = flatSentences.getOrNull(readingCoachSentenceIndex)?.paragraphIndex ?: 0
+        val mode = coachSentenceMode(lesson, readingCoachSentenceIndex)
+        val statusChunks = coachChunksFor(lesson, readingCoachSentenceIndex)
+        val chunk = statusChunks.getOrNull(readingCoachChunkIndex)
+        val total = statusChunks.size
         val stateText = when (readingCoachState) {
             ReadingCoachState.IDLE -> "준비중"
             ReadingCoachState.VOICE_SHELL_READY -> "voice ready"
@@ -3288,6 +3439,7 @@ class MainActivity : Activity() {
         }
         readingCoachStatusLabel?.text = extra ?: "낭독 코치 ${readingCoachSentenceIndex + 1}/${flatSentences.size}, chunk ${readingCoachChunkIndex + 1}/$total: ${chunk?.text.orEmpty()}"
         readingCoachStateButton?.text = "현재 상태: $stateText · Voice 다시 시도"
+        readingCoachStatusLabel?.text = extra ?: "Teacher ${readingCoachSentenceIndex + 1}/${flatSentences.size} · P${paragraphIndex + 1} · $mode: ${sentence?.text.orEmpty()}"
         val childTurn = readingCoachState == ReadingCoachState.CHILD_TURN
         readingCoachEndSpeakingButton?.apply {
             isEnabled = childTurn
@@ -3418,6 +3570,20 @@ class MainActivity : Activity() {
         return chunk
     }
 
+    private fun updateReadingCoachSentenceSelection(lesson: Lesson, sentenceIndex: Int): LessonSentence {
+        val sentence = flatSentences.getOrNull(sentenceIndex)?.sentence ?: flatSentences.first().sentence
+        val (setId, chunks) = coachChunkSource(lesson, sentenceIndex)
+        readingCoachChunkSetId = setId
+        activeMode = setId
+        readingCoachSentenceIndex = sentenceIndex
+        readingCoachChunkIndex = 0
+        currentSentenceIndex = sentenceIndex
+        selectedSentenceIndex = sentenceIndex
+        currentChunkId = chunks.firstOrNull()?.id
+        pendingStartMs = sentence.startMs
+        return sentence
+    }
+
     private fun currentCoachPosition(lesson: Lesson): Pair<Int, Int>? {
         val chunks = coachChunksFor(lesson, readingCoachSentenceIndex)
         if (readingCoachChunkIndex in chunks.indices) return readingCoachSentenceIndex to readingCoachChunkIndex
@@ -3432,6 +3598,55 @@ class MainActivity : Activity() {
             if (chunks.isNotEmpty()) return index to 0
         }
         return null
+    }
+
+    private fun currentCoachSentenceIndex(lesson: Lesson): Int? {
+        if (readingCoachSentenceIndex in flatSentences.indices && isCoachSentenceEligible(lesson, readingCoachSentenceIndex)) {
+            return readingCoachSentenceIndex
+        }
+        return firstCoachSentenceIndex(lesson, readingCoachSentenceIndex)
+    }
+
+    private fun firstCoachSentenceIndex(lesson: Lesson, startSentenceIndex: Int): Int? {
+        if (flatSentences.isEmpty()) return null
+        val start = startSentenceIndex.coerceIn(0, flatSentences.lastIndex)
+        for (index in start..flatSentences.lastIndex) {
+            if (isCoachSentenceEligible(lesson, index)) return index
+        }
+        return null
+    }
+
+    private fun previousCoachSentenceIndex(lesson: Lesson, startSentenceIndex: Int): Int? {
+        if (flatSentences.isEmpty()) return null
+        val start = startSentenceIndex.coerceIn(0, flatSentences.lastIndex)
+        for (index in start downTo 0) {
+            if (isCoachSentenceEligible(lesson, index)) return index
+        }
+        return null
+    }
+
+    private fun isCoachSentenceEligible(lesson: Lesson, sentenceIndex: Int): Boolean {
+        val ref = flatSentences.getOrNull(sentenceIndex) ?: return false
+        val paragraph = lesson.paragraphs.getOrNull(ref.paragraphIndex) ?: return false
+        if (paragraph.type == "title" || paragraph.type == "quiz") return false
+        val text = ref.sentence.text.trim()
+        if (text.isBlank()) return false
+        return ref.sentence.coachMode != "skip"
+    }
+
+    private fun coachSentenceMode(lesson: Lesson, sentenceIndex: Int): String {
+        val sentence = flatSentences.getOrNull(sentenceIndex)?.sentence ?: return "read"
+        if (sentence.coachMode == "read" || sentence.coachMode == "explain") return sentence.coachMode
+        val chunks = coachChunksFor(lesson, sentenceIndex)
+        val wordCount = wordTokens(sentence.text).size
+        val hasCheck = lesson.comprehensionChecks.any { it.afterSentenceId == sentence.id || it.sentenceId == sentence.id }
+        return if (hasCheck || sentence.annotations.isNotEmpty() || chunks.size >= 3 || wordCount >= 9) "explain" else "read"
+    }
+
+    private fun isCoachParagraphEnd(lesson: Lesson, sentenceIndex: Int): Boolean {
+        val currentParagraph = flatSentences.getOrNull(sentenceIndex)?.paragraphIndex ?: return false
+        val next = firstCoachSentenceIndex(lesson, sentenceIndex + 1) ?: return true
+        return flatSentences.getOrNull(next)?.paragraphIndex != currentParagraph
     }
 
     private fun coachMarker(label: String): String {
@@ -8737,7 +8952,8 @@ class MainActivity : Activity() {
                         endMs = s.optInt("endMs", chunkSets.values.flatten().maxOfOrNull { it.endMs } ?: 0),
                         chunkSets = chunkSets,
                         annotations = annotations,
-                        chunkActivity = s.optChunkActivityMode()
+                        chunkActivity = s.optChunkActivityMode(),
+                        coachMode = s.optCoachMode()
                     )
                 )
             }

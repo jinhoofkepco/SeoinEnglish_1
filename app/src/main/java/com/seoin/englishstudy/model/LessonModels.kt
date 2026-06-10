@@ -169,7 +169,7 @@ internal data class Chunk(
     val originalStartMs: Int = startMs,
     val originalEndMs: Int = endMs
 )
-internal data class LessonSentence(val id: String, val text: String, val audioId: String, val startMs: Int, val endMs: Int, val chunkSets: Map<String, List<Chunk>>, val annotations: List<Annotation>, val chunkActivity: String)
+internal data class LessonSentence(val id: String, val text: String, val audioId: String, val startMs: Int, val endMs: Int, val chunkSets: Map<String, List<Chunk>>, val annotations: List<Annotation>, val chunkActivity: String, val coachMode: String)
 internal data class LessonParagraph(val id: String, val type: String, val sentences: List<LessonSentence>)
 internal data class ComprehensionCheck(
     val id: String,

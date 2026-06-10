@@ -79,3 +79,23 @@ internal fun JSONObject.optChunkActivityMode(): String {
         else -> "auto"
     }
 }
+
+internal fun JSONObject.optCoachMode(): String {
+    val raw = when {
+        has("coachMode") -> opt("coachMode")
+        has("readingCoachMode") -> opt("readingCoachMode")
+        has("sentenceCoachMode") -> opt("sentenceCoachMode")
+        has("needsExplanation") -> opt("needsExplanation")
+        else -> null
+    }
+    return when (raw) {
+        is Boolean -> if (raw) "explain" else "read"
+        is String -> when (raw.trim().lowercase()) {
+            "read", "reading", "plain", "simple", "read_only", "read-only" -> "read"
+            "explain", "explanation", "teach", "teacher", "coach" -> "explain"
+            "skip", "off", "false", "no", "exclude" -> "skip"
+            else -> "auto"
+        }
+        else -> "auto"
+    }
+}
