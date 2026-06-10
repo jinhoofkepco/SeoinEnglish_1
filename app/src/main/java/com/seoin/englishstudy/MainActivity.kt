@@ -68,6 +68,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.webkit.JavascriptInterface
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -234,6 +235,7 @@ class MainActivity : Activity() {
     private var nativeAudioProbe: AudioRecord? = null
     @Volatile private var nativeAudioProbeRunning = false
     private var nativeAudioProbeThread: Thread? = null
+    private var webRtcDebugSummary = ""
     private val questionPromptPrimedLessons = mutableSetOf<String>()
     private val answeredComprehensionChecks = mutableSetOf<String>()
     private var activeComprehensionPass = 0
@@ -2872,6 +2874,7 @@ class MainActivity : Activity() {
         readingCoachState = ReadingCoachState.IDLE
         clearPendingChatPromptState()
         updateReadingCoachStatus("Opening ChatGPT voice mode...")
+        installWebRtcDebugObserver("before-voice-request")
         requestCoachVoiceMode(token, retries = 35) { clicked ->
             if (!readingCoachActive || token != readingCoachFlowToken) return@requestCoachVoiceMode
             if (!clicked) {
@@ -3357,6 +3360,44 @@ class MainActivity : Activity() {
         readingCoachDebugText = parts.joinToString(" | ")
         readingCoachDebugLabel?.text = readingCoachDebugText
         Log.d("SeoinCoach", "coach stage $readingCoachDebugText")
+    }
+
+    private inner class ChatRtcDebugBridge {
+        @JavascriptInterface
+        fun onRtcDebug(kind: String?, payload: String?) {
+            val safeKind = kind.orEmpty().take(40)
+            val safePayload = payload.orEmpty().replace(Regex("\\s+"), " ").take(260)
+            Log.d("SeoinCoach", "rtc debug kind=$safeKind payload=$safePayload")
+            handler.post {
+                if (!readingCoachActive) return@post
+                webRtcDebugSummary = "$safeKind $safePayload"
+                updateReadingCoachDebug(
+                    turnStage = "webrtc",
+                    audioStage = webRtcDebugSummary,
+                    detail = "WebView RTC debug"
+                )
+            }
+        }
+
+        @JavascriptInterface
+        fun onAiSpeechStart(rms: Double, summary: String?) {
+            Log.d("SeoinCoach", "rtc ai speech start rms=$rms summary=${summary.orEmpty().take(180)}")
+            handler.post {
+                if (!readingCoachActive) return@post
+                webRtcDebugSummary = "ai-start rms=${"%.4f".format(rms)} ${summary.orEmpty().take(120)}"
+                updateReadingCoachDebug(turnStage = "webrtc", audioStage = webRtcDebugSummary)
+            }
+        }
+
+        @JavascriptInterface
+        fun onAiSpeechEnd(rms: Double, quietMs: Long, summary: String?) {
+            Log.d("SeoinCoach", "rtc ai speech end rms=$rms quietMs=$quietMs summary=${summary.orEmpty().take(180)}")
+            handler.post {
+                if (!readingCoachActive) return@post
+                webRtcDebugSummary = "ai-end quiet=${quietMs}ms rms=${"%.4f".format(rms)}"
+                updateReadingCoachDebug(turnStage = "webrtc", audioStage = webRtcDebugSummary)
+            }
+        }
     }
 
     private fun coachChunkSetId(lesson: Lesson): String {
@@ -7059,6 +7100,159 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun installWebRtcDebugObserver(reason: String) {
+        val webView = chatWebView ?: return
+        webView.evaluateJavascript(buildWebRtcDebugObserverScript()) { result ->
+            Log.d("SeoinCoach", "rtc observer install reason=$reason result=${jsStringValue(result)}")
+        }
+    }
+
+    private fun buildWebRtcDebugObserverScript(): String = """
+        (function() {
+          if (window.__seoinRtcObserver && window.__seoinRtcObserver.installed) {
+            if (window.AndroidRtcDebug && AndroidRtcDebug.onRtcDebug) {
+              AndroidRtcDebug.onRtcDebug("install-skip", "already installed micTracks=" + window.__seoinRtcObserver.micTracks.length + " remote=" + window.__seoinRtcObserver.remoteCount);
+            }
+            return "ALREADY_INSTALLED";
+          }
+          const T = window.__seoinRtcObserver = {
+            installed: true,
+            micTracks: [],
+            remoteCount: 0,
+            detectors: [],
+            originalGum: navigator.mediaDevices && navigator.mediaDevices.getUserMedia,
+            originalPc: window.RTCPeerConnection
+          };
+          const report = function(kind, payload) {
+            try {
+              if (window.AndroidRtcDebug && AndroidRtcDebug.onRtcDebug) {
+                AndroidRtcDebug.onRtcDebug(String(kind), String(payload || ""));
+              }
+            } catch (e) {}
+          };
+          const trackSummary = function(track) {
+            if (!track) return "no-track";
+            return [
+              "kind=" + track.kind,
+              "enabled=" + track.enabled,
+              "muted=" + track.muted,
+              "ready=" + track.readyState,
+              "label=" + (track.label || "").slice(0, 80)
+            ].join(",");
+          };
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && !navigator.mediaDevices.__seoinGumWrapped) {
+            const gum = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+            navigator.mediaDevices.getUserMedia = async function(constraints) {
+              report("gum-request", JSON.stringify(constraints || {}));
+              const stream = await gum(constraints);
+              stream.getAudioTracks().forEach(function(track) {
+                if (T.micTracks.indexOf(track) < 0) T.micTracks.push(track);
+                report("mic-track", trackSummary(track));
+                track.addEventListener("mute", function() { report("mic-mute", trackSummary(track)); });
+                track.addEventListener("unmute", function() { report("mic-unmute", trackSummary(track)); });
+                track.addEventListener("ended", function() { report("mic-ended", trackSummary(track)); });
+              });
+              return stream;
+            };
+            navigator.mediaDevices.__seoinGumWrapped = true;
+            report("gum-wrap", "ok");
+          } else {
+            report("gum-wrap", "missing-or-already");
+          }
+
+          const attachSilenceDetector = function(stream, label) {
+            try {
+              const AudioCtx = window.AudioContext || window.webkitAudioContext;
+              if (!AudioCtx || !stream) {
+                report("remote-detector", "no-audio-context-or-stream label=" + label);
+                return;
+              }
+              const ctx = new AudioCtx();
+              if (ctx.state === "suspended") {
+                try { ctx.resume(); } catch (e) {}
+              }
+              const analyser = ctx.createAnalyser();
+              analyser.fftSize = 2048;
+              analyser.smoothingTimeConstant = 0.15;
+              ctx.createMediaStreamSource(stream).connect(analyser);
+              const buf = new Float32Array(analyser.fftSize);
+              let speaking = false;
+              let lastLoud = 0;
+              let lastReport = 0;
+              const detector = setInterval(function() {
+                try {
+                  analyser.getFloatTimeDomainData(buf);
+                  let sum = 0;
+                  let peak = 0;
+                  for (let i = 0; i < buf.length; i += 1) {
+                    const v = buf[i];
+                    const a = Math.abs(v);
+                    if (a > peak) peak = a;
+                    sum += v * v;
+                  }
+                  const rms = Math.sqrt(sum / buf.length);
+                  const now = Date.now();
+                  if (rms > 0.012 || peak > 0.04) {
+                    lastLoud = now;
+                    if (!speaking) {
+                      speaking = true;
+                      if (window.AndroidRtcDebug && AndroidRtcDebug.onAiSpeechStart) {
+                        AndroidRtcDebug.onAiSpeechStart(rms, label + " peak=" + peak.toFixed(4));
+                      }
+                    }
+                  } else if (speaking && now - lastLoud > 700) {
+                    speaking = false;
+                    if (window.AndroidRtcDebug && AndroidRtcDebug.onAiSpeechEnd) {
+                      AndroidRtcDebug.onAiSpeechEnd(rms, now - lastLoud, label + " peak=" + peak.toFixed(4));
+                    }
+                  }
+                  if (now - lastReport > 1000) {
+                    lastReport = now;
+                    report("remote-rms", label + " rms=" + rms.toFixed(5) + " peak=" + peak.toFixed(5) + " speaking=" + speaking + " quietMs=" + (lastLoud ? now - lastLoud : -1));
+                  }
+                } catch (e) {
+                  report("remote-detector-error", String(e && e.message ? e.message : e));
+                }
+              }, 50);
+              T.detectors.push(detector);
+              report("remote-detector", "attached " + label);
+            } catch (e) {
+              report("remote-detector-error", String(e && e.message ? e.message : e));
+            }
+          };
+
+          const PC = window.RTCPeerConnection;
+          if (PC && !PC.__seoinWrapped) {
+            const WrappedPC = new Proxy(PC, {
+              construct: function(target, args) {
+                const pc = new target(...args);
+                T.remoteCount += 1;
+                const pcLabel = "pc#" + T.remoteCount;
+                report("pc-create", pcLabel);
+                pc.addEventListener("track", function(event) {
+                  const track = event.track;
+                  report("pc-track", pcLabel + " " + trackSummary(track));
+                  if (track && track.kind === "audio") {
+                    const stream = (event.streams && event.streams[0]) || new MediaStream([track]);
+                    attachSilenceDetector(stream, pcLabel);
+                  }
+                });
+                pc.addEventListener("connectionstatechange", function() { report("pc-state", pcLabel + " connection=" + pc.connectionState); });
+                pc.addEventListener("iceconnectionstatechange", function() { report("pc-ice", pcLabel + " ice=" + pc.iceConnectionState); });
+                return pc;
+              }
+            });
+            WrappedPC.prototype = PC.prototype;
+            WrappedPC.__seoinWrapped = true;
+            window.RTCPeerConnection = WrappedPC;
+            report("pc-wrap", "ok");
+          } else {
+            report("pc-wrap", PC ? "already" : "missing");
+          }
+          return "INSTALLED";
+        })();
+    """.trimIndent()
+
     private fun setChatAudioDucked(ducked: Boolean) {
         val webView = chatWebView ?: return
         val targetVolume = if (ducked) 0.0 else 1.0
@@ -7291,11 +7485,13 @@ class MainActivity : Activity() {
             settings.userAgentString = WebSettings.getDefaultUserAgent(this@MainActivity)
                 .replace("; wv", "")
                 .replace("Version/4.0 ", "")
+            addJavascriptInterface(ChatRtcDebugBridge(), "AndroidRtcDebug")
             CookieManager.getInstance().setAcceptCookie(true)
             CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     status.text = "마이크를 준비한 뒤 ChatGPT 화면 안의 음성 버튼을 눌러주세요."
+                    if (readingCoachActive) installWebRtcDebugObserver("page-finished")
                     val prepareDelay = if (readingCoachActive) 2200L else 700L
                     handler.postDelayed({
                         if (chatWebView === view) {
