@@ -116,6 +116,20 @@ class MainActivity : Activity() {
         val reason: String,
     )
 
+    private data class CoachResponseProbe(
+        val assistantText: String,
+        val busy: Boolean,
+        val turnUiVisible: Boolean,
+        val actionSummary: String,
+    )
+
+    private data class CoachMediaProbe(
+        val count: Int,
+        val hasProbe: Boolean,
+        val recentActive: Boolean,
+        val summary: String,
+    )
+
     private lateinit var root: FrameLayout
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var settingsStore: SettingsStore
@@ -202,7 +216,9 @@ class MainActivity : Activity() {
     private var readingCoachVoiceRequestInFlight = false
     private var readingCoachFirstVoiceChunkStarted = false
     private var readingCoachStatusLabel: TextView? = null
+    private var readingCoachDebugLabel: TextView? = null
     private var readingCoachStateButton: TextView? = null
+    private var readingCoachDebugText = ""
     private val questionPromptPrimedLessons = mutableSetOf<String>()
     private val answeredComprehensionChecks = mutableSetOf<String>()
     private var activeComprehensionPass = 0
@@ -2792,6 +2808,11 @@ class MainActivity : Activity() {
         }
         readingCoachStatusLabel = text("", 14f, color(R.color.skin_muted), Typeface.BOLD)
         box.addView(readingCoachStatusLabel, matchWrap().withBottom(dp(8)))
+        readingCoachDebugLabel = text("", 12f, color(R.color.skin_muted)).apply {
+            setPadding(dp(10), dp(8), dp(10), dp(8))
+            background = rounded(color(R.color.skin_surface_alt), dp(12), color(R.color.skin_line), dp(1))
+        }
+        box.addView(readingCoachDebugLabel, matchWrap().withBottom(dp(8)))
         val row = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -3070,7 +3091,9 @@ class MainActivity : Activity() {
         readingCoachVoiceRequestInFlight = false
         readingCoachFirstVoiceChunkStarted = false
         readingCoachStatusLabel = null
+        readingCoachDebugLabel = null
         readingCoachStateButton = null
+        readingCoachDebugText = ""
         setChatAudioDucked(false)
     }
 
@@ -3140,7 +3163,26 @@ class MainActivity : Activity() {
         }
         readingCoachStatusLabel?.text = extra ?: "낭독 코치 ${readingCoachSentenceIndex + 1}/${flatSentences.size}, chunk ${readingCoachChunkIndex + 1}/$total: ${chunk?.text.orEmpty()}"
         readingCoachStateButton?.text = "현재 상태: $stateText · Voice 다시 시도"
+        readingCoachDebugLabel?.text = readingCoachDebugText.ifBlank { "Debug: waiting for coach stages" }
         chatStatusLabel?.text = "Reading coach: $stateText"
+    }
+
+    private fun updateReadingCoachDebug(
+        textStage: String? = null,
+        turnStage: String? = null,
+        audioStage: String? = null,
+        detail: String? = null,
+    ) {
+        val parts = listOfNotNull(
+            textStage?.let { "Text: $it" },
+            turnStage?.let { "Turn UI: $it" },
+            audioStage?.let { "Audio: $it" },
+            detail
+        )
+        if (parts.isEmpty()) return
+        readingCoachDebugText = parts.joinToString(" | ")
+        readingCoachDebugLabel?.text = readingCoachDebugText
+        Log.d("SeoinCoach", "coach stage $readingCoachDebugText")
     }
 
     private fun coachChunkSetId(lesson: Lesson): String {
@@ -6224,58 +6266,77 @@ class MainActivity : Activity() {
     private fun waitForCoachTextCompleteAfter(token: Long, baseline: String, timeoutMs: Long, onDone: (String) -> Unit) {
         val start = System.currentTimeMillis()
         val baselineText = baseline.trim()
-        fun poll(lastText: String, stableCount: Int) {
-            if (!readingCoachActive || token != readingCoachChunkToken) return
-            if (System.currentTimeMillis() - start > timeoutMs) {
-                Log.d("SeoinCoach", "coach text complete reason=timeout-or-no-new-text")
-                onDone(lastText.ifBlank { baselineText })
-                return
-            }
-            readLastAssistantText { text ->
-                if (!readingCoachActive || token != readingCoachChunkToken) return@readLastAssistantText
-                val current = text.trim()
-                val hasNewText = current.isNotBlank() && current != baselineText
-                if (!hasNewText) {
-                    handler.postDelayed({ poll(lastText, 0) }, 500L)
-                    return@readLastAssistantText
-                }
-                val stable = current == lastText
-                val nextStable = if (stable) stableCount + 1 else 0
-                val punctuationDone = current.lastOrNull()?.let { it == '.' || it == '!' || it == '?' } == true
-                if (nextStable >= 2 && (punctuationDone || nextStable >= 4)) {
-                    Log.d("SeoinCoach", "coach text complete reason=${if (punctuationDone) "punctuation" else "stable"}")
-                    onDone(current)
-                } else {
-                    handler.postDelayed({ poll(current, nextStable) }, 500L)
-                }
-            }
-        }
-        poll("", 0)
-    }
+        var lastText = ""
+        var lastChangeAtMs = 0L
+        var textStarted = false
+        var finished = false
+        var sampleCount = 0
 
-    private fun waitForCoachTextComplete(token: Long, timeoutMs: Long, onDone: () -> Unit) {
-        val start = System.currentTimeMillis()
-        fun poll(lastText: String, stableCount: Int) {
-            if (!readingCoachActive || token != readingCoachChunkToken) return
-            if (System.currentTimeMillis() - start > timeoutMs) {
-                Log.d("SeoinCoach", "coach text complete reason=timeout")
-                onDone()
-                return
-            }
-            readLastAssistantText { text ->
-                if (!readingCoachActive || token != readingCoachChunkToken) return@readLastAssistantText
-                val stable = text.isNotBlank() && text == lastText
-                val nextStable = if (stable) stableCount + 1 else 0
-                val punctuationDone = text.trim().lastOrNull()?.let { it == '.' || it == '!' || it == '?' } == true
-                if (text.isNotBlank() && nextStable >= 2 && (punctuationDone || nextStable >= 4)) {
-                    Log.d("SeoinCoach", "coach text complete reason=${if (punctuationDone) "punctuation" else "stable"}")
-                    onDone()
-                } else {
-                    handler.postDelayed({ poll(text, nextStable) }, 500L)
+        updateReadingCoachDebug(textStage = "waiting", turnStage = "waiting", audioStage = "waiting")
+
+        fun finish(reason: String, text: String, probe: CoachResponseProbe?) {
+            if (finished || !readingCoachActive || token != readingCoachChunkToken) return
+            finished = true
+            val elapsed = System.currentTimeMillis() - start
+            updateReadingCoachDebug(
+                textStage = "$reason (${text.length} chars)",
+                turnStage = if (probe?.turnUiVisible == true) "visible" else "waiting",
+                audioStage = "waiting",
+                detail = "elapsed=${elapsed}ms"
+            )
+            Log.d(
+                "SeoinCoach",
+                "coach text complete reason=$reason elapsedMs=$elapsed chars=${text.length} busy=${probe?.busy} turnUi=${probe?.turnUiVisible} actions=\"${probe?.actionSummary.orEmpty()}\""
+            )
+            onDone(text.ifBlank { baselineText })
+        }
+
+        fun poll() {
+            if (!readingCoachActive || token != readingCoachChunkToken || finished) return
+            probeCoachResponse { probe ->
+                if (!readingCoachActive || token != readingCoachChunkToken || finished) return@probeCoachResponse
+                val now = System.currentTimeMillis()
+                val elapsed = now - start
+                val current = probe?.assistantText?.trim().orEmpty()
+                val hasNewText = current.isNotBlank() && current != baselineText
+                sampleCount += 1
+
+                if (hasNewText && !textStarted) {
+                    textStarted = true
+                    lastText = current
+                    lastChangeAtMs = now
+                    updateReadingCoachDebug(
+                        textStage = "started (${current.length} chars)",
+                        turnStage = if (probe?.turnUiVisible == true) "visible" else "waiting",
+                        audioStage = "waiting"
+                    )
+                    Log.d("SeoinCoach", "coach text start elapsedMs=$elapsed chars=${current.length}")
+                } else if (hasNewText && current != lastText) {
+                    lastText = current
+                    lastChangeAtMs = now
+                    if (sampleCount <= 8 || sampleCount % 10 == 0) {
+                        updateReadingCoachDebug(
+                            textStage = "streaming (${current.length} chars)",
+                            turnStage = if (probe?.turnUiVisible == true) "visible" else "waiting",
+                            audioStage = "waiting"
+                        )
+                    }
+                    Log.d("SeoinCoach", "coach text changed elapsedMs=$elapsed chars=${current.length}")
+                }
+
+                val idleMs = if (textStarted) now - lastChangeAtMs else 0L
+                when {
+                    textStarted && idleMs >= 500L ->
+                        finish("stable-500ms", lastText, probe)
+                    elapsed >= timeoutMs ->
+                        finish("timeout", lastText.ifBlank { current }, probe)
+                    else ->
+                        handler.postDelayed({ poll() }, 100L)
                 }
             }
         }
-        poll("", 0)
+
+        poll()
     }
 
     private fun readLastAssistantText(onDone: (String) -> Unit) {
@@ -6295,143 +6356,301 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun probeCoachResponse(onDone: (CoachResponseProbe?) -> Unit) {
+        val webView = chatWebView ?: run {
+            onDone(null)
+            return
+        }
+        webView.evaluateJavascript(buildCoachResponseProbeScript()) { result ->
+            val clean = jsStringValue(result).ifBlank { result.orEmpty() }.trim()
+            val probe = runCatching {
+                val json = JSONObject(clean)
+                CoachResponseProbe(
+                    assistantText = json.optString("assistantText"),
+                    busy = json.optBoolean("busy", false),
+                    turnUiVisible = json.optBoolean("turnUiVisible", false),
+                    actionSummary = json.optString("actionSummary")
+                )
+            }.getOrNull()
+            onDone(probe)
+        }
+    }
+
+    private fun buildCoachResponseProbeScript(): String = """
+            (function() {
+              const visible = function(el) {
+                if (!el) return false;
+                const rect = el.getBoundingClientRect();
+                const style = window.getComputedStyle(el);
+                return rect.width > 0 && rect.height > 0 &&
+                  style.visibility !== "hidden" &&
+                  style.display !== "none" &&
+                  style.opacity !== "0";
+              };
+              const labelOf = function(el) {
+                return [
+                  el.getAttribute("aria-label"),
+                  el.getAttribute("data-testid"),
+                  el.getAttribute("title"),
+                  el.textContent
+                ].filter(Boolean).join(" ").trim();
+              };
+              const assistantNodes = Array.from(document.querySelectorAll('[data-message-author-role="assistant"]'));
+              const lastAssistant = assistantNodes.length ? assistantNodes[assistantNodes.length - 1] : null;
+              const assistantText = lastAssistant ? (lastAssistant.innerText || "").trim() : "";
+              const bodyText = (document.body && document.body.innerText || "").toLowerCase();
+              const allLabels = Array.from(document.querySelectorAll("button, [role='button']"))
+                .filter(visible)
+                .map(function(el) { return labelOf(el).toLowerCase(); })
+                .join("\n");
+              const busy = /stop generating|stop streaming|generating|responding|typing|thinking|loading|생성 중|응답 중/.test(allLabels + "\n" + bodyText);
+              const turnRoot = lastAssistant ? (
+                lastAssistant.closest("article") ||
+                lastAssistant.closest("[data-testid*='conversation-turn']") ||
+                (lastAssistant.parentElement && lastAssistant.parentElement.parentElement) ||
+                lastAssistant
+              ) : null;
+              const rootButtons = turnRoot ? Array.from(turnRoot.querySelectorAll("button, [role='button']")).filter(visible) : [];
+              const assistantRect = lastAssistant ? lastAssistant.getBoundingClientRect() : null;
+              const nearbyButtons = assistantRect ? Array.from(document.querySelectorAll("button, [role='button']"))
+                .filter(visible)
+                .filter(function(el) {
+                  const rect = el.getBoundingClientRect();
+                  return rect.top >= assistantRect.top && rect.top <= assistantRect.bottom + 220;
+                }) : [];
+              const merged = rootButtons.concat(nearbyButtons);
+              const seen = new Set();
+              const actionLabels = merged
+                .map(function(el) { return labelOf(el); })
+                .filter(function(label) {
+                  const key = label || "__icon__";
+                  if (seen.has(key)) return false;
+                  seen.add(key);
+                  return true;
+                });
+              const composerLike = /send|submit|attach|upload|voice input|dictate|prompt-textarea|전송|보내기|첨부/i;
+              const actionCount = actionLabels.filter(function(label) { return !composerLike.test(label); }).length;
+              return JSON.stringify({
+                assistantText: assistantText,
+                busy: busy,
+                turnUiVisible: !!assistantText && actionCount > 0 && !busy,
+                actionSummary: actionLabels.slice(0, 8).join(" | ")
+              });
+            })();
+    """.trimIndent()
+
     private fun waitForCoachMediaQuiet(token: Long, text: String, onDone: () -> Unit) {
         val start = System.currentTimeMillis()
         val fallbackFinishAtMs = start + estimatePostTextVoiceDelayMs(text)
-        val stuckActiveFinishAtMs = fallbackFinishAtMs + 2_000L
         var sawMediaActivity = false
+        var turnUiSeen = false
         var quietSinceMs = 0L
         var finished = false
+        var sampleCount = 0
+        var lastLoggedActive: Boolean? = null
 
         fun finish(reason: String) {
             if (finished || !readingCoachActive || token != readingCoachChunkToken) return
             finished = true
             cleanupChatMediaProbe()
-            Log.d("SeoinCoach", "media gate wait finish reason=$reason")
+            val elapsed = System.currentTimeMillis() - start
+            updateReadingCoachDebug(
+                textStage = "stable",
+                turnStage = if (turnUiSeen) "visible" else "not-seen",
+                audioStage = reason,
+                detail = "handoff elapsed=${elapsed}ms"
+            )
+            Log.d("SeoinCoach", "media gate wait finish reason=$reason elapsedMs=$elapsed")
             onDone()
         }
 
         fun poll() {
             if (!readingCoachActive || token != readingCoachChunkToken) return
             if (finished) return
-            probeChatMediaPlayback { hasProbe, active ->
-                if (!readingCoachActive || token != readingCoachChunkToken || finished) return@probeChatMediaPlayback
-                val now = System.currentTimeMillis()
-                val elapsedMs = now - start
-                if (active) {
-                    sawMediaActivity = true
-                    quietSinceMs = 0L
-                } else if (sawMediaActivity && quietSinceMs == 0L) {
-                    quietSinceMs = now
+            probeCoachResponse { response ->
+                if (!readingCoachActive || token != readingCoachChunkToken || finished) return@probeCoachResponse
+                val responseTurnUi = response?.turnUiVisible == true
+                if (responseTurnUi && !turnUiSeen) {
+                    turnUiSeen = true
+                    Log.d("SeoinCoach", "coach turn-ui visible actions=\"${response?.actionSummary.orEmpty()}\"")
                 }
-                val quietMs = if (quietSinceMs > 0L) now - quietSinceMs else 0L
-                when {
-                    sawMediaActivity && !active && quietMs >= 0L -> finish("media-quiet")
-                    !hasProbe && elapsedMs >= 1_500L && now >= fallbackFinishAtMs -> finish("fallback-no-probe")
-                    hasProbe && !sawMediaActivity && elapsedMs >= 1_500L && now >= fallbackFinishAtMs -> finish("fallback-delay")
-                    hasProbe && active && elapsedMs >= 1_500L && now >= stuckActiveFinishAtMs -> finish("fallback-stuck-active")
-                    elapsedMs >= 45_000L -> finish("max-wait")
-                    else -> handler.postDelayed({ poll() }, 100L)
+                probeChatMediaPlayback { probe ->
+                    if (!readingCoachActive || token != readingCoachChunkToken || finished) return@probeChatMediaPlayback
+                    val now = System.currentTimeMillis()
+                    val elapsedMs = now - start
+                    val hasProbe = probe?.hasProbe == true
+                    val active = hasProbe && probe.recentActive
+                    sampleCount += 1
+
+                    if (active) {
+                        if (!sawMediaActivity) {
+                            Log.d("SeoinCoach", "media gate audio start elapsedMs=$elapsedMs summary=\"${probe?.summary.orEmpty()}\"")
+                        }
+                        sawMediaActivity = true
+                        quietSinceMs = 0L
+                    } else if (sawMediaActivity && quietSinceMs == 0L) {
+                        quietSinceMs = now
+                    }
+
+                    val activeChanged = lastLoggedActive != active
+                    if (sampleCount <= 8 || activeChanged || sampleCount % 20 == 0) {
+                        lastLoggedActive = active
+                        updateReadingCoachDebug(
+                            textStage = "stable",
+                            turnStage = if (turnUiSeen) "visible" else "waiting",
+                            audioStage = if (active) "active" else "waiting/quiet",
+                            detail = "sample=$sampleCount media=${probe?.count ?: -1}"
+                        )
+                        Log.d(
+                            "SeoinCoach",
+                            "media gate sample count=${probe?.count ?: -1} hasProbe=$hasProbe active=$active saw=$sawMediaActivity turnUi=$turnUiSeen elapsedMs=$elapsedMs summary=\"${probe?.summary.orEmpty()}\""
+                        )
+                    }
+
+                    val quietMs = if (quietSinceMs > 0L) now - quietSinceMs else 0L
+                    when {
+                        sawMediaActivity && !active && quietMs >= 350L -> finish("media-quiet")
+                        turnUiSeen && !sawMediaActivity && elapsedMs >= 700L -> finish("turn-ui-no-audio")
+                        !hasProbe && elapsedMs >= 1_500L && now >= fallbackFinishAtMs -> finish("fallback-no-probe")
+                        hasProbe && !sawMediaActivity && elapsedMs >= 1_500L && now >= fallbackFinishAtMs -> finish("fallback-delay")
+                        elapsedMs >= 45_000L -> finish("max-wait")
+                        else -> handler.postDelayed({ poll() }, 100L)
+                    }
                 }
             }
         }
+        updateReadingCoachDebug(textStage = "stable", turnStage = "waiting", audioStage = "waiting")
         Log.d("SeoinCoach", "media gate wait start textWords=${text.split(Regex("\\s+")).filter { it.isNotBlank() }.size} fallbackMs=${fallbackFinishAtMs - start}")
         poll()
     }
 
     private fun estimatePostTextVoiceDelayMs(text: String): Long {
         val words = text.split(Regex("\\s+")).count { it.isNotBlank() }
-        return (1_500L + words * 460L).coerceIn(1_500L, 9_000L)
+        return (1_200L + words * 180L).coerceIn(2_000L, 7_000L)
     }
 
-    private fun probeChatMediaPlayback(onDone: (hasProbe: Boolean, active: Boolean) -> Unit) {
+    private fun probeChatMediaPlayback(onDone: (CoachMediaProbe?) -> Unit) {
         val webView = chatWebView ?: run {
-            onDone(false, false)
+            onDone(null)
             return
         }
         webView.evaluateJavascript(buildMediaPlaybackProbeScript()) { result ->
-            val clean = jsStringValue(result)
-            val json = runCatching { JSONObject(clean) }.getOrNull()
-            val hasProbe = json?.optBoolean("hasProbe", false) ?: false
-            val recentActive = json?.optBoolean("recentActive", false) ?: false
-            Log.d("SeoinCoach", "media probe hasProbe=$hasProbe active=$recentActive result=$clean")
-            onDone(hasProbe, recentActive)
+            val clean = jsStringValue(result).ifBlank { result.orEmpty() }.trim()
+            val probe = runCatching {
+                val json = JSONObject(clean)
+                CoachMediaProbe(
+                    count = json.optInt("count", 0),
+                    hasProbe = json.optBoolean("hasProbe", false),
+                    recentActive = json.optBoolean("recentActive", false),
+                    summary = json.optString("summary")
+                )
+            }.getOrNull()
+            Log.d("SeoinCoach", "media probe hasProbe=${probe?.hasProbe} active=${probe?.recentActive} result=$clean")
+            onDone(probe)
         }
     }
 
     private fun buildMediaPlaybackProbeScript(): String = """
             (function() {
               const now = Date.now();
-              const state = window.__seoinMediaProbe || {
-                hasProbe: false,
-                sawActivity: false,
-                lastActiveAt: 0,
-                lastTimes: {},
-                nextId: 1,
-                observer: null
-              };
-              window.__seoinMediaProbe = state;
-
-              const markActive = function() {
-                state.sawActivity = true;
-                state.lastActiveAt = Date.now();
-              };
-
-              const attach = function(item) {
-                if (!item) return;
-                state.hasProbe = true;
-                if (!item.__seoinMediaProbeId) item.__seoinMediaProbeId = 'm' + (state.nextId++);
-                if (item.__seoinMediaProbeAttached) return;
-                item.__seoinMediaProbeAttached = true;
-                ['play', 'playing', 'timeupdate', 'volumechange'].forEach(function(name) {
-                  item.addEventListener(name, markActive, true);
-                });
-                ['pause', 'ended', 'stalled', 'suspend'].forEach(function(name) {
-                  item.addEventListener(name, function() {}, true);
-                });
-              };
-
-              const attachAll = function(root) {
-                const media = Array.from((root || document).querySelectorAll ? (root || document).querySelectorAll('audio,video') : []);
-                media.forEach(attach);
-                return media;
-              };
-
-              const media = attachAll(document);
-              const activeNow = media.some(function(item) {
-                return !item.paused && !item.ended && item.readyState > 1;
+              const AudioCtx = window.AudioContext || window.webkitAudioContext;
+              const state = window.__seoinMediaProbe || (window.__seoinMediaProbe = {
+                entries: new WeakMap(),
+                ctx: null,
+                nodes: []
               });
-              media.forEach(function(item) {
-                const id = item.__seoinMediaProbeId || 'unknown';
-                const current = Number.isFinite(item.currentTime) ? item.currentTime : 0;
-                const previous = state.lastTimes[id];
-                if (typeof previous === 'number' && Math.abs(current - previous) > 0.015) {
-                  markActive();
-                }
-                state.lastTimes[id] = current;
-              });
-
-              if (!state.observer && document.documentElement) {
-                state.observer = new MutationObserver(function(mutations) {
-                  mutations.forEach(function(mutation) {
-                    Array.from(mutation.addedNodes || []).forEach(function(node) {
-                      if (!node) return;
-                      if (node.matches && node.matches('audio,video')) attach(node);
-                      attachAll(node);
-                    });
-                  });
-                });
-                state.observer.observe(document.documentElement, { childList: true, subtree: true });
+              if (!state.ctx && AudioCtx) {
+                try { state.ctx = new AudioCtx(); } catch (e) { state.ctx = null; }
               }
-
-              const ageMs = state.lastActiveAt ? now - state.lastActiveAt : 999999;
+              if (state.ctx && state.ctx.state === "suspended") {
+                try { state.ctx.resume(); } catch (e) {}
+              }
+              const media = Array.from(document.querySelectorAll("audio, video"));
+              const ensureAnalyser = function(el, entry) {
+                if (entry.analyser || entry.probeError || !state.ctx) return;
+                try {
+                  const stream = typeof el.captureStream === "function" ? el.captureStream() :
+                    (typeof el.mozCaptureStream === "function" ? el.mozCaptureStream() : null);
+                  if (!stream || !stream.getAudioTracks || stream.getAudioTracks().length === 0) {
+                    entry.probeError = "no-audio-stream";
+                    return;
+                  }
+                  const source = state.ctx.createMediaStreamSource(stream);
+                  const analyser = state.ctx.createAnalyser();
+                  analyser.fftSize = 512;
+                  analyser.smoothingTimeConstant = 0.2;
+                  source.connect(analyser);
+                  entry.source = source;
+                  entry.analyser = analyser;
+                  entry.buffer = new Uint8Array(analyser.fftSize);
+                  state.nodes.push(source);
+                  state.nodes.push(analyser);
+                } catch (e) {
+                  entry.probeError = String(e && e.message ? e.message : e);
+                }
+              };
+              const readRms = function(entry) {
+                if (!entry.analyser || !entry.buffer) return 0;
+                entry.analyser.getByteTimeDomainData(entry.buffer);
+                let sum = 0;
+                for (let i = 0; i < entry.buffer.length; i += 1) {
+                  const centered = (entry.buffer[i] - 128) / 128;
+                  sum += centered * centered;
+                }
+                return Math.sqrt(sum / entry.buffer.length);
+              };
+              const items = media.map(function(el, index) {
+                let entry = state.entries.get(el);
+                if (!entry) {
+                  entry = { lastTime: Number(el.currentTime) || 0, lastAudioAt: 0 };
+                  state.entries.set(el, entry);
+                }
+                ensureAnalyser(el, entry);
+                const currentTime = Number(el.currentTime) || 0;
+                const playing = !el.paused && !el.ended && !el.muted && Number(el.volume) > 0;
+                const rms = readRms(entry);
+                const audioActive = rms >= 0.0025;
+                const advanced = currentTime > entry.lastTime + 0.03;
+                if (audioActive || (playing && advanced)) entry.lastAudioAt = now;
+                entry.lastTime = currentTime;
+                const recentMs = entry.lastAudioAt > 0 ? now - entry.lastAudioAt : 999999;
+                return {
+                  index: index,
+                  tag: String(el.tagName || "").toLowerCase(),
+                  hasProbe: !!entry.analyser,
+                  playing: playing,
+                  paused: !!el.paused,
+                  ended: !!el.ended,
+                  muted: !!el.muted,
+                  volume: Number(el.volume) || 0,
+                  currentTime: currentTime,
+                  advanced: advanced,
+                  rms: rms,
+                  error: entry.probeError || "",
+                  recent: recentMs < 180,
+                  recentMs: recentMs
+                };
+              });
+              const hasProbe = items.some(function(item) { return item.hasProbe; });
+              const recentActive = items.some(function(item) { return item.recent; });
+              const summary = items.slice(0, 4).map(function(item) {
+                return item.tag + "#" + item.index +
+                  ":probe=" + item.hasProbe +
+                  ":playing=" + item.playing +
+                  ",paused=" + item.paused +
+                  ",ended=" + item.ended +
+                  ",muted=" + item.muted +
+                  ",vol=" + item.volume.toFixed(2) +
+                  ",t=" + item.currentTime.toFixed(2) +
+                  ",rms=" + item.rms.toFixed(4) +
+                  ",err=" + item.error +
+                  ",recentMs=" + item.recentMs;
+              }).join(" | ");
               return JSON.stringify({
-                hasProbe: state.hasProbe,
-                sawActivity: state.sawActivity,
-                recentActive: ageMs <= 180,
-                ageMs: ageMs,
-                mediaCount: media.length,
-                activeNow: activeNow
+                count: media.length,
+                hasProbe: hasProbe,
+                recentActive: recentActive,
+                summary: summary
               });
             })();
     """.trimIndent()
@@ -6441,20 +6660,17 @@ class MainActivity : Activity() {
         val script = """
             (function() {
               const state = window.__seoinMediaProbe;
-              if (state && state.observer) {
-                try { state.observer.disconnect(); } catch (e) {}
-              }
-              Array.from(document.querySelectorAll('audio,video')).forEach(function(item) {
-                try {
-                  delete item.__seoinMediaProbeAttached;
-                  delete item.__seoinMediaProbeId;
-                } catch (e) {
-                  item.__seoinMediaProbeAttached = false;
-                  item.__seoinMediaProbeId = null;
+              if (!state) return "NO_PROBE";
+              try {
+                (state.nodes || []).forEach(function(node) {
+                  try { if (node && node.disconnect) node.disconnect(); } catch (e) {}
+                });
+                if (state.ctx && state.ctx.close) {
+                  try { state.ctx.close(); } catch (e) {}
                 }
-              });
-              window.__seoinMediaProbe = null;
-              return 'CLEANED';
+              } catch (e) {}
+              delete window.__seoinMediaProbe;
+              return "CLEANED";
             })();
         """.trimIndent()
         webView.evaluateJavascript(script, null)
