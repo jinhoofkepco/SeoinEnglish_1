@@ -6602,18 +6602,20 @@ class MainActivity : Activity() {
               const items = media.map(function(el, index) {
                 let entry = state.entries.get(el);
                 if (!entry) {
-                  entry = { lastTime: Number(el.currentTime) || 0, lastAudioAt: 0 };
+                  entry = { lastTime: Number(el.currentTime) || 0, lastAudioAt: 0, lastAdvanceAt: 0 };
                   state.entries.set(el, entry);
                 }
                 ensureAnalyser(el, entry);
                 const currentTime = Number(el.currentTime) || 0;
                 const playing = !el.paused && !el.ended && !el.muted && Number(el.volume) > 0;
                 const rms = readRms(entry);
-                const audioActive = rms >= 0.0025;
                 const advanced = currentTime > entry.lastTime + 0.03;
-                if (audioActive || (playing && advanced)) entry.lastAudioAt = now;
+                if (advanced) entry.lastAdvanceAt = now;
+                const audioActive = playing && !!entry.analyser && rms >= 0.01;
+                if (audioActive) entry.lastAudioAt = now;
                 entry.lastTime = currentTime;
                 const recentMs = entry.lastAudioAt > 0 ? now - entry.lastAudioAt : 999999;
+                const advanceRecentMs = entry.lastAdvanceAt > 0 ? now - entry.lastAdvanceAt : 999999;
                 return {
                   index: index,
                   tag: String(el.tagName || "").toLowerCase(),
@@ -6625,14 +6627,16 @@ class MainActivity : Activity() {
                   volume: Number(el.volume) || 0,
                   currentTime: currentTime,
                   advanced: advanced,
+                  audioActive: audioActive,
                   rms: rms,
                   error: entry.probeError || "",
-                  recent: recentMs < 180,
-                  recentMs: recentMs
+                  recent: recentMs < 260,
+                  recentMs: recentMs,
+                  advanceRecentMs: advanceRecentMs
                 };
               });
               const hasProbe = items.some(function(item) { return item.hasProbe; });
-              const recentActive = items.some(function(item) { return item.recent; });
+              const recentActive = items.some(function(item) { return item.hasProbe && item.recent; });
               const summary = items.slice(0, 4).map(function(item) {
                 return item.tag + "#" + item.index +
                   ":probe=" + item.hasProbe +
@@ -6642,9 +6646,12 @@ class MainActivity : Activity() {
                   ",muted=" + item.muted +
                   ",vol=" + item.volume.toFixed(2) +
                   ",t=" + item.currentTime.toFixed(2) +
+                  ",advanced=" + item.advanced +
+                  ",audioActive=" + item.audioActive +
                   ",rms=" + item.rms.toFixed(4) +
                   ",err=" + item.error +
-                  ",recentMs=" + item.recentMs;
+                  ",recentMs=" + item.recentMs +
+                  ",advanceRecentMs=" + item.advanceRecentMs;
               }).join(" | ");
               return JSON.stringify({
                 count: media.length,
