@@ -20,11 +20,15 @@ import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.media.AudioFormat
 import android.media.AudioManager
+import android.media.AudioRecord
 import android.media.MediaCodec
 import android.media.MediaExtractor
 import android.media.MediaFormat
+import android.media.MediaRecorder
 import android.media.ToneGenerator
+import android.os.Build
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -90,6 +94,7 @@ import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.log10
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -226,6 +231,9 @@ class MainActivity : Activity() {
     private var readingCoachDebugLabel: TextView? = null
     private var readingCoachStateButton: TextView? = null
     private var readingCoachDebugText = ""
+    private var nativeAudioProbe: AudioRecord? = null
+    @Volatile private var nativeAudioProbeRunning = false
+    private var nativeAudioProbeThread: Thread? = null
     private val questionPromptPrimedLessons = mutableSetOf<String>()
     private val answeredComprehensionChecks = mutableSetOf<String>()
     private var activeComprehensionPass = 0
@@ -3003,17 +3011,157 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun startNativeAudioLevelProbe(token: Long) {
+        stopNativeAudioLevelProbe("restart")
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            updateReadingCoachDebug(turnStage = "child speaking", audioStage = "native mic no permission")
+            Log.d("SeoinCoach", "native audio probe blocked reason=no-record-audio-permission")
+            return
+        }
+        val sampleRate = 16_000
+        val minBuffer = AudioRecord.getMinBufferSize(
+            sampleRate,
+            AudioFormat.CHANNEL_IN_MONO,
+            AudioFormat.ENCODING_PCM_16BIT
+        )
+        if (minBuffer <= 0) {
+            updateReadingCoachDebug(turnStage = "child speaking", audioStage = "native mic init failed min=$minBuffer")
+            Log.d("SeoinCoach", "native audio probe blocked reason=bad-min-buffer minBuffer=$minBuffer")
+            return
+        }
+        val bufferSize = max(minBuffer * 2, sampleRate / 2)
+        val source = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            MediaRecorder.AudioSource.UNPROCESSED
+        } else {
+            MediaRecorder.AudioSource.MIC
+        }
+        val record = runCatching {
+            val format = AudioFormat.Builder()
+                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                .setSampleRate(sampleRate)
+                .setChannelMask(AudioFormat.CHANNEL_IN_MONO)
+                .build()
+            val builder = AudioRecord.Builder()
+                .setAudioSource(source)
+                .setAudioFormat(format)
+                .setBufferSizeInBytes(bufferSize)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                builder.setPrivacySensitive(false)
+            }
+            builder.build()
+        }.getOrElse { error ->
+            updateReadingCoachDebug(turnStage = "child speaking", audioStage = "native mic build error")
+            Log.d("SeoinCoach", "native audio probe build error=${error.message}")
+            return
+        }
+        if (record.state != AudioRecord.STATE_INITIALIZED) {
+            updateReadingCoachDebug(turnStage = "child speaking", audioStage = "native mic uninitialized")
+            Log.d("SeoinCoach", "native audio probe uninitialized state=${record.state}")
+            record.release()
+            return
+        }
+        nativeAudioProbe = record
+        nativeAudioProbeRunning = true
+        nativeAudioProbeThread = Thread({
+            val buffer = ShortArray(bufferSize / 2)
+            var totalReads = 0
+            var lastUiAt = 0L
+            var lastSoundAt = 0L
+            runCatching { record.startRecording() }.onFailure { error ->
+                nativeAudioProbeRunning = false
+                handler.post {
+                    updateReadingCoachDebug(turnStage = "child speaking", audioStage = "native mic start error")
+                }
+                Log.d("SeoinCoach", "native audio probe start error=${error.message}")
+            }
+            Log.d(
+                "SeoinCoach",
+                "native audio probe start state=${record.state} recordingState=${record.recordingState} source=$source sampleRate=$sampleRate buffer=$bufferSize"
+            )
+            while (nativeAudioProbeRunning && readingCoachActive && token == readingCoachChunkToken) {
+                val read = runCatching { record.read(buffer, 0, buffer.size, AudioRecord.READ_BLOCKING) }.getOrElse { error ->
+                    Log.d("SeoinCoach", "native audio probe read error=${error.message}")
+                    -1
+                }
+                val now = System.currentTimeMillis()
+                totalReads += 1
+                var rms = 0.0
+                var peak = 0.0
+                if (read > 0) {
+                    var sum = 0.0
+                    var maxAbs = 0
+                    for (index in 0 until read) {
+                        val value = buffer[index].toInt()
+                        val absValue = if (value == Short.MIN_VALUE.toInt()) Short.MAX_VALUE.toInt() else kotlin.math.abs(value)
+                        if (absValue > maxAbs) maxAbs = absValue
+                        val normalized = value / 32768.0
+                        sum += normalized * normalized
+                    }
+                    rms = sqrt(sum / read)
+                    peak = maxAbs / 32768.0
+                    if (rms >= 0.001 || peak >= 0.004) {
+                        lastSoundAt = now
+                    }
+                }
+                val db = if (rms > 0.0000001) 20.0 * log10(rms) else -120.0
+                val soundAge = if (lastSoundAt > 0L) now - lastSoundAt else -1L
+                if (now - lastUiAt >= 250L || read <= 0) {
+                    lastUiAt = now
+                    val message = "native rms=${"%.4f".format(rms)} peak=${"%.4f".format(peak)} db=${"%.1f".format(db)} read=$read age=${soundAge}ms"
+                    handler.post {
+                        if (readingCoachActive && token == readingCoachChunkToken) {
+                            updateReadingCoachDebug(
+                                turnStage = "child speaking",
+                                audioStage = message,
+                                detail = "AudioRecord debug only"
+                            )
+                        }
+                    }
+                    Log.d(
+                        "SeoinCoach",
+                        "native audio probe sample read=$read rms=${"%.6f".format(rms)} peak=${"%.6f".format(peak)} db=${"%.1f".format(db)} soundAgeMs=$soundAge totalReads=$totalReads recordingState=${record.recordingState}"
+                    )
+                }
+                if (read <= 0) {
+                    Thread.sleep(80L)
+                }
+            }
+            runCatching { record.stop() }
+            record.release()
+            if (nativeAudioProbe === record) nativeAudioProbe = null
+            Log.d("SeoinCoach", "native audio probe stopped totalReads=$totalReads")
+        }, "SeoinNativeAudioProbe").apply {
+            isDaemon = true
+            start()
+        }
+    }
+
+    private fun stopNativeAudioLevelProbe(reason: String) {
+        if (!nativeAudioProbeRunning && nativeAudioProbe == null) return
+        Log.d("SeoinCoach", "native audio probe stop request reason=$reason")
+        nativeAudioProbeRunning = false
+        nativeAudioProbeThread?.interrupt()
+        nativeAudioProbeThread = null
+        nativeAudioProbe?.let { record ->
+            runCatching { record.stop() }
+            runCatching { record.release() }
+        }
+        nativeAudioProbe = null
+    }
+
     private fun openCoachTalkTurn(lesson: Lesson, token: Long) {
         if (!readingCoachActive || token != readingCoachChunkToken) return
         readingCoachState = ReadingCoachState.CHILD_TURN
         readingCoachChildTurnStartedAtMs = System.currentTimeMillis()
         updateReadingCoachStatus("Your turn. Speak now.")
         updateReadingCoachDebug(textStage = "done", turnStage = "child speaking", audioStage = "mic open", detail = "minWait=5000ms")
+        startNativeAudioLevelProbe(token)
         setCoachMicOpen(open = true) { clicked ->
             Log.d("SeoinCoach", "talk open clicked=$clicked")
             val talkToken = readingCoachChunkToken
             handler.postDelayed({
                 if (!readingCoachActive || talkToken != readingCoachChunkToken) return@postDelayed
+                stopNativeAudioLevelProbe("talk-window-ending")
                 setCoachMicOpen(open = false) { muteClicked ->
                     Log.d("SeoinCoach", "talk window ended; mic close clicked=$muteClicked")
                     if (!readingCoachActive || talkToken != readingCoachChunkToken) return@setCoachMicOpen
@@ -3104,6 +3252,7 @@ class MainActivity : Activity() {
     }
 
     private fun resetReadingCoachStateOnly() {
+        stopNativeAudioLevelProbe("coach-reset")
         readingCoachFlowToken += 1L
         readingCoachChunkToken += 1L
         readingCoachActive = false
