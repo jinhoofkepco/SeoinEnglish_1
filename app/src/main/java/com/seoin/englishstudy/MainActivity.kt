@@ -130,6 +130,11 @@ class MainActivity : Activity() {
         val summary: String,
     )
 
+    private data class CoachVoiceInputProbe(
+        val active: Boolean,
+        val summary: String,
+    )
+
     private lateinit var root: FrameLayout
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var settingsStore: SettingsStore
@@ -215,6 +220,8 @@ class MainActivity : Activity() {
     private var readingCoachVoiceShellPreparing = false
     private var readingCoachVoiceRequestInFlight = false
     private var readingCoachFirstVoiceChunkStarted = false
+    private var readingCoachKeyboardPrimed = false
+    private var readingCoachChildTurnStartedAtMs = 0L
     private var readingCoachStatusLabel: TextView? = null
     private var readingCoachDebugLabel: TextView? = null
     private var readingCoachStateButton: TextView? = null
@@ -2786,6 +2793,8 @@ class MainActivity : Activity() {
         readingCoachPrimed = false
         readingCoachVoiceRequestInFlight = false
         readingCoachFirstVoiceChunkStarted = false
+        readingCoachKeyboardPrimed = false
+        readingCoachChildTurnStartedAtMs = 0L
         readingCoachSentenceIndex = firstPosition.first
         readingCoachChunkIndex = firstPosition.second
         readingCoachFlowToken += 1L
@@ -2997,7 +3006,9 @@ class MainActivity : Activity() {
     private fun openCoachTalkTurn(lesson: Lesson, token: Long) {
         if (!readingCoachActive || token != readingCoachChunkToken) return
         readingCoachState = ReadingCoachState.CHILD_TURN
+        readingCoachChildTurnStartedAtMs = System.currentTimeMillis()
         updateReadingCoachStatus("Your turn. Speak now.")
+        updateReadingCoachDebug(textStage = "done", turnStage = "child speaking", audioStage = "mic open", detail = "minWait=5000ms")
         setCoachMicOpen(open = true) { clicked ->
             Log.d("SeoinCoach", "talk open clicked=$clicked")
             val talkToken = readingCoachChunkToken
@@ -3012,19 +3023,31 @@ class MainActivity : Activity() {
                         if (!readingCoachActive || talkToken != readingCoachChunkToken) return@readLastAssistantText
                         waitForCoachTextCompleteAfter(talkToken, baseline, timeoutMs = 8500L) { feedbackText ->
                             if (!readingCoachActive || talkToken != readingCoachChunkToken) return@waitForCoachTextCompleteAfter
+                            val hasFeedback = feedbackText.trim().isNotBlank() && feedbackText.trim() != baseline.trim()
+                            Log.d("SeoinCoach", "coach feedback text received hasFeedback=$hasFeedback chars=${feedbackText.length}")
                             waitForCoachMediaQuiet(talkToken, feedbackText) {
                                 if (!readingCoachActive || talkToken != readingCoachChunkToken) return@waitForCoachMediaQuiet
-                                Log.d("SeoinCoach", "coach handoff next-chunk")
-                                moveReadingCoachChunk(lesson, 1, autoRead = true)
+                                waitForCoachVoiceInputIdle(talkToken) {
+                                    if (!readingCoachActive || talkToken != readingCoachChunkToken) return@waitForCoachVoiceInputIdle
+                                    readingCoachState = ReadingCoachState.CONVERSATION_READY
+                                    Log.d("SeoinCoach", "coach handoff next-chunk")
+                                    moveReadingCoachChunk(lesson, 1, autoRead = true)
+                                }
                             }
                         }
                     }
                 }
-            }, 8000L)
+            }, 5000L)
         }
     }
 
     private fun moveReadingCoachChunk(lesson: Lesson, delta: Int, autoRead: Boolean) {
+        if (autoRead && (readingCoachState == ReadingCoachState.CHILD_TURN || readingCoachState == ReadingCoachState.FEEDBACK)) {
+            Log.d("SeoinCoach", "coach next prompt blocked state=$readingCoachState")
+            updateReadingCoachStatus("Waiting for your turn or coach feedback before the next prompt.")
+            updateReadingCoachDebug(turnStage = "blocked", audioStage = "input/feedback active")
+            return
+        }
         val currentChunks = coachChunksFor(lesson, readingCoachSentenceIndex)
         var nextSentence = readingCoachSentenceIndex
         var nextChunk = readingCoachChunkIndex + delta
@@ -3090,6 +3113,8 @@ class MainActivity : Activity() {
         readingCoachVoiceShellPreparing = false
         readingCoachVoiceRequestInFlight = false
         readingCoachFirstVoiceChunkStarted = false
+        readingCoachKeyboardPrimed = false
+        readingCoachChildTurnStartedAtMs = 0L
         readingCoachStatusLabel = null
         readingCoachDebugLabel = null
         readingCoachStateButton = null
@@ -5661,6 +5686,10 @@ class MainActivity : Activity() {
                             logCoachWebViewProbe("inject-after-send-click", marker)
                         confirmCoachUserBubble(marker, beforeCount, startedAtMs = System.currentTimeMillis(), pollCount = 0, guardChunkToken = guardChunkToken, timeoutMs = visibleTimeoutMs, allowSpaceNudge = true) { visible ->
                             Log.d("SeoinCoach", "coach inject visible marker=$marker visible=$visible")
+                            if (visible) {
+                                readingCoachKeyboardPrimed = true
+                                hideCoachSoftKeyboard(webView, "after-visible")
+                            }
                             if (!visible && attempt < maxAttempts) {
                                 handler.postDelayed({
                                     if (readingCoachActive && token == readingCoachFlowToken && guardChunkToken == readingCoachChunkToken) {
@@ -5797,6 +5826,8 @@ class MainActivity : Activity() {
         val downSpace = webView.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SPACE))
         val upSpace = webView.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_SPACE))
         val success = downSpace || upSpace
+        readingCoachKeyboardPrimed = true
+        hideCoachSoftKeyboard(webView, "after-space-nudge")
         Log.d("SeoinCoach", "coach android key nudge SPACE down=$downSpace up=$upSpace marker=$marker")
         logCoachWebViewProbe("nudge-after-key-space", marker)
         Log.d("SeoinCoach", "coach android key nudge kept space input marker=$marker success=$success")
@@ -5807,10 +5838,24 @@ class MainActivity : Activity() {
         webView.isFocusable = true
         webView.isFocusableInTouchMode = true
         webView.requestFocus()
+        if (readingCoachActive && readingCoachKeyboardPrimed) {
+            hideCoachSoftKeyboard(webView, "skip-show-$reason")
+            Log.d("SeoinCoach", "coach keyboard nudge skipped reason=$reason primed=true")
+            return
+        }
         webView.post {
             val shown = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
                 ?.showSoftInput(webView, InputMethodManager.SHOW_IMPLICIT) ?: false
             Log.d("SeoinCoach", "coach keyboard nudge reason=$reason shown=$shown")
+        }
+    }
+
+    private fun hideCoachSoftKeyboard(webView: WebView?, reason: String) {
+        val target = webView ?: chatWebView
+        target?.post {
+            val hidden = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                ?.hideSoftInputFromWindow(target.windowToken, 0) ?: false
+            Log.d("SeoinCoach", "coach keyboard hide reason=$reason hidden=$hidden")
         }
     }
 
@@ -6524,6 +6569,91 @@ class MainActivity : Activity() {
         poll()
     }
 
+    private fun waitForCoachVoiceInputIdle(token: Long, onDone: () -> Unit) {
+        val start = System.currentTimeMillis()
+        var sampleCount = 0
+        fun finish(reason: String) {
+            val elapsed = System.currentTimeMillis() - start
+            updateReadingCoachDebug(turnStage = "feedback done", audioStage = "input $reason", detail = "next in ${elapsed}ms")
+            Log.d("SeoinCoach", "coach voice input idle finish reason=$reason elapsedMs=$elapsed")
+            onDone()
+        }
+        fun poll() {
+            if (!readingCoachActive || token != readingCoachChunkToken) return
+            probeCoachVoiceInput { probe ->
+                if (!readingCoachActive || token != readingCoachChunkToken) return@probeCoachVoiceInput
+                sampleCount += 1
+                val elapsed = System.currentTimeMillis() - start
+                if (sampleCount <= 5 || sampleCount % 10 == 0 || probe?.active == true) {
+                    Log.d("SeoinCoach", "coach voice input probe active=${probe?.active} elapsedMs=$elapsed summary=\"${probe?.summary.orEmpty()}\"")
+                }
+                when {
+                    probe?.active == true && elapsed < 12_000L -> {
+                        updateReadingCoachDebug(turnStage = "input active", audioStage = "holding next", detail = "sample=$sampleCount")
+                        handler.postDelayed({ poll() }, 250L)
+                    }
+                    probe?.active == true -> finish("timeout-active")
+                    else -> finish("idle")
+                }
+            }
+        }
+        poll()
+    }
+
+    private fun probeCoachVoiceInput(onDone: (CoachVoiceInputProbe?) -> Unit) {
+        val webView = chatWebView ?: run {
+            onDone(null)
+            return
+        }
+        webView.evaluateJavascript(buildCoachVoiceInputProbeScript()) { result ->
+            val clean = jsStringValue(result).ifBlank { result.orEmpty() }.trim()
+            val probe = runCatching {
+                val json = JSONObject(clean)
+                CoachVoiceInputProbe(
+                    active = json.optBoolean("active", false),
+                    summary = json.optString("summary")
+                )
+            }.getOrNull()
+            onDone(probe)
+        }
+    }
+
+    private fun buildCoachVoiceInputProbeScript(): String = """
+            (function() {
+              const visible = function(el) {
+                if (!el) return false;
+                const rect = el.getBoundingClientRect();
+                const style = window.getComputedStyle(el);
+                return rect.width > 0 && rect.height > 0 &&
+                  style.visibility !== "hidden" &&
+                  style.display !== "none" &&
+                  style.opacity !== "0";
+              };
+              const labelOf = function(el) {
+                return [
+                  el.getAttribute("aria-label"),
+                  el.getAttribute("data-testid"),
+                  el.getAttribute("title"),
+                  el.textContent
+                ].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+              };
+              const labels = Array.from(document.querySelectorAll("button, [role='button'], [aria-live], [data-testid]"))
+                .filter(visible)
+                .map(labelOf)
+                .filter(Boolean)
+                .join(" | ");
+              const text = ((document.body && document.body.innerText) || "").replace(/\s+/g, " ").slice(-1200);
+              const combined = (labels + " | " + text).toLowerCase();
+              const active =
+                /(listening|recording|speaking|speak now|stop speaking|stop recording|tap to interrupt|mute microphone|듣는 중|말하는 중|녹음|마이크 켜짐|말하세요)/.test(combined) &&
+                !/(start voice|voice mode|voice chat|음성 모드 시작)/.test(combined);
+              return JSON.stringify({
+                active: active,
+                summary: labels.slice(0, 260)
+              });
+            })();
+    """.trimIndent()
+
     private fun estimatePostTextVoiceDelayMs(text: String): Long {
         val words = text.split(Regex("\\s+")).count { it.isNotBlank() }
         return (1_200L + words * 180L).coerceIn(2_000L, 7_000L)
@@ -6840,7 +6970,11 @@ class MainActivity : Activity() {
             readingCoachActive -> (resources.displayMetrics.heightPixels * 0.50f).roundToInt()
             else -> (resources.displayMetrics.heightPixels * 0.88f).roundToInt()
         }
-        val webHeight = if (startCompact) dp(12) else max(dp(240), popupHeight - dp(128))
+        val webHeight = when {
+            startCompact -> dp(12)
+            readingCoachActive -> max(dp(240), popupHeight - dp(58))
+            else -> max(dp(240), popupHeight - dp(128))
+        }
         val webView = chatGptWebView(status)
         chatWebView = webView
 
@@ -6891,6 +7025,7 @@ class MainActivity : Activity() {
             setOnClickListener { dismissChatGptAssistantOverlay() }
         }, fixed(dp(64), dp(38)))
 
+        if (readingCoachActive) trimChatHeaderForReadingCoach(top, status)
         box.addView(top, matchWrap())
         box.addView(status, matchWrap())
         box.addView(webView, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, webHeight))
@@ -6936,6 +7071,25 @@ class MainActivity : Activity() {
         return FrameLayout.LayoutParams(width, height, gravity).apply {
             if (readingCoachActive) topMargin = dp(8)
         }
+    }
+
+    private fun trimChatHeaderForReadingCoach(top: LinearLayout, status: TextView?) {
+        top.setPadding(dp(8), dp(4), dp(8), dp(4))
+        top.background = rounded(color(R.color.skin_surface_alt), dp(10))
+        for (index in 0 until top.childCount) {
+            val keep = index == 0 || index >= top.childCount - 2
+            top.getChildAt(index)?.visibility = if (keep) View.VISIBLE else View.GONE
+        }
+        (top.getChildAt(0) as? TextView)?.apply {
+            text = "Voice ChatGPT"
+            textSize = 13f
+            maxLines = 1
+        }
+        if (top.childCount >= 2) {
+            top.getChildAt(top.childCount - 2)?.layoutParams = fixed(dp(52), dp(28)).withRightMargin(dp(4))
+            top.getChildAt(top.childCount - 1)?.layoutParams = fixed(dp(52), dp(28))
+        }
+        status?.visibility = View.GONE
     }
 
     private fun compactChatOverlayLayoutParams(height: Int): FrameLayout.LayoutParams {
@@ -7017,8 +7171,12 @@ class MainActivity : Activity() {
             setOnTouchListener { view, event ->
                 if (event.action == MotionEvent.ACTION_DOWN || event.action == MotionEvent.ACTION_UP) {
                     view.requestFocus()
-                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                    if (readingCoachActive && readingCoachKeyboardPrimed) {
+                        hideCoachSoftKeyboard(view as? WebView, "touch-skip")
+                    } else {
+                        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+                    }
                 }
                 false
             }
@@ -7169,9 +7327,9 @@ class MainActivity : Activity() {
 
     private fun expandChatGptAssistantDialogForVoice() {
         val popupHeight = (resources.displayMetrics.heightPixels * 0.50f).roundToInt()
-        val webHeight = max(dp(240), popupHeight - dp(128))
+        val webHeight = max(dp(240), popupHeight - dp(58))
         chatStatusLabel?.apply {
-            visibility = View.VISIBLE
+            visibility = View.GONE
             text = "Voice 버튼을 준비하는 중이에요."
         }
         chatDialogBox?.apply {
@@ -7190,6 +7348,7 @@ class MainActivity : Activity() {
             }
             if (childCount > 0) getChildAt(childCount - 1)?.layoutParams = fixed(dp(64), dp(38))
         }
+        (chatDialogBox?.getChildAt(0) as? LinearLayout)?.let { trimChatHeaderForReadingCoach(it, chatStatusLabel) }
         chatWebView?.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, webHeight)
         applyExpandedChatOverlay(popupHeight)
     }
@@ -7199,7 +7358,7 @@ class MainActivity : Activity() {
         val box = chatDialogBox
         val webView = chatWebView
         val popupHeight = (resources.displayMetrics.heightPixels * 0.50f).roundToInt()
-        val webHeight = max(dp(240), popupHeight - dp(128))
+        val webHeight = max(dp(240), popupHeight - dp(58))
 
         box?.apply {
             visibility = View.VISIBLE
@@ -7222,6 +7381,7 @@ class MainActivity : Activity() {
             requestLayout()
             invalidate()
         }
+        (box?.getChildAt(0) as? LinearLayout)?.let { trimChatHeaderForReadingCoach(it, chatStatusLabel) }
         applyExpandedChatOverlay(popupHeight)
         Log.d(
             "SeoinCoach",

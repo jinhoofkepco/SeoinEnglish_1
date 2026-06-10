@@ -17,6 +17,21 @@ android {
         noCompress += "mp3"
     }
 
+    signingConfigs {
+        seoinDebug {
+            storeFile rootProject.file("signing/seoin-debug.jks")
+            storePassword "seoin-debug-pass"
+            keyAlias "seoin-debug"
+            keyPassword "seoin-debug-pass"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.seoinDebug
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
