@@ -227,7 +227,9 @@ class MainActivity : Activity() {
     private var readingCoachStatusLabel: TextView? = null
     private var readingCoachDebugLabel: TextView? = null
     private var readingCoachStateButton: TextView? = null
+    private var readingCoachEndSpeakingButton: TextView? = null
     private var readingCoachDebugText = ""
+    private var readingCoachEndSpeakingRequestedToken = 0L
     private var webRtcDebugSummary = ""
     private val questionPromptPrimedLessons = mutableSetOf<String>()
     private val answeredComprehensionChecks = mutableSetOf<String>()
@@ -2835,6 +2837,16 @@ class MainActivity : Activity() {
         row.addView(pill("따라하기").apply {
             setOnClickListener { openCoachTalkTurn(lesson, readingCoachChunkToken) }
         }, LinearLayout.LayoutParams(0, dp(46), 1f).withRightMargin(dp(6)))
+        readingCoachEndSpeakingButton = pill("Done").apply {
+            setOnClickListener {
+                if (readingCoachState == ReadingCoachState.CHILD_TURN) {
+                    readingCoachEndSpeakingRequestedToken = readingCoachChunkToken
+                    updateReadingCoachDebug(turnStage = "child speaking", audioStage = "manual done pressed", detail = "closing mic")
+                    updateReadingCoachStatus("Okay. Finishing your turn...")
+                }
+            }
+        }
+        row.addView(readingCoachEndSpeakingButton, LinearLayout.LayoutParams(0, dp(46), 0.85f).withRightMargin(dp(6)))
         row.addView(pill("다음 청크").apply {
             setOnClickListener { moveReadingCoachChunk(lesson, 1, autoRead = true) }
         }, LinearLayout.LayoutParams(0, dp(46), 1f).withRightMargin(dp(6)))
@@ -3020,6 +3032,7 @@ class MainActivity : Activity() {
         if (!readingCoachActive || token != readingCoachChunkToken) return
         readingCoachState = ReadingCoachState.CHILD_TURN
         readingCoachChildTurnStartedAtMs = System.currentTimeMillis()
+        readingCoachEndSpeakingRequestedToken = 0L
         updateReadingCoachStatus("Your turn. Speak now.")
         updateReadingCoachDebug(textStage = "done", turnStage = "child speaking", audioStage = "mic opening", detail = "WebView clone VAD; minWait=5000ms")
         ensureWebRtcAudioContext("talk-turn-start")
@@ -3028,8 +3041,8 @@ class MainActivity : Activity() {
             Log.d("SeoinCoach", "talk open clicked=$clicked")
             logActiveRecordingConfigurations("after-talk-open")
             val talkToken = readingCoachChunkToken
-            handler.postDelayed({
-                if (!readingCoachActive || talkToken != readingCoachChunkToken) return@postDelayed
+            waitForCoachChildUtteranceComplete(talkToken) {
+                if (!readingCoachActive || talkToken != readingCoachChunkToken) return@waitForCoachChildUtteranceComplete
                 logActiveRecordingConfigurations("before-talk-close")
                 setCoachMicOpen(open = false) { muteClicked ->
                     Log.d("SeoinCoach", "talk window ended; mic close clicked=$muteClicked")
@@ -3055,8 +3068,75 @@ class MainActivity : Activity() {
                         }
                     }
                 }
-            }, 5000L)
+            }
         }
+    }
+
+    private fun waitForCoachChildUtteranceComplete(token: Long, onDone: () -> Unit) {
+        val start = System.currentTimeMillis()
+        val minWaitMs = 5_000L
+        val inactiveStableMs = 3_000L
+        val activeStableMs = 300L
+        val maxWaitMs = 24_000L
+        var inactiveSince = 0L
+        var rawActiveSince = 0L
+        var sampleCount = 0
+        fun finish(reason: String) {
+            val elapsed = System.currentTimeMillis() - start
+            updateReadingCoachDebug(turnStage = "child speaking", audioStage = "utterance $reason", detail = "elapsed=${elapsed}ms falseHold=${inactiveStableMs}ms")
+            Log.d("SeoinCoach", "child utterance finish reason=$reason elapsedMs=$elapsed falseHoldMs=$inactiveStableMs")
+            onDone()
+        }
+        fun poll() {
+            if (!readingCoachActive || token != readingCoachChunkToken) return
+            if (readingCoachEndSpeakingRequestedToken == token) {
+                finish("manual-button")
+                return
+            }
+            probeCoachVoiceInput { probe ->
+                if (!readingCoachActive || token != readingCoachChunkToken) return@probeCoachVoiceInput
+                val now = System.currentTimeMillis()
+                val elapsed = now - start
+                val rawActive = probe?.active == true
+                sampleCount += 1
+                if (rawActive) {
+                    if (rawActiveSince == 0L) rawActiveSince = now
+                } else {
+                    rawActiveSince = 0L
+                }
+                val rawActiveForMs = if (rawActiveSince > 0L) now - rawActiveSince else 0L
+                val active = rawActive && rawActiveForMs >= activeStableMs
+                if (active) {
+                    inactiveSince = 0L
+                } else if (inactiveSince == 0L) {
+                    inactiveSince = now
+                }
+                val inactiveForMs = if (inactiveSince > 0L) now - inactiveSince else 0L
+                if (sampleCount <= 6 || sampleCount % 8 == 0 || rawActive) {
+                    Log.d(
+                        "SeoinCoach",
+                        "child utterance probe rawActive=$rawActive debouncedActive=$active rawActiveForMs=$rawActiveForMs elapsedMs=$elapsed inactiveForMs=$inactiveForMs summary=\"${probe?.summary.orEmpty()}\""
+                    )
+                }
+                when {
+                    elapsed >= maxWaitMs -> finish("max-wait")
+                    elapsed < minWaitMs -> {
+                        updateReadingCoachDebug(turnStage = "child speaking", audioStage = if (rawActive) "voice true" else "voice false", detail = "debounced=$active trueHold=${rawActiveForMs}/${activeStableMs}ms minWait ${elapsed}/${minWaitMs}ms")
+                        handler.postDelayed({ poll() }, 250L)
+                    }
+                    active -> {
+                        updateReadingCoachDebug(turnStage = "child speaking", audioStage = "voice true", detail = "holding mic open trueHold=${rawActiveForMs}ms")
+                        handler.postDelayed({ poll() }, 250L)
+                    }
+                    inactiveForMs >= inactiveStableMs -> finish("false-stable")
+                    else -> {
+                        updateReadingCoachDebug(turnStage = "child speaking", audioStage = "voice false", detail = "wait false ${inactiveForMs}/${inactiveStableMs}ms")
+                        handler.postDelayed({ poll() }, 250L)
+                    }
+                }
+            }
+        }
+        poll()
     }
 
     private fun moveReadingCoachChunk(lesson: Lesson, delta: Int, autoRead: Boolean) {
@@ -3136,7 +3216,9 @@ class MainActivity : Activity() {
         readingCoachStatusLabel = null
         readingCoachDebugLabel = null
         readingCoachStateButton = null
+        readingCoachEndSpeakingButton = null
         readingCoachDebugText = ""
+        readingCoachEndSpeakingRequestedToken = 0L
         setChatAudioDucked(false)
     }
 
@@ -3206,6 +3288,17 @@ class MainActivity : Activity() {
         }
         readingCoachStatusLabel?.text = extra ?: "낭독 코치 ${readingCoachSentenceIndex + 1}/${flatSentences.size}, chunk ${readingCoachChunkIndex + 1}/$total: ${chunk?.text.orEmpty()}"
         readingCoachStateButton?.text = "현재 상태: $stateText · Voice 다시 시도"
+        val childTurn = readingCoachState == ReadingCoachState.CHILD_TURN
+        readingCoachEndSpeakingButton?.apply {
+            isEnabled = childTurn
+            alpha = if (childTurn) 1f else 0.45f
+            setTextColor(if (childTurn) 0xFFFFFFFF.toInt() else color(R.color.skin_muted))
+            background = if (childTurn) {
+                rounded(0xFF2F80ED.toInt(), dp(18), 0xFF1F5FBF.toInt(), dp(1))
+            } else {
+                rounded(color(R.color.skin_surface_alt), dp(18), color(R.color.skin_line), dp(1))
+            }
+        }
         readingCoachDebugLabel?.text = readingCoachDebugText.ifBlank { "Debug: waiting for coach stages" }
         chatStatusLabel?.text = "Reading coach: $stateText"
     }
@@ -6648,10 +6741,14 @@ class MainActivity : Activity() {
     private fun waitForCoachVoiceInputIdle(token: Long, onDone: () -> Unit) {
         val start = System.currentTimeMillis()
         var sampleCount = 0
+        var inactiveSince = 0L
+        val inactiveStableMs = 3_000L
+        val activeStableMs = 300L
+        var rawActiveSince = 0L
         fun finish(reason: String) {
             val elapsed = System.currentTimeMillis() - start
-            updateReadingCoachDebug(turnStage = "feedback done", audioStage = "input $reason", detail = "next in ${elapsed}ms")
-            Log.d("SeoinCoach", "coach voice input idle finish reason=$reason elapsedMs=$elapsed")
+            updateReadingCoachDebug(turnStage = "feedback done", audioStage = "input $reason", detail = "next in ${elapsed}ms falseHold=${inactiveStableMs}ms")
+            Log.d("SeoinCoach", "coach voice input idle finish reason=$reason elapsedMs=$elapsed falseHoldMs=$inactiveStableMs")
             onDone()
         }
         fun poll() {
@@ -6660,16 +6757,35 @@ class MainActivity : Activity() {
                 if (!readingCoachActive || token != readingCoachChunkToken) return@probeCoachVoiceInput
                 sampleCount += 1
                 val elapsed = System.currentTimeMillis() - start
-                if (sampleCount <= 5 || sampleCount % 10 == 0 || probe?.active == true) {
-                    Log.d("SeoinCoach", "coach voice input probe active=${probe?.active} elapsedMs=$elapsed summary=\"${probe?.summary.orEmpty()}\"")
+                val now = System.currentTimeMillis()
+                val rawActive = probe?.active == true
+                if (rawActive) {
+                    if (rawActiveSince == 0L) rawActiveSince = now
+                } else {
+                    rawActiveSince = 0L
+                }
+                val rawActiveForMs = if (rawActiveSince > 0L) now - rawActiveSince else 0L
+                val active = rawActive && rawActiveForMs >= activeStableMs
+                if (active) {
+                    inactiveSince = 0L
+                } else if (inactiveSince == 0L) {
+                    inactiveSince = now
+                }
+                val inactiveForMs = if (inactiveSince > 0L) now - inactiveSince else 0L
+                if (sampleCount <= 5 || sampleCount % 10 == 0 || rawActive) {
+                    Log.d("SeoinCoach", "coach voice input probe rawActive=$rawActive debouncedActive=$active rawActiveForMs=$rawActiveForMs elapsedMs=$elapsed inactiveForMs=$inactiveForMs summary=\"${probe?.summary.orEmpty()}\"")
                 }
                 when {
-                    probe?.active == true && elapsed < 12_000L -> {
+                    active && elapsed < 12_000L -> {
                         updateReadingCoachDebug(turnStage = "input active", audioStage = "holding next", detail = "sample=$sampleCount")
                         handler.postDelayed({ poll() }, 250L)
                     }
-                    probe?.active == true -> finish("timeout-active")
-                    else -> finish("idle")
+                    active -> finish("timeout-active")
+                    inactiveForMs >= inactiveStableMs -> finish("idle-false-stable")
+                    else -> {
+                        updateReadingCoachDebug(turnStage = "input false", audioStage = "holding next", detail = "false ${inactiveForMs}/${inactiveStableMs}ms")
+                        handler.postDelayed({ poll() }, 250L)
+                    }
                 }
             }
         }
@@ -6699,8 +6815,7 @@ class MainActivity : Activity() {
               const T = window.__seoinRtcObserver;
               if (T && T.snapshot) {
                 const snap = T.snapshot();
-                const now = Date.now();
-                const active = !!snap.kidSpeaking || (T.kidLastLoudAt && now - T.kidLastLoudAt < 650);
+                const active = !!snap.kidSpeaking;
                 return JSON.stringify({
                   active: !!active,
                   summary: "kidVad detectors=" + snap.kidDetectors +
@@ -7181,12 +7296,14 @@ class MainActivity : Activity() {
               let speaking = false;
               let lastLoud = 0;
               let lastReport = 0;
+              let loudSince = 0;
               let noise = type === "kid" ? 0.0015 : 0.004;
               let peakFloor = type === "kid" ? 0.004 : 0.012;
               const minRms = type === "kid" ? 0.003 : 0.010;
               const minPeak = type === "kid" ? 0.012 : 0.035;
               const multiplier = type === "kid" ? 2.8 : 2.6;
               const quietMs = type === "kid" ? 900 : 700;
+              const startStableMs = type === "kid" ? 300 : 0;
               const reportEveryMs = type === "kid" ? 350 : 700;
               const interval = setInterval(function() {
                 try {
@@ -7205,6 +7322,12 @@ class MainActivity : Activity() {
                   const rmsThreshold = Math.max(minRms, noise * multiplier);
                   const peakThreshold = Math.max(minPeak, peakFloor * multiplier);
                   const loud = rms >= rmsThreshold || peak >= peakThreshold;
+                  if (loud) {
+                    if (!loudSince) loudSince = now;
+                  } else if (!speaking) {
+                    loudSince = 0;
+                  }
+                  const loudFor = loudSince ? now - loudSince : 0;
                   if (!speaking) {
                     const floorAlpha = loud ? 0.005 : 0.045;
                     noise = Math.max(0.0005, noise * (1 - floorAlpha) + Math.max(rms, 0.0005) * floorAlpha);
@@ -7215,6 +7338,7 @@ class MainActivity : Activity() {
                     " peak=" + peak.toFixed(5) +
                     " floor=" + noise.toFixed(5) +
                     " th=" + rmsThreshold.toFixed(5) +
+                    " loudFor=" + loudFor +
                     " speaking=" + speaking +
                     " ctx=" + (T.ctx ? T.ctx.state : "none");
                   if (loud) {
@@ -7226,7 +7350,7 @@ class MainActivity : Activity() {
                       T.aiLastLoudAt = now;
                       T.aiSummary = summary;
                     }
-                    if (!speaking) {
+                    if (!speaking && loudFor >= startStableMs) {
                       speaking = true;
                       if (type === "kid") {
                         T.kidSpeaking = true;
@@ -7238,6 +7362,7 @@ class MainActivity : Activity() {
                     }
                   } else if (speaking && now - lastLoud > quietMs) {
                     speaking = false;
+                    loudSince = 0;
                     if (type === "kid") {
                       T.kidSpeaking = false;
                       T.kidSummary = summary;
