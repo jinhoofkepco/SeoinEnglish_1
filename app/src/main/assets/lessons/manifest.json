@@ -1,6 +1,13 @@
 {
   "lessons": [
     {
+      "id": "multiple_reading_39",
+      "title": "Multiple Reading 39",
+      "subtitle": "City walkers and small-town walkers",
+      "level": "A2",
+      "path": "lessons/multiple_reading_39/lesson.json"
+    },
+    {
       "id": "gamemaster_gap_aware",
       "title": "A Vow I Can Keep",
       "subtitle": "Gap-aware chunk test",

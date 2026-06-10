@@ -1,0 +1,1222 @@
+{
+  "schemaVersion": 1,
+  "id": "multiple_reading_39",
+  "title": "Multiple Reading 39",
+  "subtitle": "City walkers and small-town walkers",
+  "level": "A2",
+  "language": "en",
+  "defaultAudioId": "",
+  "defaultChunkSetId": "short",
+  "imageAssets": [],
+  "audioAssets": [],
+  "chunkProfiles": [
+    {
+      "id": "short",
+      "label": "Meaning chunks",
+      "description": "meaning-based chunks",
+      "pauseBehavior": "after_each_chunk"
+    },
+    {
+      "id": "qchunk",
+      "label": "Q-Chunk",
+      "description": "question-answerable chunks",
+      "pauseBehavior": "after_each_chunk"
+    },
+    {
+      "id": "sentence",
+      "label": "Sentence",
+      "description": "one sentence at a time",
+      "pauseBehavior": "after_each_sentence"
+    },
+    {
+      "id": "natural",
+      "label": "Natural",
+      "description": "continuous TTS reading",
+      "pauseBehavior": "none"
+    }
+  ],
+  "vocabularySources": [],
+  "vocabulary": [
+    {
+      "id": "w_hurry",
+      "word": "hurry",
+      "lemma": "hurry",
+      "forms": [
+        "hurry"
+      ],
+      "partOfSpeech": "noun/verb",
+      "meaningKo": "being in a hurry; moving or acting quickly",
+      "simpleKo": "move or do something quickly",
+      "easyEnglish": "A hurry means you need to move or act quickly.",
+      "easyEnglishLong": "When people are in a hurry, they do not want to waste time. They may walk fast, talk fast, or leave quickly. In this passage, city people seem to be in a hurry because they walk faster.",
+      "examples": [
+        "They always seem to be in a hurry."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab"
+    },
+    {
+      "id": "w_scientists",
+      "word": "scientists",
+      "lemma": "scientist",
+      "forms": [
+        "scientist",
+        "scientists"
+      ],
+      "partOfSpeech": "noun",
+      "meaningKo": "people who study science",
+      "simpleKo": "people who study science",
+      "easyEnglish": "Scientists ask questions and look for answers carefully.",
+      "easyEnglishLong": "Scientists do not just guess. They observe, measure, and compare things. In this passage, the scientists measured how fast people walked in different places.",
+      "examples": [
+        "A group of scientists decided to find out."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab"
+    },
+    {
+      "id": "w_decided",
+      "word": "decided",
+      "lemma": "decide",
+      "forms": [
+        "decide",
+        "decided"
+      ],
+      "partOfSpeech": "verb",
+      "meaningKo": "chose to do something",
+      "simpleKo": "chose to do something",
+      "easyEnglish": "To decide means to choose what to do.",
+      "easyEnglishLong": "When you decide something, you make a choice. The scientists decided to test an idea instead of only talking about it.",
+      "examples": [
+        "The scientists decided to find out."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab"
+    },
+    {
+      "id": "w_find_out",
+      "word": "find out",
+      "lemma": "find out",
+      "forms": [
+        "find out",
+        "found out"
+      ],
+      "partOfSpeech": "phrase",
+      "meaningKo": "learn the answer",
+      "simpleKo": "learn the answer",
+      "easyEnglish": "To find out means to learn something you did not know before.",
+      "easyEnglishLong": "You can find out an answer by asking, reading, watching, or measuring. In this passage, the scientists found out that city walkers move faster.",
+      "examples": [
+        "They decided to find out if city people really do walk faster."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab"
+    },
+    {
+      "id": "w_timed",
+      "word": "timed",
+      "lemma": "time",
+      "forms": [
+        "time",
+        "timed"
+      ],
+      "partOfSpeech": "verb",
+      "meaningKo": "measured with time",
+      "simpleKo": "measured how long something took",
+      "easyEnglish": "To time something means to measure it with a clock or stopwatch.",
+      "easyEnglishLong": "If you time a runner, you measure how long the runner takes. Here, the scientists timed how fast people walked.",
+      "examples": [
+        "They timed how fast the people walked."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab"
+    },
+    {
+      "id": "w_rate",
+      "word": "rate",
+      "lemma": "rate",
+      "forms": [
+        "rate"
+      ],
+      "partOfSpeech": "noun",
+      "meaningKo": "speed or amount",
+      "simpleKo": "speed or amount",
+      "easyEnglish": "A rate tells how fast something happens.",
+      "easyEnglishLong": "A walking rate can show how quickly a person moves. If one rate is twice another rate, it is much faster.",
+      "examples": [
+        "City walkers move at almost twice the rate of walkers in small towns."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab"
+    },
+    {
+      "id": "w_almost",
+      "word": "almost",
+      "lemma": "almost",
+      "forms": [
+        "almost"
+      ],
+      "partOfSpeech": "adverb",
+      "meaningKo": "nearly, but not completely",
+      "simpleKo": "nearly, but not completely",
+      "easyEnglish": "Almost means very close to, but not exactly.",
+      "easyEnglishLong": "If city walkers move at almost twice the rate, they are nearly two times faster, but maybe not exactly two times.",
+      "examples": [
+        "They move at almost twice the rate."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab"
+    },
+    {
+      "id": "w_twice",
+      "word": "twice",
+      "lemma": "twice",
+      "forms": [
+        "twice"
+      ],
+      "partOfSpeech": "adverb",
+      "meaningKo": "two times",
+      "simpleKo": "two times",
+      "easyEnglish": "Twice means two times.",
+      "easyEnglishLong": "If something is twice as fast, it is two times faster. The passage says city walkers move at almost twice the rate of small-town walkers.",
+      "examples": [
+        "City walkers move at almost twice the rate."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab"
+    },
+    {
+      "id": "w_nervous",
+      "word": "nervous",
+      "lemma": "nervous",
+      "forms": [
+        "nervous"
+      ],
+      "partOfSpeech": "adjective",
+      "meaningKo": "worried or not calm",
+      "simpleKo": "worried or not calm",
+      "easyEnglish": "Nervous means feeling worried or tense.",
+      "easyEnglishLong": "A nervous person may feel rushed or uneasy. The passage asks if people in cities walk faster because they are more nervous.",
+      "examples": [
+        "Maybe it's because they are more nervous."
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab"
+    },
+    {
+      "id": "w_reason",
+      "word": "reason",
+      "lemma": "reason",
+      "forms": [
+        "reason"
+      ],
+      "partOfSpeech": "noun",
+      "meaningKo": "why something happens",
+      "simpleKo": "why something happens",
+      "easyEnglish": "A reason explains why something happens.",
+      "easyEnglishLong": "When you ask for the reason, you want to know why. At the end, the passage asks what reason might explain faster city walking.",
+      "examples": [
+        "What do you think is the reason?"
+      ],
+      "highlight": true,
+      "highlightStyle": "known_vocab"
+    }
+  ],
+  "explanations": [],
+  "paragraphs": [
+    {
+      "id": "p1",
+      "type": "story",
+      "sentences": [
+        {
+          "id": "s1",
+          "text": "Many people who have lived in big cities and small towns think that people walk faster in the cities.",
+          "audioId": "",
+          "chunkActivity": "on",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "Meaning chunks",
+              "chunks": [
+                {
+                  "id": "s1_short_c1",
+                  "text": "Many people",
+                  "startChar": 0,
+                  "endChar": 11
+                },
+                {
+                  "id": "s1_short_c2",
+                  "text": "who have lived",
+                  "startChar": 12,
+                  "endChar": 26
+                },
+                {
+                  "id": "s1_short_c3",
+                  "text": "in big cities and small towns",
+                  "startChar": 27,
+                  "endChar": 56
+                },
+                {
+                  "id": "s1_short_c4",
+                  "text": "think that",
+                  "startChar": 57,
+                  "endChar": 67
+                },
+                {
+                  "id": "s1_short_c5",
+                  "text": "people walk faster",
+                  "startChar": 68,
+                  "endChar": 86
+                },
+                {
+                  "id": "s1_short_c6",
+                  "text": "in the cities.",
+                  "startChar": 87,
+                  "endChar": 101
+                }
+              ]
+            },
+            {
+              "id": "qchunk",
+              "label": "Question chunks",
+              "chunks": [
+                {
+                  "id": "s1_qchunk_c1",
+                  "text": "Many people",
+                  "startChar": 0,
+                  "endChar": 11
+                },
+                {
+                  "id": "s1_qchunk_c2",
+                  "text": "who have lived",
+                  "startChar": 12,
+                  "endChar": 26
+                },
+                {
+                  "id": "s1_qchunk_c3",
+                  "text": "in big cities and small towns",
+                  "startChar": 27,
+                  "endChar": 56
+                },
+                {
+                  "id": "s1_qchunk_c4",
+                  "text": "think that",
+                  "startChar": 57,
+                  "endChar": 67
+                },
+                {
+                  "id": "s1_qchunk_c5",
+                  "text": "people walk faster",
+                  "startChar": 68,
+                  "endChar": 86
+                },
+                {
+                  "id": "s1_qchunk_c6",
+                  "text": "in the cities.",
+                  "startChar": 87,
+                  "endChar": 101
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "Sentence",
+              "chunks": [
+                {
+                  "id": "s1_sentence_c1",
+                  "text": "Many people who have lived in big cities and small towns think that people walk faster in the cities.",
+                  "startChar": 0,
+                  "endChar": 101
+                }
+              ]
+            }
+          ],
+          "annotations": []
+        },
+        {
+          "id": "s2",
+          "text": "They always seem to be in a hurry.",
+          "audioId": "",
+          "chunkActivity": "auto",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "Meaning chunks",
+              "chunks": [
+                {
+                  "id": "s2_short_c1",
+                  "text": "They always seem",
+                  "startChar": 0,
+                  "endChar": 16
+                },
+                {
+                  "id": "s2_short_c2",
+                  "text": "to be in a hurry.",
+                  "startChar": 17,
+                  "endChar": 34
+                }
+              ]
+            },
+            {
+              "id": "qchunk",
+              "label": "Question chunks",
+              "chunks": [
+                {
+                  "id": "s2_qchunk_c1",
+                  "text": "They always seem",
+                  "startChar": 0,
+                  "endChar": 16
+                },
+                {
+                  "id": "s2_qchunk_c2",
+                  "text": "to be in a hurry.",
+                  "startChar": 17,
+                  "endChar": 34
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "Sentence",
+              "chunks": [
+                {
+                  "id": "s2_sentence_c1",
+                  "text": "They always seem to be in a hurry.",
+                  "startChar": 0,
+                  "endChar": 34
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s2_w_hurry_28",
+              "type": "vocab",
+              "wordId": "w_hurry",
+              "text": "hurry",
+              "startChar": 28,
+              "endChar": 33,
+              "highlightStyle": "known_vocab"
+            }
+          ]
+        },
+        {
+          "id": "s3",
+          "text": "A group of scientists decided to find out if city people really do walk faster.",
+          "audioId": "",
+          "chunkActivity": "on",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "Meaning chunks",
+              "chunks": [
+                {
+                  "id": "s3_short_c1",
+                  "text": "A group of scientists",
+                  "startChar": 0,
+                  "endChar": 21
+                },
+                {
+                  "id": "s3_short_c2",
+                  "text": "decided",
+                  "startChar": 22,
+                  "endChar": 29
+                },
+                {
+                  "id": "s3_short_c3",
+                  "text": "to find out",
+                  "startChar": 30,
+                  "endChar": 41
+                },
+                {
+                  "id": "s3_short_c4",
+                  "text": "if city people",
+                  "startChar": 42,
+                  "endChar": 56
+                },
+                {
+                  "id": "s3_short_c5",
+                  "text": "really do walk faster.",
+                  "startChar": 57,
+                  "endChar": 79
+                }
+              ]
+            },
+            {
+              "id": "qchunk",
+              "label": "Question chunks",
+              "chunks": [
+                {
+                  "id": "s3_qchunk_c1",
+                  "text": "A group of scientists",
+                  "startChar": 0,
+                  "endChar": 21
+                },
+                {
+                  "id": "s3_qchunk_c2",
+                  "text": "decided",
+                  "startChar": 22,
+                  "endChar": 29
+                },
+                {
+                  "id": "s3_qchunk_c3",
+                  "text": "to find out",
+                  "startChar": 30,
+                  "endChar": 41
+                },
+                {
+                  "id": "s3_qchunk_c4",
+                  "text": "if city people",
+                  "startChar": 42,
+                  "endChar": 56
+                },
+                {
+                  "id": "s3_qchunk_c5",
+                  "text": "really do walk faster.",
+                  "startChar": 57,
+                  "endChar": 79
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "Sentence",
+              "chunks": [
+                {
+                  "id": "s3_sentence_c1",
+                  "text": "A group of scientists decided to find out if city people really do walk faster.",
+                  "startChar": 0,
+                  "endChar": 79
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s3_w_scientists_11",
+              "type": "vocab",
+              "wordId": "w_scientists",
+              "text": "scientists",
+              "startChar": 11,
+              "endChar": 21,
+              "highlightStyle": "known_vocab"
+            },
+            {
+              "id": "ann_s3_w_decided_22",
+              "type": "vocab",
+              "wordId": "w_decided",
+              "text": "decided",
+              "startChar": 22,
+              "endChar": 29,
+              "highlightStyle": "known_vocab"
+            },
+            {
+              "id": "ann_s3_w_find_out_33",
+              "type": "vocab",
+              "wordId": "w_find_out",
+              "text": "find out",
+              "startChar": 33,
+              "endChar": 41,
+              "highlightStyle": "known_vocab"
+            }
+          ]
+        },
+        {
+          "id": "s4",
+          "text": "The scientists went to many big cities and small towns.",
+          "audioId": "",
+          "chunkActivity": "auto",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "Meaning chunks",
+              "chunks": [
+                {
+                  "id": "s4_short_c1",
+                  "text": "The scientists",
+                  "startChar": 0,
+                  "endChar": 14
+                },
+                {
+                  "id": "s4_short_c2",
+                  "text": "went to",
+                  "startChar": 15,
+                  "endChar": 22
+                },
+                {
+                  "id": "s4_short_c3",
+                  "text": "many big cities and small towns.",
+                  "startChar": 23,
+                  "endChar": 55
+                }
+              ]
+            },
+            {
+              "id": "qchunk",
+              "label": "Question chunks",
+              "chunks": [
+                {
+                  "id": "s4_qchunk_c1",
+                  "text": "The scientists",
+                  "startChar": 0,
+                  "endChar": 14
+                },
+                {
+                  "id": "s4_qchunk_c2",
+                  "text": "went to",
+                  "startChar": 15,
+                  "endChar": 22
+                },
+                {
+                  "id": "s4_qchunk_c3",
+                  "text": "many big cities and small towns.",
+                  "startChar": 23,
+                  "endChar": 55
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "Sentence",
+              "chunks": [
+                {
+                  "id": "s4_sentence_c1",
+                  "text": "The scientists went to many big cities and small towns.",
+                  "startChar": 0,
+                  "endChar": 55
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s4_w_scientists_4",
+              "type": "vocab",
+              "wordId": "w_scientists",
+              "text": "scientists",
+              "startChar": 4,
+              "endChar": 14,
+              "highlightStyle": "known_vocab"
+            }
+          ]
+        },
+        {
+          "id": "s5",
+          "text": "They timed how fast the people walked.",
+          "audioId": "",
+          "chunkActivity": "on",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "Meaning chunks",
+              "chunks": [
+                {
+                  "id": "s5_short_c1",
+                  "text": "They timed",
+                  "startChar": 0,
+                  "endChar": 10
+                },
+                {
+                  "id": "s5_short_c2",
+                  "text": "how fast",
+                  "startChar": 11,
+                  "endChar": 19
+                },
+                {
+                  "id": "s5_short_c3",
+                  "text": "the people walked.",
+                  "startChar": 20,
+                  "endChar": 38
+                }
+              ]
+            },
+            {
+              "id": "qchunk",
+              "label": "Question chunks",
+              "chunks": [
+                {
+                  "id": "s5_qchunk_c1",
+                  "text": "They timed",
+                  "startChar": 0,
+                  "endChar": 10
+                },
+                {
+                  "id": "s5_qchunk_c2",
+                  "text": "how fast the people walked.",
+                  "startChar": 11,
+                  "endChar": 38
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "Sentence",
+              "chunks": [
+                {
+                  "id": "s5_sentence_c1",
+                  "text": "They timed how fast the people walked.",
+                  "startChar": 0,
+                  "endChar": 38
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s5_w_timed_5",
+              "type": "vocab",
+              "wordId": "w_timed",
+              "text": "timed",
+              "startChar": 5,
+              "endChar": 10,
+              "highlightStyle": "known_vocab"
+            }
+          ]
+        },
+        {
+          "id": "s6",
+          "text": "The scientists found out that city walkers move at almost twice the rate of walkers in small towns.",
+          "audioId": "",
+          "chunkActivity": "on",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "Meaning chunks",
+              "chunks": [
+                {
+                  "id": "s6_short_c1",
+                  "text": "The scientists found out",
+                  "startChar": 0,
+                  "endChar": 24
+                },
+                {
+                  "id": "s6_short_c2",
+                  "text": "that city walkers move",
+                  "startChar": 25,
+                  "endChar": 47
+                },
+                {
+                  "id": "s6_short_c3",
+                  "text": "at almost twice the rate",
+                  "startChar": 48,
+                  "endChar": 72
+                },
+                {
+                  "id": "s6_short_c4",
+                  "text": "of walkers in small towns.",
+                  "startChar": 73,
+                  "endChar": 99
+                }
+              ]
+            },
+            {
+              "id": "qchunk",
+              "label": "Question chunks",
+              "chunks": [
+                {
+                  "id": "s6_qchunk_c1",
+                  "text": "The scientists found out",
+                  "startChar": 0,
+                  "endChar": 24
+                },
+                {
+                  "id": "s6_qchunk_c2",
+                  "text": "that city walkers move",
+                  "startChar": 25,
+                  "endChar": 47
+                },
+                {
+                  "id": "s6_qchunk_c3",
+                  "text": "at almost twice the rate",
+                  "startChar": 48,
+                  "endChar": 72
+                },
+                {
+                  "id": "s6_qchunk_c4",
+                  "text": "of walkers in small towns.",
+                  "startChar": 73,
+                  "endChar": 99
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "Sentence",
+              "chunks": [
+                {
+                  "id": "s6_sentence_c1",
+                  "text": "The scientists found out that city walkers move at almost twice the rate of walkers in small towns.",
+                  "startChar": 0,
+                  "endChar": 99
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s6_w_scientists_4",
+              "type": "vocab",
+              "wordId": "w_scientists",
+              "text": "scientists",
+              "startChar": 4,
+              "endChar": 14,
+              "highlightStyle": "known_vocab"
+            },
+            {
+              "id": "ann_s6_w_find_out_15",
+              "type": "vocab",
+              "wordId": "w_find_out",
+              "text": "found out",
+              "startChar": 15,
+              "endChar": 24,
+              "highlightStyle": "known_vocab"
+            },
+            {
+              "id": "ann_s6_w_almost_51",
+              "type": "vocab",
+              "wordId": "w_almost",
+              "text": "almost",
+              "startChar": 51,
+              "endChar": 57,
+              "highlightStyle": "known_vocab"
+            },
+            {
+              "id": "ann_s6_w_twice_58",
+              "type": "vocab",
+              "wordId": "w_twice",
+              "text": "twice",
+              "startChar": 58,
+              "endChar": 63,
+              "highlightStyle": "known_vocab"
+            },
+            {
+              "id": "ann_s6_w_rate_68",
+              "type": "vocab",
+              "wordId": "w_rate",
+              "text": "rate",
+              "startChar": 68,
+              "endChar": 72,
+              "highlightStyle": "known_vocab"
+            }
+          ]
+        },
+        {
+          "id": "s7",
+          "text": "Why do people in the cities walk faster?",
+          "audioId": "",
+          "chunkActivity": "auto",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "Meaning chunks",
+              "chunks": [
+                {
+                  "id": "s7_short_c1",
+                  "text": "Why do people",
+                  "startChar": 0,
+                  "endChar": 13
+                },
+                {
+                  "id": "s7_short_c2",
+                  "text": "in the cities",
+                  "startChar": 14,
+                  "endChar": 27
+                },
+                {
+                  "id": "s7_short_c3",
+                  "text": "walk faster?",
+                  "startChar": 28,
+                  "endChar": 40
+                }
+              ]
+            },
+            {
+              "id": "qchunk",
+              "label": "Question chunks",
+              "chunks": [
+                {
+                  "id": "s7_qchunk_c1",
+                  "text": "Why do people",
+                  "startChar": 0,
+                  "endChar": 13
+                },
+                {
+                  "id": "s7_qchunk_c2",
+                  "text": "in the cities",
+                  "startChar": 14,
+                  "endChar": 27
+                },
+                {
+                  "id": "s7_qchunk_c3",
+                  "text": "walk faster?",
+                  "startChar": 28,
+                  "endChar": 40
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "Sentence",
+              "chunks": [
+                {
+                  "id": "s7_sentence_c1",
+                  "text": "Why do people in the cities walk faster?",
+                  "startChar": 0,
+                  "endChar": 40
+                }
+              ]
+            }
+          ],
+          "annotations": []
+        },
+        {
+          "id": "s8",
+          "text": "Maybe it's because they are more nervous.",
+          "audioId": "",
+          "chunkActivity": "auto",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "Meaning chunks",
+              "chunks": [
+                {
+                  "id": "s8_short_c1",
+                  "text": "Maybe it's because",
+                  "startChar": 0,
+                  "endChar": 18
+                },
+                {
+                  "id": "s8_short_c2",
+                  "text": "they are more nervous.",
+                  "startChar": 19,
+                  "endChar": 41
+                }
+              ]
+            },
+            {
+              "id": "qchunk",
+              "label": "Question chunks",
+              "chunks": [
+                {
+                  "id": "s8_qchunk_c1",
+                  "text": "Maybe it's because",
+                  "startChar": 0,
+                  "endChar": 18
+                },
+                {
+                  "id": "s8_qchunk_c2",
+                  "text": "they are more nervous.",
+                  "startChar": 19,
+                  "endChar": 41
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "Sentence",
+              "chunks": [
+                {
+                  "id": "s8_sentence_c1",
+                  "text": "Maybe it's because they are more nervous.",
+                  "startChar": 0,
+                  "endChar": 41
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s8_w_nervous_33",
+              "type": "vocab",
+              "wordId": "w_nervous",
+              "text": "nervous",
+              "startChar": 33,
+              "endChar": 40,
+              "highlightStyle": "known_vocab"
+            }
+          ]
+        },
+        {
+          "id": "s9",
+          "text": "Maybe it's because they have more places to go.",
+          "audioId": "",
+          "chunkActivity": "auto",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "Meaning chunks",
+              "chunks": [
+                {
+                  "id": "s9_short_c1",
+                  "text": "Maybe it's because",
+                  "startChar": 0,
+                  "endChar": 18
+                },
+                {
+                  "id": "s9_short_c2",
+                  "text": "they have more places",
+                  "startChar": 19,
+                  "endChar": 40
+                },
+                {
+                  "id": "s9_short_c3",
+                  "text": "to go.",
+                  "startChar": 41,
+                  "endChar": 47
+                }
+              ]
+            },
+            {
+              "id": "qchunk",
+              "label": "Question chunks",
+              "chunks": [
+                {
+                  "id": "s9_qchunk_c1",
+                  "text": "Maybe it's because",
+                  "startChar": 0,
+                  "endChar": 18
+                },
+                {
+                  "id": "s9_qchunk_c2",
+                  "text": "they have more places to go.",
+                  "startChar": 19,
+                  "endChar": 47
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "Sentence",
+              "chunks": [
+                {
+                  "id": "s9_sentence_c1",
+                  "text": "Maybe it's because they have more places to go.",
+                  "startChar": 0,
+                  "endChar": 47
+                }
+              ]
+            }
+          ],
+          "annotations": []
+        },
+        {
+          "id": "s10",
+          "text": "What do you think is the reason?",
+          "audioId": "",
+          "chunkActivity": "auto",
+          "chunkSets": [
+            {
+              "id": "short",
+              "label": "Meaning chunks",
+              "chunks": [
+                {
+                  "id": "s10_short_c1",
+                  "text": "What do you think",
+                  "startChar": 0,
+                  "endChar": 17
+                },
+                {
+                  "id": "s10_short_c2",
+                  "text": "is the reason?",
+                  "startChar": 18,
+                  "endChar": 32
+                }
+              ]
+            },
+            {
+              "id": "qchunk",
+              "label": "Question chunks",
+              "chunks": [
+                {
+                  "id": "s10_qchunk_c1",
+                  "text": "What do you think",
+                  "startChar": 0,
+                  "endChar": 17
+                },
+                {
+                  "id": "s10_qchunk_c2",
+                  "text": "is the reason?",
+                  "startChar": 18,
+                  "endChar": 32
+                }
+              ]
+            },
+            {
+              "id": "sentence",
+              "label": "Sentence",
+              "chunks": [
+                {
+                  "id": "s10_sentence_c1",
+                  "text": "What do you think is the reason?",
+                  "startChar": 0,
+                  "endChar": 32
+                }
+              ]
+            }
+          ],
+          "annotations": [
+            {
+              "id": "ann_s10_w_reason_25",
+              "type": "vocab",
+              "wordId": "w_reason",
+              "text": "reason",
+              "startChar": 25,
+              "endChar": 31,
+              "highlightStyle": "known_vocab"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "comprehensionChecks": [
+    {
+      "id": "qc_s1_where_lived",
+      "afterSentenceId": "s1",
+      "sentenceId": "s1",
+      "chunkSetId": "qchunk",
+      "question": "Where have many people lived?",
+      "answerChunkId": "s1_qchunk_c3",
+      "answerText": "in big cities and small towns",
+      "correctFeedback": "Correct! Many people have lived in big cities and small towns.",
+      "scopeSentenceIds": [
+        "s1"
+      ],
+      "promptNote": "Choose the chunk that answers the question."
+    },
+    {
+      "id": "qc_s2_how_seem",
+      "afterSentenceId": "s2",
+      "sentenceId": "s2",
+      "chunkSetId": "qchunk",
+      "question": "How do they always seem?",
+      "answerChunkId": "s2_qchunk_c2",
+      "answerText": "to be in a hurry.",
+      "correctFeedback": "Correct! They always seem to be in a hurry.",
+      "scopeSentenceIds": [
+        "s2"
+      ],
+      "promptNote": "Choose the chunk that answers the question."
+    },
+    {
+      "id": "qc_s3_who",
+      "afterSentenceId": "s3",
+      "sentenceId": "s3",
+      "chunkSetId": "qchunk",
+      "question": "Who decided to find out?",
+      "answerChunkId": "s3_qchunk_c1",
+      "answerText": "A group of scientists",
+      "correctFeedback": "Correct! A group of scientists decided to find out.",
+      "scopeSentenceIds": [
+        "s3"
+      ],
+      "promptNote": "Choose the chunk that answers the question."
+    },
+    {
+      "id": "qc_s3_what_find",
+      "afterSentenceId": "s3",
+      "sentenceId": "s3",
+      "chunkSetId": "qchunk",
+      "question": "What did they want to find out?",
+      "answerChunkId": "s3_qchunk_c5",
+      "answerText": "really do walk faster.",
+      "correctFeedback": "Correct! They wanted to know if city people really do walk faster.",
+      "scopeSentenceIds": [
+        "s3"
+      ],
+      "promptNote": "Choose the chunk that answers the question."
+    },
+    {
+      "id": "qc_s5_what_timed",
+      "afterSentenceId": "s5",
+      "sentenceId": "s5",
+      "chunkSetId": "qchunk",
+      "question": "What did they time?",
+      "answerChunkId": "s5_qchunk_c2",
+      "answerText": "how fast the people walked.",
+      "correctFeedback": "Correct! They timed how fast the people walked.",
+      "scopeSentenceIds": [
+        "s5"
+      ],
+      "promptNote": "Choose the chunk that answers the question."
+    },
+    {
+      "id": "qc_s6_who_moved",
+      "afterSentenceId": "s6",
+      "sentenceId": "s6",
+      "chunkSetId": "qchunk",
+      "question": "Who moved faster?",
+      "answerChunkId": "s6_qchunk_c2",
+      "answerText": "that city walkers move",
+      "correctFeedback": "Correct! City walkers moved faster.",
+      "scopeSentenceIds": [
+        "s6"
+      ],
+      "promptNote": "Choose the chunk that answers the question."
+    },
+    {
+      "id": "qc_s6_how_much",
+      "afterSentenceId": "s6",
+      "sentenceId": "s6",
+      "chunkSetId": "qchunk",
+      "question": "How much faster did city walkers move?",
+      "answerChunkId": "s6_qchunk_c3",
+      "answerText": "at almost twice the rate",
+      "correctFeedback": "Correct! City walkers moved at almost twice the rate.",
+      "scopeSentenceIds": [
+        "s6"
+      ],
+      "promptNote": "Choose the chunk that answers the question."
+    },
+    {
+      "id": "qc_s8_why",
+      "afterSentenceId": "s8",
+      "sentenceId": "s8",
+      "chunkSetId": "qchunk",
+      "question": "What is one possible reason?",
+      "answerChunkId": "s8_qchunk_c2",
+      "answerText": "they are more nervous.",
+      "correctFeedback": "Correct! One possible reason is that they are more nervous.",
+      "scopeSentenceIds": [
+        "s8"
+      ],
+      "promptNote": "Choose the chunk that answers the question."
+    },
+    {
+      "id": "qc_s9_why",
+      "afterSentenceId": "s9",
+      "sentenceId": "s9",
+      "chunkSetId": "qchunk",
+      "question": "What is another possible reason?",
+      "answerChunkId": "s9_qchunk_c2",
+      "answerText": "they have more places to go.",
+      "correctFeedback": "Correct! Another possible reason is that they have more places to go.",
+      "scopeSentenceIds": [
+        "s9"
+      ],
+      "promptNote": "Choose the chunk that answers the question."
+    },
+    {
+      "id": "qc_s10_question",
+      "afterSentenceId": "s10",
+      "sentenceId": "s10",
+      "chunkSetId": "qchunk",
+      "question": "What does the writer ask you to think about?",
+      "answerChunkId": "s10_qchunk_c2",
+      "answerText": "is the reason?",
+      "correctFeedback": "Correct! The writer asks you to think about the reason.",
+      "scopeSentenceIds": [
+        "s10"
+      ],
+      "promptNote": "Choose the chunk that answers the question."
+    }
+  ],
+  "generationValidation": {
+    "source": "user_provided_text",
+    "notes": [
+      "No audio file was provided; this lesson uses app TTS.",
+      "Short chunks are meaning-based; qchunk chunks are aligned for comprehension checks.",
+      "Vocabulary meanings are written in easy English for the current word-table flow."
+    ]
+  }
+}

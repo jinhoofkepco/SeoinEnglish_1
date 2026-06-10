@@ -41,11 +41,12 @@ import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.view.GestureDetector
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.util.Log
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -94,6 +95,27 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 class MainActivity : Activity() {
+    private enum class ReadingCoachState {
+        IDLE,
+        VOICE_SHELL_READY,
+        CONVERSATION_READY,
+        COACHING,
+        CHILD_TURN,
+        FEEDBACK,
+        FALLBACK_TTS,
+        DONE,
+        RESET
+    }
+
+    private data class CoachInjectionStepResult(
+        val ok: Boolean,
+        val draftWritten: Boolean,
+        val buttonReady: Boolean,
+        val sendClicked: Boolean,
+        val composerLength: Int,
+        val reason: String,
+    )
+
     private lateinit var root: FrameLayout
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var settingsStore: SettingsStore
@@ -151,7 +173,7 @@ class MainActivity : Activity() {
     private var waveformOffsetLabel: TextView? = null
     private var startProfileView: BoundaryProfileView? = null
     private var endProfileView: BoundaryProfileView? = null
-    private var chatDialog: AlertDialog? = null
+    private var chatOverlay: FrameLayout? = null
     private var chatDialogBox: LinearLayout? = null
     private var chatWebView: WebView? = null
     private var chatStatusLabel: TextView? = null
@@ -163,6 +185,24 @@ class MainActivity : Activity() {
     private var pendingChatVoiceBeforePrompt = false
     private var pendingChatVoiceBeforePromptStarted = false
     private var pendingChatCompactAfterSend = false
+    private val blockReadingCoachTtsFallbackForDebug = true
+    private var readingCoachActive = false
+    private var readingCoachState = ReadingCoachState.IDLE
+    private var readingCoachFallbackTts = false
+    private var readingCoachPreviousActiveMode = "natural"
+    private var readingCoachPreviousUseTts = true
+    private var readingCoachPreferredChunkSetId = "short"
+    private var readingCoachChunkSetId = "short"
+    private var readingCoachSentenceIndex = 0
+    private var readingCoachChunkIndex = 0
+    private var readingCoachFlowToken = 0L
+    private var readingCoachChunkToken = 0L
+    private var readingCoachPrimed = false
+    private var readingCoachVoiceShellPreparing = false
+    private var readingCoachVoiceRequestInFlight = false
+    private var readingCoachFirstVoiceChunkStarted = false
+    private var readingCoachStatusLabel: TextView? = null
+    private var readingCoachStateButton: TextView? = null
     private val questionPromptPrimedLessons = mutableSetOf<String>()
     private val answeredComprehensionChecks = mutableSetOf<String>()
     private var activeComprehensionPass = 0
@@ -2689,9 +2729,477 @@ class MainActivity : Activity() {
         val host = readerActionHost ?: return
         host.removeAllViews()
         host.addView(controls(), matchWrap().withBottom(dp(8)))
+        host.addView(readingCoachPanel(lesson), matchWrap().withBottom(dp(8)))
         if (masterSettings.manualChunkEnabled) {
             host.addView(flowNextPanel(lesson), matchWrap())
         }
+    }
+
+    private fun readingCoachPanel(lesson: Lesson): View {
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            background = rounded(color(R.color.skin_surface_alt), dp(18), color(R.color.skin_line), dp(1))
+        }
+        row.addView(text("ChatGPT voice coach reads each chunk, then Seoin shadows it.", 14f, color(R.color.skin_muted)), LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f))
+        row.addView(pill("낭독 코치").apply {
+            background = rounded(color(R.color.skin_mark), dp(18), color(R.color.skin_primary), dp(1))
+            setOnClickListener { startReadingCoachMode(lesson) }
+        }, fixed(dp(132), dp(42)))
+        return row
+    }
+
+    private fun startReadingCoachMode(lesson: Lesson) {
+        if (flatSentences.isEmpty()) flatSentences = lesson.allSentences()
+        clearPendingChatPromptState()
+        readingCoachPreviousActiveMode = activeMode
+        readingCoachPreviousUseTts = useTts
+        readingCoachPreferredChunkSetId = coachChunkSetId(lesson)
+        readingCoachChunkSetId = readingCoachPreferredChunkSetId
+        val firstPosition = firstCoachPosition(lesson, selectedSentenceIndex)
+            ?: firstCoachPosition(lesson, 0)
+            ?: run {
+                toast("No chunks for coach.")
+                return
+            }
+        stopAllPlayback()
+        readingCoachActive = true
+        readingCoachState = ReadingCoachState.IDLE
+        readingCoachFallbackTts = false
+        readingCoachPrimed = false
+        readingCoachVoiceRequestInFlight = false
+        readingCoachFirstVoiceChunkStarted = false
+        readingCoachSentenceIndex = firstPosition.first
+        readingCoachChunkIndex = firstPosition.second
+        readingCoachFlowToken += 1L
+        readingCoachChunkToken += 1L
+        useTts = true
+        updateReadingCoachSelection(lesson, readingCoachSentenceIndex, readingCoachChunkIndex)
+        refreshAllParagraphs()
+        scrollToSentence(readingCoachSentenceIndex)
+        installReadingCoachControls(lesson)
+        showChatGptAssistantDialog()
+    }
+
+    private fun installReadingCoachControls(lesson: Lesson) {
+        val host = readerActionHost ?: return
+        host.removeAllViews()
+        val box = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(12), dp(10), dp(12), dp(10))
+            background = rounded(color(R.color.skin_surface), dp(18), color(R.color.skin_line), dp(1))
+        }
+        readingCoachStatusLabel = text("", 14f, color(R.color.skin_muted), Typeface.BOLD)
+        box.addView(readingCoachStatusLabel, matchWrap().withBottom(dp(8)))
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        row.addView(pill("다시 듣기").apply {
+            setOnClickListener { readCurrentCoachChunk(lesson, forceTts = readingCoachFallbackTts) }
+        }, LinearLayout.LayoutParams(0, dp(46), 1f).withRightMargin(dp(6)))
+        row.addView(pill("따라하기").apply {
+            setOnClickListener { openCoachTalkTurn(lesson, readingCoachChunkToken) }
+        }, LinearLayout.LayoutParams(0, dp(46), 1f).withRightMargin(dp(6)))
+        row.addView(pill("다음 청크").apply {
+            setOnClickListener { moveReadingCoachChunk(lesson, 1, autoRead = true) }
+        }, LinearLayout.LayoutParams(0, dp(46), 1f).withRightMargin(dp(6)))
+        row.addView(pill("문장 반복").apply {
+            setOnClickListener {
+                readingCoachChunkIndex = 0
+                readCurrentCoachChunk(lesson, forceTts = readingCoachFallbackTts)
+            }
+        }, LinearLayout.LayoutParams(0, dp(46), 1f).withRightMargin(dp(6)))
+        row.addView(pill("끝내기").apply {
+            background = rounded(color(R.color.skin_surface_alt), dp(18), color(R.color.skin_line), dp(1))
+            setOnClickListener { endReadingCoachMode(lesson) }
+        }, LinearLayout.LayoutParams(0, dp(46), 0.8f))
+        box.addView(row, matchWrap())
+        readingCoachStateButton = pill("").apply {
+            setOnClickListener { retryReadingCoachVoice(lesson) }
+        }
+        box.addView(readingCoachStateButton, matchWrap().withTop(dp(8)))
+        host.addView(box, matchWrap())
+        updateReadingCoachStatus()
+    }
+
+    private fun prepareReadingCoachSession() {
+        if (!readingCoachActive || readingCoachPrimed || readingCoachVoiceShellPreparing || readingCoachFallbackTts) return
+        val lesson = currentLesson ?: return
+        val token = readingCoachFlowToken
+        expandChatGptAssistantDialogForVoice()
+        bringChatGptDialogToForegroundForVoice("prepare-start")
+        readingCoachVoiceShellPreparing = true
+        readingCoachState = ReadingCoachState.IDLE
+        clearPendingChatPromptState()
+        updateReadingCoachStatus("Opening ChatGPT voice mode...")
+        requestCoachVoiceMode(token, retries = 35) { clicked ->
+            if (!readingCoachActive || token != readingCoachFlowToken) return@requestCoachVoiceMode
+            if (!clicked) {
+                readingCoachVoiceShellPreparing = false
+                switchReadingCoachToTtsFallback(lesson, "voice mode button not ready")
+                return@requestCoachVoiceMode
+            }
+            bringChatGptDialogToForegroundForVoice("voice-button-clicked")
+            readingCoachFallbackTts = false
+            readingCoachState = ReadingCoachState.VOICE_SHELL_READY
+            Log.d("SeoinCoach", "voice mode requested")
+            setChatAudioDucked(true)
+            val marker = coachMarker("prime")
+            val prime = """
+                You are Seoin's kind English reading teacher.
+                Speak in very easy English. Be warm, short, and calm.
+                In coaching mode: read one chunk slowly, ask Seoin to repeat, listen, then give one tiny pronunciation or chunking tip.
+                Do not answer this setup message out loud if possible. If you must respond, keep it silent and short.
+            """.trimIndent()
+            updateReadingCoachStatus("Voice clicked. Waiting for voice screen...")
+            waitForCoachVoiceUiReady(token, maxWaitMs = 25_000L) { ready ->
+                if (!readingCoachActive || token != readingCoachFlowToken || readingCoachFallbackTts) return@waitForCoachVoiceUiReady
+                if (!ready) {
+                    setChatAudioDucked(false)
+                    readingCoachVoiceShellPreparing = false
+                    switchReadingCoachToTtsFallback(lesson, "voice microphone UI not ready")
+                    return@waitForCoachVoiceUiReady
+                }
+                bringChatGptDialogToForegroundForVoice("voice-ready-before-prime")
+                updateReadingCoachStatus("Microphone is ready. Priming coach...")
+                setCoachMicOpen(false) { micReady ->
+                    Log.d("SeoinCoach", "initial mic closed before prime ready=$micReady")
+                    updateReadingCoachStatus("Voice is ready. Waiting one second before priming...")
+                    handler.postDelayed({
+                        if (!readingCoachActive || token != readingCoachFlowToken || readingCoachFallbackTts) return@postDelayed
+                        Log.d("SeoinCoach", "voice settle before prime finished delayMs=1000")
+                        bringChatGptDialogToForegroundForVoice("prime-inject")
+                        readLastAssistantText { baseline ->
+                            if (!readingCoachActive || token != readingCoachFlowToken || readingCoachFallbackTts) return@readLastAssistantText
+                            injectCoachMessage(prime, marker, attempt = 0, maxAttempts = 0, visibleTimeoutMs = 20_000L) { visible ->
+                                if (!readingCoachActive || token != readingCoachFlowToken) return@injectCoachMessage
+                                if (!visible) {
+                                    setChatAudioDucked(false)
+                                    readingCoachVoiceShellPreparing = false
+                                    switchReadingCoachToTtsFallback(lesson, "priming user bubble not visible after extended wait")
+                                    return@injectCoachMessage
+                                }
+                                val primeToken = readingCoachChunkToken
+                                waitForCoachTextCompleteAfter(primeToken, baseline, timeoutMs = 4200L) { _ ->
+                                    if (!readingCoachActive || token != readingCoachFlowToken) return@waitForCoachTextCompleteAfter
+                                    readingCoachPrimed = true
+                                    readingCoachFallbackTts = false
+                                    readingCoachVoiceShellPreparing = false
+                                    readingCoachState = ReadingCoachState.CONVERSATION_READY
+                                    Log.d("SeoinCoach", "conversation ready marker=$marker")
+                                    setChatAudioDucked(false)
+                                    readCurrentCoachChunk(lesson, forceTts = false)
+                                }
+                            }
+                        }
+                    }, 1000L)
+                }
+            }
+        }
+    }
+
+    private fun readCurrentCoachChunk(lesson: Lesson, forceTts: Boolean = false) {
+        val token = ++readingCoachChunkToken
+        val position = currentCoachPosition(lesson) ?: run {
+            finishReadingCoach(lesson)
+            return
+        }
+        val (sentenceIndex, chunkIndex) = position
+        val chunk = updateReadingCoachSelection(lesson, sentenceIndex, chunkIndex) ?: run {
+            finishReadingCoach(lesson)
+            return
+        }
+        refreshAllParagraphs()
+        scrollToSentence(sentenceIndex)
+        updateReadingCoachStatus("Coach is reading: ${chunk.text}")
+
+        if (forceTts || readingCoachFallbackTts || !readingCoachPrimed || chatWebView == null) {
+            if (blockReadingCoachTtsFallbackForDebug) {
+                readingCoachFallbackTts = false
+                readingCoachState = if (readingCoachPrimed) ReadingCoachState.CONVERSATION_READY else ReadingCoachState.VOICE_SHELL_READY
+                Log.d(
+                    "SeoinCoach",
+                    "fallback blocked in readCurrent reason=forceTts:$forceTts fallback:$readingCoachFallbackTts primed:$readingCoachPrimed web:${chatWebView != null}"
+                )
+                updateReadingCoachStatus("DEBUG: TTS fallback is blocked. Staying in ChatGPT voice flow.")
+                return
+            }
+            readingCoachFallbackTts = true
+            readingCoachState = ReadingCoachState.FALLBACK_TTS
+            updateReadingCoachStatus("TTS fallback reading. Repeat after it, then press Next.")
+            speakTtsSegments(
+                listOf(chunkTtsSegment(sentenceIndex, chunk)),
+                pauseAfterMs = 0,
+                speechRate = masterSettings.firstListenRate,
+                onDone = {
+                    if (!readingCoachActive || token != readingCoachChunkToken) return@speakTtsSegments
+                    readingCoachState = ReadingCoachState.CHILD_TURN
+                    updateReadingCoachStatus("Your turn. Read it out loud, then press Next Chunk.")
+                }
+            )
+            return
+        }
+
+        readingCoachState = ReadingCoachState.COACHING
+        updateReadingCoachStatus("Coach is speaking. Wait for your turn.")
+        val marker = coachMarker("chunk_${sentenceIndex}_${readingCoachChunkIndex}")
+        val prompt = """
+            Read this part slowly one time, then say: "Now your turn, Seoin."
+            After Seoin repeats it, give one very short friendly tip.
+            Chunk: "${chunk.text}"
+        """.trimIndent()
+        readLastAssistantText { baseline ->
+            if (!readingCoachActive || token != readingCoachChunkToken) return@readLastAssistantText
+            injectCoachMessage(prompt, marker, attempt = 0) { visible ->
+                if (!readingCoachActive || token != readingCoachChunkToken) return@injectCoachMessage
+                if (!visible) {
+                    switchReadingCoachToTtsFallback(lesson, "chunk inject not visible")
+                    return@injectCoachMessage
+                }
+                if (!readingCoachFirstVoiceChunkStarted) {
+                    readingCoachFirstVoiceChunkStarted = true
+                    Log.d("SeoinCoach", "first voice chunk started marker=$marker")
+                }
+                waitForCoachTextCompleteAfter(token, baseline, timeoutMs = 9000L) { spokenText ->
+                    if (!readingCoachActive || token != readingCoachChunkToken) return@waitForCoachTextCompleteAfter
+                    waitForCoachMediaQuiet(token, spokenText) {
+                        if (!readingCoachActive || token != readingCoachChunkToken) return@waitForCoachMediaQuiet
+                        openCoachTalkTurn(lesson, token)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun openCoachTalkTurn(lesson: Lesson, token: Long) {
+        if (!readingCoachActive || token != readingCoachChunkToken) return
+        readingCoachState = ReadingCoachState.CHILD_TURN
+        updateReadingCoachStatus("Your turn. Speak now.")
+        setCoachMicOpen(open = true) { clicked ->
+            Log.d("SeoinCoach", "talk open clicked=$clicked")
+            val talkToken = readingCoachChunkToken
+            handler.postDelayed({
+                if (!readingCoachActive || talkToken != readingCoachChunkToken) return@postDelayed
+                setCoachMicOpen(open = false) { muteClicked ->
+                    Log.d("SeoinCoach", "talk window ended; mic close clicked=$muteClicked")
+                    if (!readingCoachActive || talkToken != readingCoachChunkToken) return@setCoachMicOpen
+                    readingCoachState = ReadingCoachState.FEEDBACK
+                    updateReadingCoachStatus("Coach feedback...")
+                    readLastAssistantText { baseline ->
+                        if (!readingCoachActive || talkToken != readingCoachChunkToken) return@readLastAssistantText
+                        waitForCoachTextCompleteAfter(talkToken, baseline, timeoutMs = 8500L) { feedbackText ->
+                            if (!readingCoachActive || talkToken != readingCoachChunkToken) return@waitForCoachTextCompleteAfter
+                            waitForCoachMediaQuiet(talkToken, feedbackText) {
+                                if (!readingCoachActive || talkToken != readingCoachChunkToken) return@waitForCoachMediaQuiet
+                                Log.d("SeoinCoach", "coach handoff next-chunk")
+                                moveReadingCoachChunk(lesson, 1, autoRead = true)
+                            }
+                        }
+                    }
+                }
+            }, 8000L)
+        }
+    }
+
+    private fun moveReadingCoachChunk(lesson: Lesson, delta: Int, autoRead: Boolean) {
+        val currentChunks = coachChunksFor(lesson, readingCoachSentenceIndex)
+        var nextSentence = readingCoachSentenceIndex
+        var nextChunk = readingCoachChunkIndex + delta
+        if (nextChunk !in currentChunks.indices) {
+            val nextPosition = firstCoachPosition(lesson, readingCoachSentenceIndex + 1)
+            if (nextPosition == null) {
+                finishReadingCoach(lesson)
+                return
+            }
+            nextSentence = nextPosition.first
+            nextChunk = nextPosition.second
+        }
+        readingCoachSentenceIndex = nextSentence
+        readingCoachChunkIndex = nextChunk.coerceAtLeast(0)
+        updateReadingCoachSelection(lesson, readingCoachSentenceIndex, readingCoachChunkIndex)
+        refreshAllParagraphs()
+        scrollToSentence(readingCoachSentenceIndex)
+        updateReadingCoachStatus()
+        if (autoRead) readCurrentCoachChunk(lesson, forceTts = readingCoachFallbackTts)
+    }
+
+    private fun finishReadingCoach(lesson: Lesson) {
+        readingCoachState = ReadingCoachState.DONE
+        currentChunkId = null
+        refreshAllParagraphs()
+        updateReadingCoachStatus("Coach session done. Great reading.")
+        speakPopupText("Great reading, Seoin. You finished the coaching practice.", onDone = {
+            if (readingCoachActive) endReadingCoachMode(lesson)
+        })
+    }
+
+    private fun endReadingCoachMode(lesson: Lesson) {
+        if (chatOverlay != null) {
+            dismissChatGptAssistantOverlay()
+        } else {
+            resetReadingCoachStateOnly()
+            restoreReaderAfterCoach(lesson)
+        }
+    }
+
+    private fun restoreReaderAfterCoach(lesson: Lesson?) {
+        val targetLesson = lesson ?: currentLesson ?: return
+        stopAllPlayback()
+        activeMode = readingCoachPreviousActiveMode.ifBlank { "natural" }
+        useTts = readingCoachPreviousUseTts
+        currentChunkId = null
+        explicitSegmentEndMs = null
+        explicitSegmentNextStartMs = null
+        pendingStartMs = flatSentences.getOrNull(selectedSentenceIndex)?.sentence?.startMs
+        refreshAllParagraphs()
+        installReaderControls(targetLesson)
+        refreshMode()
+        updatePlayIcon()
+    }
+
+    private fun resetReadingCoachStateOnly() {
+        readingCoachFlowToken += 1L
+        readingCoachChunkToken += 1L
+        readingCoachActive = false
+        readingCoachState = ReadingCoachState.RESET
+        readingCoachFallbackTts = false
+        readingCoachPrimed = false
+        readingCoachVoiceShellPreparing = false
+        readingCoachVoiceRequestInFlight = false
+        readingCoachFirstVoiceChunkStarted = false
+        readingCoachStatusLabel = null
+        readingCoachStateButton = null
+        setChatAudioDucked(false)
+    }
+
+    private fun switchReadingCoachToTtsFallback(lesson: Lesson, reason: String) {
+        if (!readingCoachActive) return
+        Log.d("SeoinCoach", "fallback reason=$reason")
+        if (blockReadingCoachTtsFallbackForDebug) {
+            readingCoachVoiceShellPreparing = false
+            readingCoachFallbackTts = false
+            readingCoachState = if (readingCoachPrimed) ReadingCoachState.CONVERSATION_READY else ReadingCoachState.VOICE_SHELL_READY
+            Log.d("SeoinCoach", "fallback blocked for debug reason=$reason")
+            updateReadingCoachStatus("DEBUG: TTS fallback blocked. Voice error: $reason")
+            return
+        }
+        val shouldCloseVoice = readingCoachState == ReadingCoachState.VOICE_SHELL_READY || readingCoachVoiceShellPreparing
+        readingCoachVoiceShellPreparing = false
+        readingCoachFallbackTts = true
+        readingCoachState = ReadingCoachState.FALLBACK_TTS
+        updateReadingCoachStatus("Voice coach not ready. Using app TTS fallback.")
+        compactChatGptAssistantDialog()
+        if (shouldCloseVoice) {
+            closeChatVoiceSession {
+                handler.postDelayed({
+                    if (readingCoachActive && readingCoachFallbackTts) readCurrentCoachChunk(lesson, forceTts = true)
+                }, 900L)
+            }
+        } else {
+            readCurrentCoachChunk(lesson, forceTts = true)
+        }
+    }
+
+    private fun retryReadingCoachVoice(lesson: Lesson) {
+        if (!readingCoachActive || readingCoachVoiceShellPreparing) return
+        stopAllPlayback()
+        readingCoachFlowToken += 1L
+        readingCoachChunkToken += 1L
+        readingCoachFallbackTts = false
+        readingCoachPrimed = false
+        readingCoachVoiceRequestInFlight = false
+        readingCoachState = ReadingCoachState.IDLE
+        updateReadingCoachStatus("Retrying voice coach...")
+        expandChatGptAssistantDialogForVoice()
+        val token = readingCoachFlowToken
+        handler.postDelayed({
+            if (!readingCoachActive || token != readingCoachFlowToken) return@postDelayed
+            if (chatWebView == null || chatOverlay == null) {
+                showChatGptAssistantDialog()
+            } else {
+                prepareReadingCoachSession()
+            }
+        }, 850L)
+    }
+
+    private fun updateReadingCoachStatus(extra: String? = null) {
+        val chunk = coachChunksFor(currentLesson ?: return, readingCoachSentenceIndex).getOrNull(readingCoachChunkIndex)
+        val total = coachChunksFor(currentLesson ?: return, readingCoachSentenceIndex).size
+        val stateText = when (readingCoachState) {
+            ReadingCoachState.IDLE -> "준비중"
+            ReadingCoachState.VOICE_SHELL_READY -> "voice ready"
+            ReadingCoachState.CONVERSATION_READY -> "conversation ready"
+            ReadingCoachState.COACHING -> "말하는중"
+            ReadingCoachState.CHILD_TURN -> "네 차례"
+            ReadingCoachState.FEEDBACK -> "피드백중"
+            ReadingCoachState.FALLBACK_TTS -> "TTS fallback"
+            ReadingCoachState.DONE -> "완료"
+            ReadingCoachState.RESET -> "종료"
+        }
+        readingCoachStatusLabel?.text = extra ?: "낭독 코치 ${readingCoachSentenceIndex + 1}/${flatSentences.size}, chunk ${readingCoachChunkIndex + 1}/$total: ${chunk?.text.orEmpty()}"
+        readingCoachStateButton?.text = "현재 상태: $stateText · Voice 다시 시도"
+        chatStatusLabel?.text = "Reading coach: $stateText"
+    }
+
+    private fun coachChunkSetId(lesson: Lesson): String {
+        val sentence = flatSentences.getOrNull(selectedSentenceIndex)?.sentence
+        val preferred = listOf(activeMode, lesson.defaultChunkSetId, "short", "long", "sentence")
+            .filter { it.isNotBlank() && it != "natural" }
+        return preferred.firstOrNull { id -> sentence?.chunkSets?.get(id).orEmpty().isNotEmpty() }
+            ?: preferred.firstOrNull()
+            ?: "short"
+    }
+
+    private fun coachChunksFor(lesson: Lesson, sentenceIndex: Int): List<Chunk> {
+        return coachChunkSource(lesson, sentenceIndex).second
+    }
+
+    private fun coachChunkSource(lesson: Lesson, sentenceIndex: Int): Pair<String, List<Chunk>> {
+        val sentence = flatSentences.getOrNull(sentenceIndex)?.sentence ?: return readingCoachPreferredChunkSetId to emptyList()
+        val candidates = listOf(readingCoachPreferredChunkSetId, lesson.defaultChunkSetId, "short", "sentence")
+            .filter { it.isNotBlank() && it != "natural" }
+            .distinct()
+        candidates.forEach { id ->
+            val chunks = sentence.chunkSets[id].orEmpty()
+            if (chunks.isNotEmpty()) return id to chunks
+        }
+        return readingCoachPreferredChunkSetId to emptyList()
+    }
+
+    private fun updateReadingCoachSelection(lesson: Lesson, sentenceIndex: Int, chunkIndex: Int): Chunk? {
+        val (setId, chunks) = coachChunkSource(lesson, sentenceIndex)
+        val chunk = chunks.getOrNull(chunkIndex) ?: return null
+        readingCoachChunkSetId = setId
+        activeMode = setId
+        readingCoachSentenceIndex = sentenceIndex
+        readingCoachChunkIndex = chunkIndex
+        currentSentenceIndex = sentenceIndex
+        selectedSentenceIndex = sentenceIndex
+        currentChunkId = chunk.id
+        pendingStartMs = chunk.startMs
+        return chunk
+    }
+
+    private fun currentCoachPosition(lesson: Lesson): Pair<Int, Int>? {
+        val chunks = coachChunksFor(lesson, readingCoachSentenceIndex)
+        if (readingCoachChunkIndex in chunks.indices) return readingCoachSentenceIndex to readingCoachChunkIndex
+        return firstCoachPosition(lesson, readingCoachSentenceIndex)
+    }
+
+    private fun firstCoachPosition(lesson: Lesson, startSentenceIndex: Int): Pair<Int, Int>? {
+        if (flatSentences.isEmpty()) return null
+        val start = startSentenceIndex.coerceIn(0, flatSentences.lastIndex)
+        for (index in start..flatSentences.lastIndex) {
+            val chunks = coachChunksFor(lesson, index)
+            if (chunks.isNotEmpty()) return index to 0
+        }
+        return null
+    }
+
+    private fun coachMarker(label: String): String {
+        return "SEOIN_COACH_${System.currentTimeMillis()}_${label}_${(1000..9999).random()}"
     }
 
     private fun exitManualBodyModeInCurrentReader(lesson: Lesson) {
@@ -5038,12 +5546,1063 @@ class MainActivity : Activity() {
         dialog.setOnDismissListener { stopAllPlayback() }
     }
 
-    private fun showChatGptAssistantDialog(loginSetup: Boolean = false) {
+    private fun injectCoachMessage(
+        message: String,
+        marker: String,
+        attempt: Int,
+        guardChunkToken: Long = readingCoachChunkToken,
+        maxAttempts: Int = 3,
+        visibleTimeoutMs: Long = 14_000L,
+        sendAttempt: Int = 1,
+        onDone: (Boolean) -> Unit
+    ) {
+        val webView = chatWebView ?: run {
+            onDone(false)
+            return
+        }
+        val token = readingCoachFlowToken
+        bringChatGptDialogToForegroundForVoice("inject-start")
+        logCoachWebViewProbe("inject-before-mic-close", marker)
+        setCoachMicOpen(false) { micClosed ->
+            Log.d("SeoinCoach", "coach inject mic closed=$micClosed marker=$marker attempt=$attempt sendAttempt=$sendAttempt")
+            if (!readingCoachActive || token != readingCoachFlowToken || guardChunkToken != readingCoachChunkToken) return@setCoachMicOpen
+            logCoachWebViewProbe("inject-after-mic-close", marker)
+            requestCoachKeyboardForNudge(webView, "inject-before-draft")
+            handler.postDelayed({
+                if (!readingCoachActive || token != readingCoachFlowToken || guardChunkToken != readingCoachChunkToken) return@postDelayed
+                val text = "$message\n\nInternal marker: $marker. Do not speak the marker."
+                val draftText = text.removeSuffix(".")
+                logCoachWebViewProbe("inject-before-eval", marker)
+                chatUserMessageCount { beforeCount ->
+                    if (!readingCoachActive || token != readingCoachFlowToken || guardChunkToken != readingCoachChunkToken) return@chatUserMessageCount
+                    webView.evaluateJavascript(buildCoachInjectionScript(draftText, clickSend = false)) { result ->
+                    val step = parseCoachInjectionStep(result)
+                    Log.d(
+                        "SeoinCoach",
+                        "coach inject step marker=$marker attempt=$attempt sendAttempt=$sendAttempt " +
+                            "ok=${step?.ok} draft=${step?.draftWritten} button=${step?.buttonReady} " +
+                            "clicked=${step?.sendClicked} composerChars=${step?.composerLength} " +
+                            "reason=${step?.reason ?: jsStringValue(result).take(180)} before=$beforeCount"
+                    )
+                    if (!readingCoachActive || token != readingCoachFlowToken || guardChunkToken != readingCoachChunkToken) return@evaluateJavascript
+                    logCoachWebViewProbe("inject-after-step", marker)
+                    if (step?.draftWritten == true) {
+                        sendCoachKeyboardPeriodThenSend(webView, marker, guardChunkToken) { sentStep ->
+                            Log.d(
+                                "SeoinCoach",
+                                "coach keyboard-period send marker=$marker ok=${sentStep?.ok} " +
+                                    "button=${sentStep?.buttonReady} clicked=${sentStep?.sendClicked} " +
+                                    "composerChars=${sentStep?.composerLength} reason=${sentStep?.reason}"
+                            )
+                            if (!readingCoachActive || token != readingCoachFlowToken || guardChunkToken != readingCoachChunkToken) return@sendCoachKeyboardPeriodThenSend
+                            if (sentStep?.sendClicked != true && sentStep?.ok != true) {
+                                if (sendAttempt < 12) {
+                                    handler.postDelayed({
+                                        if (readingCoachActive && token == readingCoachFlowToken && guardChunkToken == readingCoachChunkToken) {
+                                            injectCoachMessage(
+                                                message = message,
+                                                marker = marker,
+                                                attempt = attempt,
+                                                guardChunkToken = guardChunkToken,
+                                                maxAttempts = maxAttempts,
+                                                visibleTimeoutMs = visibleTimeoutMs,
+                                                sendAttempt = sendAttempt + 1,
+                                                onDone = onDone
+                                            )
+                                        }
+                                    }, 120L)
+                                } else {
+                                    onDone(false)
+                                }
+                                return@sendCoachKeyboardPeriodThenSend
+                            }
+                            logCoachWebViewProbe("inject-after-send-click", marker)
+                        confirmCoachUserBubble(marker, beforeCount, startedAtMs = System.currentTimeMillis(), pollCount = 0, guardChunkToken = guardChunkToken, timeoutMs = visibleTimeoutMs, allowSpaceNudge = true) { visible ->
+                            Log.d("SeoinCoach", "coach inject visible marker=$marker visible=$visible")
+                            if (!visible && attempt < maxAttempts) {
+                                handler.postDelayed({
+                                    if (readingCoachActive && token == readingCoachFlowToken && guardChunkToken == readingCoachChunkToken) {
+                                        injectCoachMessage(
+                                            message = message,
+                                            marker = marker,
+                                            attempt = attempt + 1,
+                                            guardChunkToken = guardChunkToken,
+                                            maxAttempts = maxAttempts,
+                                            visibleTimeoutMs = visibleTimeoutMs,
+                                            sendAttempt = 1,
+                                            onDone = onDone
+                                        )
+                                    }
+                                }, 1500L)
+                            } else {
+                                onDone(visible)
+                            }
+                        }
+                        }
+                    } else if (sendAttempt < 12) {
+                        handler.postDelayed({
+                            if (readingCoachActive && token == readingCoachFlowToken && guardChunkToken == readingCoachChunkToken) {
+                                injectCoachMessage(
+                                    message = message,
+                                    marker = marker,
+                                    attempt = attempt,
+                                    guardChunkToken = guardChunkToken,
+                                    maxAttempts = maxAttempts,
+                                    visibleTimeoutMs = visibleTimeoutMs,
+                                    sendAttempt = sendAttempt + 1,
+                                    onDone = onDone
+                                )
+                            }
+                        }, 75L)
+                    } else if (attempt < maxAttempts) {
+                        handler.postDelayed({
+                            if (readingCoachActive && token == readingCoachFlowToken && guardChunkToken == readingCoachChunkToken) {
+                                injectCoachMessage(
+                                    message = message,
+                                    marker = marker,
+                                    attempt = attempt + 1,
+                                    guardChunkToken = guardChunkToken,
+                                    maxAttempts = maxAttempts,
+                                    visibleTimeoutMs = visibleTimeoutMs,
+                                    sendAttempt = 1,
+                                    onDone = onDone
+                                )
+                            }
+                        }, 1500L)
+                    } else {
+                        onDone(false)
+                    }
+                }
+            }
+            }, 450L)
+        }
+    }
+
+    private fun parseCoachInjectionStep(rawResult: String?): CoachInjectionStepResult? {
+        val clean = jsStringValue(rawResult).ifBlank { rawResult.orEmpty() }.trim()
+        return runCatching {
+            val json = JSONObject(clean)
+            CoachInjectionStepResult(
+                ok = json.optBoolean("ok"),
+                draftWritten = json.optBoolean("draftWritten"),
+                buttonReady = json.optBoolean("buttonReady"),
+                sendClicked = json.optBoolean("sendClicked"),
+                composerLength = json.optInt("composerLength", 0),
+                reason = json.optString("reason"),
+            )
+        }.getOrNull()
+    }
+
+    private fun sendCoachKeyboardPeriodThenSend(
+        webView: WebView,
+        marker: String,
+        guardChunkToken: Long,
+        onDone: (CoachInjectionStepResult?) -> Unit
+    ) {
+        if (!readingCoachActive || guardChunkToken != readingCoachChunkToken) {
+            onDone(null)
+            return
+        }
+        requestCoachKeyboardForNudge(webView, "before-key-period")
+        logCoachWebViewProbe("before-key-period", marker)
+        webView.evaluateJavascript(buildCoachComposerNudgeScript()) { focusResult ->
+            Log.d("SeoinCoach", "coach period focus result=${jsStringValue(focusResult)}")
+            handler.postDelayed({
+                if (!readingCoachActive || guardChunkToken != readingCoachChunkToken) return@postDelayed
+                requestCoachKeyboardForNudge(webView, "key-period")
+                val downPeriod = webView.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_PERIOD))
+                val upPeriod = webView.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_PERIOD))
+                Log.d("SeoinCoach", "coach keyboard period down=$downPeriod up=$upPeriod marker=$marker")
+                logCoachWebViewProbe("after-key-period", marker)
+                handler.postDelayed({
+                    if (!readingCoachActive || guardChunkToken != readingCoachChunkToken) return@postDelayed
+                    webView.evaluateJavascript(buildCoachClickSendScript(requireTrailingPeriod = true)) { sendResult ->
+                        val step = parseCoachInjectionStep(sendResult)
+                        Log.d("SeoinCoach", "coach click send after period result=${jsStringValue(sendResult)}")
+                        onDone(step)
+                    }
+                }, 320L)
+            }, 450L)
+        }
+    }
+
+    private fun scheduleCoachComposerNudge(marker: String, guardChunkToken: Long) {
+        val token = readingCoachFlowToken
+        val nudgeDelayMs = 3500L
+        Log.d("SeoinCoach", "coach composer nudge scheduled marker=$marker delayMs=$nudgeDelayMs")
+        handler.postDelayed({
+            if (!readingCoachActive || token != readingCoachFlowToken || guardChunkToken != readingCoachChunkToken) return@postDelayed
+            val webView = chatWebView ?: return@postDelayed
+            Log.d("SeoinCoach", "coach composer nudge start marker=$marker")
+            requestCoachKeyboardForNudge(webView, "before-nudge")
+            logCoachWebViewProbe("nudge-before", marker)
+            webView.evaluateJavascript(buildCoachComposerNudgeScript()) { result ->
+                Log.d("SeoinCoach", "coach composer focus nudge result=${jsStringValue(result)}")
+                handler.postDelayed({
+                    if (!readingCoachActive || token != readingCoachFlowToken || guardChunkToken != readingCoachChunkToken) return@postDelayed
+                    sendCoachAndroidKeyNudge(webView, marker, guardChunkToken)
+                }, 700L)
+            }
+        }, nudgeDelayMs)
+    }
+
+    private fun sendCoachAndroidKeyNudge(webView: WebView, marker: String, guardChunkToken: Long, onDone: ((Boolean) -> Unit)? = null) {
+        if (!readingCoachActive || guardChunkToken != readingCoachChunkToken) {
+            onDone?.invoke(false)
+            return
+        }
+        requestCoachKeyboardForNudge(webView, "android-key-nudge")
+        val downSpace = webView.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SPACE))
+        val upSpace = webView.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_SPACE))
+        val success = downSpace || upSpace
+        Log.d("SeoinCoach", "coach android key nudge SPACE down=$downSpace up=$upSpace marker=$marker")
+        logCoachWebViewProbe("nudge-after-key-space", marker)
+        Log.d("SeoinCoach", "coach android key nudge kept space input marker=$marker success=$success")
+        onDone?.invoke(success)
+    }
+
+    private fun requestCoachKeyboardForNudge(webView: WebView, reason: String) {
+        webView.isFocusable = true
+        webView.isFocusableInTouchMode = true
+        webView.requestFocus()
+        webView.post {
+            val shown = (getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)
+                ?.showSoftInput(webView, InputMethodManager.SHOW_IMPLICIT) ?: false
+            Log.d("SeoinCoach", "coach keyboard nudge reason=$reason shown=$shown")
+        }
+    }
+
+    private fun buildCoachComposerNudgeScript(): String = """
+        (function() {
+          const result = {
+            ok: false,
+            reason: "",
+            beforeLength: 0
+          };
+          const isVisible = function(el) {
+            if (!el) return false;
+            const rect = el.getBoundingClientRect();
+            const style = window.getComputedStyle(el);
+            return rect.width > 0 && rect.height > 0 &&
+              style.visibility !== "hidden" &&
+              style.display !== "none";
+          };
+          const isEditable = function(input) {
+            return input.isContentEditable || input.getAttribute("contenteditable") === "true";
+          };
+          const readInput = function(input) {
+            if (!input) return "";
+            if (isEditable(input)) return input.textContent || "";
+            return input.value || "";
+          };
+          const inputs = Array.from(document.querySelectorAll("#prompt-textarea, [data-testid='prompt-textarea'], textarea, div[contenteditable='true'], [contenteditable='true'], .ProseMirror"))
+            .filter(function(el) { return isVisible(el) && !el.closest("[aria-hidden='true']"); });
+          const input = inputs.find(function(el) {
+            return el.id === "prompt-textarea" || el.getAttribute("data-testid") === "prompt-textarea";
+          }) || inputs[0];
+          if (!input) {
+            result.reason = "no-input";
+            return JSON.stringify(result);
+          }
+          const before = readInput(input);
+          result.beforeLength = before.length;
+          input.focus();
+          if (isEditable(input)) {
+            try {
+              const selection = window.getSelection();
+              const range = document.createRange();
+              range.selectNodeContents(input);
+              range.collapse(false);
+              if (selection) {
+                selection.removeAllRanges();
+                selection.addRange(range);
+              }
+            } catch (e) {
+              result.reason = "focus-selection-fallback";
+            }
+          }
+          result.ok = true;
+          if (!result.reason) result.reason = "focused";
+          return JSON.stringify(result);
+        })();
+    """.trimIndent()
+
+    private fun logCoachWebViewProbe(label: String, marker: String? = null) {
+        val webView = chatWebView ?: return
+        val labelLiteral = JSONObject.quote(label)
+        val markerLiteral = marker?.let { JSONObject.quote(it) } ?: "null"
+        val script = """
+            (function() {
+              const label = $labelLiteral;
+              const marker = $markerLiteral;
+              const isVisible = function(el) {
+                if (!el) return false;
+                const rect = el.getBoundingClientRect();
+                const style = window.getComputedStyle(el);
+                return rect.width > 0 && rect.height > 0 &&
+                  style.visibility !== "hidden" &&
+                  style.display !== "none";
+              };
+              const labelOf = function(el) {
+                if (!el) return "";
+                return [
+                  el.getAttribute("aria-label"),
+                  el.getAttribute("data-testid"),
+                  el.getAttribute("title"),
+                  el.textContent
+                ].filter(Boolean).join(" ").replace(/\s+/g, " ").trim().slice(0, 120);
+              };
+              const readInput = function(input) {
+                if (!input) return "";
+                if (input.isContentEditable || input.getAttribute("contenteditable") === "true") {
+                  return input.textContent || "";
+                }
+                return input.value || "";
+              };
+              const active = document.activeElement;
+              const composers = Array.from(document.querySelectorAll("#prompt-textarea, [data-testid='prompt-textarea'], textarea, div[contenteditable='true'], [contenteditable='true'], .ProseMirror"));
+              const visibleComposers = composers.filter(function(el) { return isVisible(el) && !el.closest("[aria-hidden='true']"); });
+              const composerText = visibleComposers.map(readInput).join("\n");
+              const userNodes = Array.from(document.querySelectorAll("[data-message-author-role='user']"));
+              const assistantNodes = Array.from(document.querySelectorAll("[data-message-author-role='assistant']"));
+              const lastUser = userNodes.length ? (userNodes[userNodes.length - 1].innerText || userNodes[userNodes.length - 1].textContent || "") : "";
+              const lastAssistant = assistantNodes.length ? (assistantNodes[assistantNodes.length - 1].innerText || assistantNodes[assistantNodes.length - 1].textContent || "") : "";
+              const buttons = Array.from(document.querySelectorAll("button, [role='button']")).filter(isVisible).map(labelOf).filter(Boolean).slice(0, 12);
+              return JSON.stringify({
+                label: label,
+                hasFocus: document.hasFocus(),
+                visibilityState: document.visibilityState,
+                hidden: document.hidden,
+                readyState: document.readyState,
+                url: String(location.href).slice(0, 120),
+                activeTag: active ? active.tagName : "",
+                activeId: active ? (active.id || "") : "",
+                activeTestId: active ? (active.getAttribute("data-testid") || "") : "",
+                activeRole: active ? (active.getAttribute("role") || "") : "",
+                activeLabel: labelOf(active),
+                composerCount: composers.length,
+                visibleComposerCount: visibleComposers.length,
+                composerLength: composerText.length,
+                composerHasMarker: !!(marker && composerText.indexOf(marker) >= 0),
+                userMessages: userNodes.length,
+                lastUserHasMarker: !!(marker && lastUser.indexOf(marker) >= 0),
+                lastUserPreview: lastUser.replace(/\s+/g, " ").slice(-140),
+                assistantMessages: assistantNodes.length,
+                lastAssistantPreview: lastAssistant.replace(/\s+/g, " ").slice(-140),
+                buttons: buttons.join(" | ")
+              });
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            Log.d("SeoinCoach", "web probe ${jsStringValue(result)}")
+        }
+    }
+
+    private fun buildCoachInjectionScript(message: String, clickSend: Boolean = true): String {
+        val text = JSONObject.quote(message)
+        val shouldClickSend = if (clickSend) "true" else "false"
+        val inputSelector = JSONObject.quote(
+            "#prompt-textarea, [data-testid='prompt-textarea'], textarea, div[contenteditable='true'], [contenteditable='true'], .ProseMirror"
+        )
+        val sendSelector = JSONObject.quote(
+            "button[data-testid='send-button'], button[data-testid='composer-submit-button'], button[data-testid='composer-send-button'], button[aria-label='Send prompt'], button[aria-label='Send message'], button[aria-label='Send']"
+        )
+        return """
+            (function() {
+              const text = $text;
+              const clickSend = $shouldClickSend;
+              const selector = $inputSelector;
+              const sendSelector = $sendSelector;
+              const result = {
+                ok: false,
+                draftWritten: false,
+                buttonReady: false,
+                sendClicked: false,
+                composerLength: 0,
+                reason: ""
+              };
+              const isEditable = function(input) {
+                return input.isContentEditable || input.getAttribute("contenteditable") === "true";
+              };
+              const setNativeValue = function(input, value) {
+                const proto = input.tagName === "TEXTAREA" ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+                const descriptor = Object.getOwnPropertyDescriptor(proto, "value");
+                if (descriptor && descriptor.set) {
+                  descriptor.set.call(input, value);
+                } else {
+                  input.value = value;
+                }
+              };
+              const clearInput = function(input) {
+                if (isEditable(input)) {
+                  input.textContent = "";
+                } else {
+                  setNativeValue(input, "");
+                }
+                input.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "deleteContentBackward", data: null }));
+                input.dispatchEvent(new Event("change", { bubbles: true }));
+              };
+              const readInput = function(input) {
+                if (isEditable(input)) {
+                  return input.textContent || "";
+                }
+                return input.value || "";
+              };
+              const isVisible = function(el) {
+                if (!el) return false;
+                const rect = el.getBoundingClientRect();
+                const style = window.getComputedStyle(el);
+                return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+              };
+              const labelOf = function(el) {
+                return [
+                  el.getAttribute("aria-label"),
+                  el.getAttribute("data-testid"),
+                  el.getAttribute("title"),
+                  el.textContent
+                ].filter(Boolean).join(" ").toLowerCase();
+              };
+              const inputs = Array.from(document.querySelectorAll(selector))
+                .filter(function(el) { return isVisible(el) && !el.closest("[aria-hidden='true']"); });
+              const input = inputs.find(function(el) {
+                return el.id === "prompt-textarea" || el.getAttribute("data-testid") === "prompt-textarea";
+              }) || inputs[0];
+              if (!input) {
+                result.reason = "no-input";
+                return JSON.stringify(result);
+              }
+              input.focus();
+
+              const firstLine = text.split("\n").find(function(line) { return line.trim().length > 0; }) || text;
+              const current = readInput(input);
+              if (!current.includes(firstLine) || current.length < text.length) {
+                clearInput(input);
+                if (isEditable(input)) {
+                  const selection = window.getSelection();
+                  const range = document.createRange();
+                  let inserted = false;
+                  try {
+                    range.selectNodeContents(input);
+                    if (selection) {
+                      selection.removeAllRanges();
+                      selection.addRange(range);
+                    }
+                    inserted = document.execCommand("insertText", false, text);
+                  } catch (e) {
+                    inserted = false;
+                  }
+                  if (!inserted || !readInput(input).includes(firstLine)) {
+                    input.textContent = text;
+                  }
+                } else {
+                  setNativeValue(input, text);
+                }
+                input.dispatchEvent(new InputEvent("input", { bubbles: true, inputType: "insertText", data: text }));
+                input.dispatchEvent(new Event("change", { bubbles: true }));
+              }
+              const written = readInput(input);
+              result.composerLength = written.length;
+              result.draftWritten = written.includes(firstLine);
+              const findSendButton = function() {
+                const direct = Array.from(document.querySelectorAll(sendSelector));
+                const broad = Array.from(document.querySelectorAll("button, [role='button']")).filter(function(button) {
+                  const label = labelOf(button);
+                  return label.includes("send") ||
+                    label.includes("submit") ||
+                    label.includes("\uBCF4\uB0B4\uAE30") ||
+                    label.includes("\uC804\uC1A1");
+                });
+                return direct.concat(broad).find(function(button) {
+                  return isVisible(button) && !button.disabled && button.getAttribute("aria-disabled") !== "true";
+                });
+              };
+              if (window.__trpgSendTimer) {
+                clearTimeout(window.__trpgSendTimer);
+                window.__trpgSendTimer = null;
+              }
+              if (!result.draftWritten) {
+                result.reason = "draft-missing";
+                return JSON.stringify(result);
+              }
+              if (!clickSend) {
+                const readyButton = findSendButton();
+                result.buttonReady = !!readyButton;
+                result.ok = result.draftWritten;
+                result.reason = readyButton ? "draft-ready" : "draft-ready-send-not-ready";
+                return JSON.stringify(result);
+              }
+              const button = findSendButton();
+              result.buttonReady = !!button;
+              if (!button) {
+                result.reason = "send-not-ready";
+                return JSON.stringify(result);
+              }
+              button.click();
+              result.ok = true;
+              result.sendClicked = true;
+              result.reason = "clicked";
+              return JSON.stringify(result);
+            })();
+        """.trimIndent()
+    }
+
+    private fun buildCoachClickSendScript(requireTrailingPeriod: Boolean): String {
+        val requirePeriod = if (requireTrailingPeriod) "true" else "false"
+        val inputSelector = JSONObject.quote(
+            "#prompt-textarea, [data-testid='prompt-textarea'], textarea, div[contenteditable='true'], [contenteditable='true'], .ProseMirror"
+        )
+        val sendSelector = JSONObject.quote(
+            "button[data-testid='send-button'], button[data-testid='composer-submit-button'], button[data-testid='composer-send-button'], button[aria-label='Send prompt'], button[aria-label='Send message'], button[aria-label='Send']"
+        )
+        return """
+            (function() {
+              const requirePeriod = $requirePeriod;
+              const selector = $inputSelector;
+              const sendSelector = $sendSelector;
+              const result = {
+                ok: false,
+                draftWritten: false,
+                buttonReady: false,
+                sendClicked: false,
+                composerLength: 0,
+                reason: ""
+              };
+              const isEditable = function(input) {
+                return input && (input.isContentEditable || input.getAttribute("contenteditable") === "true");
+              };
+              const readInput = function(input) {
+                if (!input) return "";
+                if (isEditable(input)) return input.textContent || "";
+                return input.value || "";
+              };
+              const isVisible = function(el) {
+                if (!el) return false;
+                const rect = el.getBoundingClientRect();
+                const style = window.getComputedStyle(el);
+                return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+              };
+              const labelOf = function(el) {
+                return [
+                  el.getAttribute("aria-label"),
+                  el.getAttribute("data-testid"),
+                  el.getAttribute("title"),
+                  el.textContent
+                ].filter(Boolean).join(" ").toLowerCase();
+              };
+              const inputs = Array.from(document.querySelectorAll(selector))
+                .filter(function(el) { return isVisible(el) && !el.closest("[aria-hidden='true']"); });
+              const input = inputs.find(function(el) {
+                return el.id === "prompt-textarea" || el.getAttribute("data-testid") === "prompt-textarea";
+              }) || inputs[0];
+              if (!input) {
+                result.reason = "no-input";
+                return JSON.stringify(result);
+              }
+              input.focus();
+              const written = readInput(input);
+              result.composerLength = written.length;
+              result.draftWritten = written.trim().length > 0;
+              if (requirePeriod && !written.trimEnd().endsWith(".")) {
+                result.reason = "missing-keyboard-period";
+                return JSON.stringify(result);
+              }
+              const direct = Array.from(document.querySelectorAll(sendSelector));
+              const broad = Array.from(document.querySelectorAll("button, [role='button']")).filter(function(button) {
+                const label = labelOf(button);
+                return label.includes("send") ||
+                  label.includes("submit") ||
+                  label.includes("\uBCF4\uB0B4\uAE30") ||
+                  label.includes("\uC804\uC1A1");
+              });
+              const button = direct.concat(broad).find(function(item) {
+                return isVisible(item) && !item.disabled && item.getAttribute("aria-disabled") !== "true";
+              });
+              result.buttonReady = !!button;
+              if (!button) {
+                result.reason = "send-not-ready";
+                return JSON.stringify(result);
+              }
+              button.click();
+              result.ok = true;
+              result.sendClicked = true;
+              result.reason = "clicked";
+              return JSON.stringify(result);
+            })();
+        """.trimIndent()
+    }
+
+    private fun chatUserMessageCount(onDone: (Int) -> Unit) {
+        val webView = chatWebView ?: run {
+            onDone(0)
+            return
+        }
+        val script = """
+            (function() {
+              return String(document.querySelectorAll('[data-message-author-role="user"]').length);
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            onDone(result.filter { it.isDigit() }.toIntOrNull() ?: 0)
+        }
+    }
+
+    private fun confirmCoachUserBubble(
+        marker: String,
+        previousCount: Int,
+        startedAtMs: Long,
+        pollCount: Int,
+        guardChunkToken: Long,
+        timeoutMs: Long,
+        allowSpaceNudge: Boolean = false,
+        spaceNudgeSent: Boolean = false,
+        onDone: (Boolean) -> Unit
+    ) {
+        val webView = chatWebView ?: run {
+            onDone(false)
+            return
+        }
+        val markerLiteral = JSONObject.quote(marker)
+        val script = """
+            (function() {
+              const marker = $markerLiteral;
+              const nodes = Array.from(document.querySelectorAll('[data-message-author-role="user"]'));
+              const last = nodes.length ? (nodes[nodes.length - 1].innerText || '') : '';
+              const visible = nodes.length >= ${previousCount + 1} && last.indexOf(marker) >= 0;
+              return "count=" + nodes.length + ";visible=" + visible + ";last=" + encodeURIComponent(last.slice(-160));
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            if (!readingCoachActive || guardChunkToken != readingCoachChunkToken) return@evaluateJavascript
+            val visible = result.contains("visible=true")
+            val count = Regex("count=(\\d+)").find(result)?.groupValues?.getOrNull(1)?.toIntOrNull() ?: -1
+            Log.d("SeoinCoach", "coach user-visible poll=$pollCount marker=$marker visible=$visible userMessages=$count")
+            if (pollCount < 4 || pollCount % 10 == 0) {
+                logCoachWebViewProbe("user-visible-poll-$pollCount", marker)
+            }
+            if (visible || System.currentTimeMillis() - startedAtMs >= timeoutMs) {
+                onDone(visible)
+            } else if (allowSpaceNudge && !spaceNudgeSent && pollCount >= 18) {
+                Log.d("SeoinCoach", "coach user-visible space nudge trigger poll=$pollCount marker=$marker")
+                sendCoachAndroidKeyNudge(webView, marker, guardChunkToken) { nudged ->
+                    Log.d("SeoinCoach", "coach user-visible space nudge result=$nudged marker=$marker")
+                    handler.postDelayed({
+                        if (readingCoachActive && guardChunkToken == readingCoachChunkToken) {
+                            confirmCoachUserBubble(
+                                marker = marker,
+                                previousCount = previousCount,
+                                startedAtMs = startedAtMs,
+                                pollCount = pollCount + 1,
+                                guardChunkToken = guardChunkToken,
+                                timeoutMs = timeoutMs,
+                                allowSpaceNudge = allowSpaceNudge,
+                                spaceNudgeSent = true,
+                                onDone = onDone
+                            )
+                        }
+                    }, 350L)
+                }
+            } else {
+                handler.postDelayed({
+                    if (readingCoachActive && guardChunkToken == readingCoachChunkToken) {
+                        confirmCoachUserBubble(
+                            marker = marker,
+                            previousCount = previousCount,
+                            startedAtMs = startedAtMs,
+                            pollCount = pollCount + 1,
+                            guardChunkToken = guardChunkToken,
+                            timeoutMs = timeoutMs,
+                            allowSpaceNudge = allowSpaceNudge,
+                            spaceNudgeSent = spaceNudgeSent,
+                            onDone = onDone
+                        )
+                    }
+                }, 100L)
+            }
+        }
+    }
+
+    private fun waitForCoachTextCompleteAfter(token: Long, baseline: String, timeoutMs: Long, onDone: (String) -> Unit) {
+        val start = System.currentTimeMillis()
+        val baselineText = baseline.trim()
+        fun poll(lastText: String, stableCount: Int) {
+            if (!readingCoachActive || token != readingCoachChunkToken) return
+            if (System.currentTimeMillis() - start > timeoutMs) {
+                Log.d("SeoinCoach", "coach text complete reason=timeout-or-no-new-text")
+                onDone(lastText.ifBlank { baselineText })
+                return
+            }
+            readLastAssistantText { text ->
+                if (!readingCoachActive || token != readingCoachChunkToken) return@readLastAssistantText
+                val current = text.trim()
+                val hasNewText = current.isNotBlank() && current != baselineText
+                if (!hasNewText) {
+                    handler.postDelayed({ poll(lastText, 0) }, 500L)
+                    return@readLastAssistantText
+                }
+                val stable = current == lastText
+                val nextStable = if (stable) stableCount + 1 else 0
+                val punctuationDone = current.lastOrNull()?.let { it == '.' || it == '!' || it == '?' } == true
+                if (nextStable >= 2 && (punctuationDone || nextStable >= 4)) {
+                    Log.d("SeoinCoach", "coach text complete reason=${if (punctuationDone) "punctuation" else "stable"}")
+                    onDone(current)
+                } else {
+                    handler.postDelayed({ poll(current, nextStable) }, 500L)
+                }
+            }
+        }
+        poll("", 0)
+    }
+
+    private fun waitForCoachTextComplete(token: Long, timeoutMs: Long, onDone: () -> Unit) {
+        val start = System.currentTimeMillis()
+        fun poll(lastText: String, stableCount: Int) {
+            if (!readingCoachActive || token != readingCoachChunkToken) return
+            if (System.currentTimeMillis() - start > timeoutMs) {
+                Log.d("SeoinCoach", "coach text complete reason=timeout")
+                onDone()
+                return
+            }
+            readLastAssistantText { text ->
+                if (!readingCoachActive || token != readingCoachChunkToken) return@readLastAssistantText
+                val stable = text.isNotBlank() && text == lastText
+                val nextStable = if (stable) stableCount + 1 else 0
+                val punctuationDone = text.trim().lastOrNull()?.let { it == '.' || it == '!' || it == '?' } == true
+                if (text.isNotBlank() && nextStable >= 2 && (punctuationDone || nextStable >= 4)) {
+                    Log.d("SeoinCoach", "coach text complete reason=${if (punctuationDone) "punctuation" else "stable"}")
+                    onDone()
+                } else {
+                    handler.postDelayed({ poll(text, nextStable) }, 500L)
+                }
+            }
+        }
+        poll("", 0)
+    }
+
+    private fun readLastAssistantText(onDone: (String) -> Unit) {
+        val webView = chatWebView ?: run {
+            onDone("")
+            return
+        }
+        val script = """
+            (function() {
+              const nodes = Array.from(document.querySelectorAll('[data-message-author-role="assistant"]'));
+              const last = nodes.length ? (nodes[nodes.length - 1].innerText || '') : '';
+              return last.slice(-1000);
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            onDone(jsStringValue(result))
+        }
+    }
+
+    private fun waitForCoachMediaQuiet(token: Long, text: String, onDone: () -> Unit) {
+        val start = System.currentTimeMillis()
+        val fallbackFinishAtMs = start + estimatePostTextVoiceDelayMs(text)
+        val stuckActiveFinishAtMs = fallbackFinishAtMs + 2_000L
+        var sawMediaActivity = false
+        var quietSinceMs = 0L
+        var finished = false
+
+        fun finish(reason: String) {
+            if (finished || !readingCoachActive || token != readingCoachChunkToken) return
+            finished = true
+            cleanupChatMediaProbe()
+            Log.d("SeoinCoach", "media gate wait finish reason=$reason")
+            onDone()
+        }
+
+        fun poll() {
+            if (!readingCoachActive || token != readingCoachChunkToken) return
+            if (finished) return
+            probeChatMediaPlayback { hasProbe, active ->
+                if (!readingCoachActive || token != readingCoachChunkToken || finished) return@probeChatMediaPlayback
+                val now = System.currentTimeMillis()
+                val elapsedMs = now - start
+                if (active) {
+                    sawMediaActivity = true
+                    quietSinceMs = 0L
+                } else if (sawMediaActivity && quietSinceMs == 0L) {
+                    quietSinceMs = now
+                }
+                val quietMs = if (quietSinceMs > 0L) now - quietSinceMs else 0L
+                when {
+                    sawMediaActivity && !active && quietMs >= 0L -> finish("media-quiet")
+                    !hasProbe && elapsedMs >= 1_500L && now >= fallbackFinishAtMs -> finish("fallback-no-probe")
+                    hasProbe && !sawMediaActivity && elapsedMs >= 1_500L && now >= fallbackFinishAtMs -> finish("fallback-delay")
+                    hasProbe && active && elapsedMs >= 1_500L && now >= stuckActiveFinishAtMs -> finish("fallback-stuck-active")
+                    elapsedMs >= 45_000L -> finish("max-wait")
+                    else -> handler.postDelayed({ poll() }, 100L)
+                }
+            }
+        }
+        Log.d("SeoinCoach", "media gate wait start textWords=${text.split(Regex("\\s+")).filter { it.isNotBlank() }.size} fallbackMs=${fallbackFinishAtMs - start}")
+        poll()
+    }
+
+    private fun estimatePostTextVoiceDelayMs(text: String): Long {
+        val words = text.split(Regex("\\s+")).count { it.isNotBlank() }
+        return (1_500L + words * 460L).coerceIn(1_500L, 9_000L)
+    }
+
+    private fun probeChatMediaPlayback(onDone: (hasProbe: Boolean, active: Boolean) -> Unit) {
+        val webView = chatWebView ?: run {
+            onDone(false, false)
+            return
+        }
+        webView.evaluateJavascript(buildMediaPlaybackProbeScript()) { result ->
+            val clean = jsStringValue(result)
+            val json = runCatching { JSONObject(clean) }.getOrNull()
+            val hasProbe = json?.optBoolean("hasProbe", false) ?: false
+            val recentActive = json?.optBoolean("recentActive", false) ?: false
+            Log.d("SeoinCoach", "media probe hasProbe=$hasProbe active=$recentActive result=$clean")
+            onDone(hasProbe, recentActive)
+        }
+    }
+
+    private fun buildMediaPlaybackProbeScript(): String = """
+            (function() {
+              const now = Date.now();
+              const state = window.__seoinMediaProbe || {
+                hasProbe: false,
+                sawActivity: false,
+                lastActiveAt: 0,
+                lastTimes: {},
+                nextId: 1,
+                observer: null
+              };
+              window.__seoinMediaProbe = state;
+
+              const markActive = function() {
+                state.sawActivity = true;
+                state.lastActiveAt = Date.now();
+              };
+
+              const attach = function(item) {
+                if (!item) return;
+                state.hasProbe = true;
+                if (!item.__seoinMediaProbeId) item.__seoinMediaProbeId = 'm' + (state.nextId++);
+                if (item.__seoinMediaProbeAttached) return;
+                item.__seoinMediaProbeAttached = true;
+                ['play', 'playing', 'timeupdate', 'volumechange'].forEach(function(name) {
+                  item.addEventListener(name, markActive, true);
+                });
+                ['pause', 'ended', 'stalled', 'suspend'].forEach(function(name) {
+                  item.addEventListener(name, function() {}, true);
+                });
+              };
+
+              const attachAll = function(root) {
+                const media = Array.from((root || document).querySelectorAll ? (root || document).querySelectorAll('audio,video') : []);
+                media.forEach(attach);
+                return media;
+              };
+
+              const media = attachAll(document);
+              const activeNow = media.some(function(item) {
+                return !item.paused && !item.ended && item.readyState > 1;
+              });
+              media.forEach(function(item) {
+                const id = item.__seoinMediaProbeId || 'unknown';
+                const current = Number.isFinite(item.currentTime) ? item.currentTime : 0;
+                const previous = state.lastTimes[id];
+                if (typeof previous === 'number' && Math.abs(current - previous) > 0.015) {
+                  markActive();
+                }
+                state.lastTimes[id] = current;
+              });
+
+              if (!state.observer && document.documentElement) {
+                state.observer = new MutationObserver(function(mutations) {
+                  mutations.forEach(function(mutation) {
+                    Array.from(mutation.addedNodes || []).forEach(function(node) {
+                      if (!node) return;
+                      if (node.matches && node.matches('audio,video')) attach(node);
+                      attachAll(node);
+                    });
+                  });
+                });
+                state.observer.observe(document.documentElement, { childList: true, subtree: true });
+              }
+
+              const ageMs = state.lastActiveAt ? now - state.lastActiveAt : 999999;
+              return JSON.stringify({
+                hasProbe: state.hasProbe,
+                sawActivity: state.sawActivity,
+                recentActive: ageMs <= 180,
+                ageMs: ageMs,
+                mediaCount: media.length,
+                activeNow: activeNow
+              });
+            })();
+    """.trimIndent()
+
+    private fun cleanupChatMediaProbe() {
+        val webView = chatWebView ?: return
+        val script = """
+            (function() {
+              const state = window.__seoinMediaProbe;
+              if (state && state.observer) {
+                try { state.observer.disconnect(); } catch (e) {}
+              }
+              Array.from(document.querySelectorAll('audio,video')).forEach(function(item) {
+                try {
+                  delete item.__seoinMediaProbeAttached;
+                  delete item.__seoinMediaProbeId;
+                } catch (e) {
+                  item.__seoinMediaProbeAttached = false;
+                  item.__seoinMediaProbeId = null;
+                }
+              });
+              window.__seoinMediaProbe = null;
+              return 'CLEANED';
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script, null)
+    }
+
+    private fun setCoachMicOpen(open: Boolean, onDone: (Boolean) -> Unit) {
+        val webView = chatWebView ?: run {
+            onDone(false)
+            return
+        }
+        val desiredLiteral = if (open) "true" else "false"
+        val script = """
+            (function() {
+              const desiredOpen = $desiredLiteral;
+              const isVisible = function(el) {
+                if (!el) return false;
+                const rect = el.getBoundingClientRect();
+                const style = window.getComputedStyle(el);
+                return rect.width > 0 && rect.height > 0 &&
+                  style.visibility !== 'hidden' &&
+                  style.display !== 'none';
+              };
+              const labelOf = function(el) {
+                return [
+                  el.getAttribute('aria-label'),
+                  el.getAttribute('data-testid'),
+                  el.getAttribute('title'),
+                  el.textContent
+                ].filter(Boolean).join(' ').trim().toLowerCase();
+              };
+              const classify = function(label) {
+                const closeAction =
+                  /mute|turn off microphone|disable microphone|\uB9C8\uC774\uD06C \uB044\uAE30|\uC74C\uC18C\uAC70/.test(label) &&
+                  !/unmute|\uCF1C\uAE30|\uD574\uC81C/.test(label);
+                const openAction =
+                  /unmute|turn on microphone|enable microphone|\uB9C8\uC774\uD06C \uCF1C\uAE30|\uC74C\uC18C\uAC70 \uD574\uC81C/.test(label);
+                if (closeAction) return true;
+                if (openAction) return false;
+                return null;
+              };
+              const candidates = Array.from(document.querySelectorAll('button, [role="button"]'))
+                .filter(function(button) {
+                  if (!isVisible(button) || button.disabled || button.getAttribute('aria-disabled') === 'true') return false;
+                  const label = labelOf(button);
+                  if (/end|close|hang up|leave|disconnect|\uC885\uB8CC|\uB05D\uB0B4\uAE30|\uB2EB\uAE30|\uB098\uAC00\uAE30/.test(label)) return false;
+                  return /mic|microphone|mute|unmute|\uB9C8\uC774\uD06C|\uC74C\uC18C\uAC70/.test(label);
+                })
+                .map(function(button) {
+                  const label = labelOf(button);
+                  return { button: button, label: label, currentOpen: classify(label) };
+                });
+              const known = candidates.find(function(item) { return item.currentOpen !== null; });
+              if (!known) {
+                return JSON.stringify({ ok: false, clicked: false, reason: 'no-known-mic', desiredOpen: desiredOpen, labels: candidates.map(function(item) { return item.label; }).join(' | ').slice(0, 260) });
+              }
+              if (known.currentOpen === desiredOpen) {
+                return JSON.stringify({ ok: true, clicked: false, already: true, currentOpen: known.currentOpen, desiredOpen: desiredOpen, label: known.label });
+              }
+              known.button.click();
+              return JSON.stringify({ ok: true, clicked: true, already: false, currentOpen: known.currentOpen, desiredOpen: desiredOpen, label: known.label });
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            val clean = jsStringValue(result)
+            val ok = clean.contains("\"ok\":true")
+            Log.d("SeoinCoach", "mic gate desiredOpen=$open ok=$ok result=$clean")
+            onDone(ok)
+        }
+    }
+
+    private fun closeChatVoiceSession(onDone: () -> Unit) {
+        val webView = chatWebView ?: run {
+            onDone()
+            return
+        }
+        val script = """
+            (function() {
+              const buttons = Array.from(document.querySelectorAll('button')).reverse();
+              const endButton = buttons.find(function(button) {
+                const label = ((button.getAttribute('aria-label') || '') + ' ' + (button.getAttribute('title') || '') + ' ' + button.innerText).toLowerCase();
+                return label.includes('end') ||
+                  label.includes('close') ||
+                  label.includes('hang up') ||
+                  label.includes('leave') ||
+                  label.includes('stop') ||
+                  label.includes('\uC885\uB8CC') ||
+                  label.includes('\uB2EB\uAE30') ||
+                  label.includes('\uC911\uC9C0');
+              });
+              if (endButton && !endButton.disabled && endButton.getAttribute('aria-disabled') !== 'true') {
+                endButton.click();
+                return "VOICE_CLOSE_CLICKED";
+              }
+              return "NO_VOICE_CLOSE";
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            Log.d("SeoinCoach", "voice close before fallback result=$result")
+            onDone()
+        }
+    }
+
+    private fun setChatAudioDucked(ducked: Boolean) {
+        val webView = chatWebView ?: return
+        val targetVolume = if (ducked) 0.0 else 1.0
+        val script = """
+            (function() {
+              window.__seoinDuckOriginals = window.__seoinDuckOriginals || new WeakMap();
+              window.__seoinDuckActive = ${if (ducked) "true" else "false"};
+              function applyDuck() {
+                Array.from(document.querySelectorAll('audio,video')).forEach(function(media) {
+                  if (window.__seoinDuckActive) {
+                    if (!window.__seoinDuckOriginals.has(media)) {
+                      window.__seoinDuckOriginals.set(media, { volume: media.volume, muted: media.muted });
+                    }
+                    media.volume = $targetVolume;
+                  } else {
+                    const original = window.__seoinDuckOriginals.get(media);
+                    if (original) {
+                      media.volume = original.volume;
+                      media.muted = original.muted;
+                    }
+                  }
+                });
+              }
+              if (!window.__seoinDuckObserver) {
+                window.__seoinDuckObserver = new MutationObserver(applyDuck);
+                window.__seoinDuckObserver.observe(document.documentElement, { childList: true, subtree: true });
+              }
+              applyDuck();
+              return window.__seoinDuckActive ? "DUCKED" : "RESTORED";
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script, null)
+    }
+
+    private fun jsStringValue(result: String?): String {
+        if (result == null || result == "null") return ""
+        return runCatching {
+            JSONObject("{\"value\":$result}").optString("value", "")
+        }.getOrDefault(result.trim('"'))
+    }
+
+    private fun showChatGptAssistantDialog(loginSetup: Boolean = false, startCompact: Boolean = false) {
         stopAllPlayback()
         destroyChatWebView()
         chatLoginSetupMode = loginSetup
 
-        var dialog: AlertDialog? = null
         val status = text(
             if (loginSetup) "ChatGPT 로그인 화면을 불러오는 중..." else "ChatGPT를 불러오는 중...",
             12f,
@@ -5052,17 +6611,31 @@ class MainActivity : Activity() {
             setPadding(dp(14), dp(6), dp(14), dp(6))
         }
         chatStatusLabel = status
-        val popupHeight = (resources.displayMetrics.heightPixels * 0.88f).roundToInt()
-        val webHeight = max(dp(520), popupHeight - dp(128))
+        val compactHeight = dp(64)
+        val popupHeight = when {
+            startCompact -> compactHeight
+            readingCoachActive -> (resources.displayMetrics.heightPixels * 0.50f).roundToInt()
+            else -> (resources.displayMetrics.heightPixels * 0.88f).roundToInt()
+        }
+        val webHeight = if (startCompact) dp(12) else max(dp(240), popupHeight - dp(128))
         val webView = chatGptWebView(status)
         chatWebView = webView
+
+        val overlay = FrameLayout(this).apply {
+            isClickable = true
+            isFocusable = true
+            isFocusableInTouchMode = true
+            elevation = dp(28).toFloat()
+            setPadding(0, 0, 0, 0)
+        }
+        chatOverlay = overlay
 
         val box = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(0, 0, 0, 0)
-            background = rounded(color(R.color.skin_surface), dp(18))
-            layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, popupHeight)
-            minimumHeight = popupHeight
+            background = rounded(color(R.color.skin_surface), if (startCompact) dp(10) else dp(18))
+            layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            minimumHeight = if (startCompact) 0 else popupHeight
         }
         chatDialogBox = box
         val top = LinearLayout(this).apply {
@@ -5084,40 +6657,92 @@ class MainActivity : Activity() {
             textSize = 12f
             setOnClickListener { openChatGptInChrome() }
         }, fixed(dp(78), dp(38)).withRightMargin(dp(6)))
+        if (readingCoachActive) {
+            top.addView(pill("접기").apply {
+                textSize = 12f
+                setOnClickListener { compactChatGptAssistantDialog() }
+            }, fixed(dp(64), dp(38)).withRightMargin(dp(6)))
+        }
         top.addView(pill("닫기").apply {
             textSize = 12f
-            setOnClickListener { dialog?.dismiss() }
+            setOnClickListener { dismissChatGptAssistantOverlay() }
         }, fixed(dp(64), dp(38)))
 
         box.addView(top, matchWrap())
         box.addView(status, matchWrap())
         box.addView(webView, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, webHeight))
+        overlay.addView(box, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+        if (startCompact) {
+            chatStatusLabel?.text = "Voice ChatGPT"
+            compactChatDialogContent()
+        }
 
-        dialog = AlertDialog.Builder(this)
-            .setView(box)
-            .create()
-        dialog.setCanceledOnTouchOutside(false)
-        dialog.setOnDismissListener {
-            pendingChatPermissionRequest?.deny()
-            pendingChatPermissionRequest = null
-            pendingPrimeMicAfterPermission = false
-            pendingChatCompactAfterSend = false
-            chatLoginSetupMode = false
-            if (chatDialog === dialog) chatDialog = null
-            chatDialogBox = null
-            destroyChatWebView()
+        root.addView(
+            overlay,
+            if (startCompact) compactChatOverlayLayoutParams(compactHeight) else expandedChatOverlayLayoutParams(popupHeight)
+        )
+        if (startCompact) scheduleCompactChatDialogReposition(compactHeight)
+        overlay.post {
+            overlay.bringToFront()
+            overlay.requestFocus()
+            webView.requestFocus()
         }
-        chatDialog = dialog
-        dialog.show()
-        dialog.window?.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
-            decorView.setPadding(0, 0, 0, 0)
-            clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
-            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED)
-            setLayout((resources.displayMetrics.widthPixels * 0.96f).roundToInt(), popupHeight)
-        }
-        webView.requestFocus()
         webView.loadUrl("https://chatgpt.com/")
+    }
+
+    private fun dismissChatGptAssistantOverlay(restoreReader: Boolean = true) {
+        val wasReadingCoach = readingCoachActive
+        val restoreLesson = currentLesson
+        pendingChatPermissionRequest?.deny()
+        pendingChatPermissionRequest = null
+        pendingPrimeMicAfterPermission = false
+        pendingChatCompactAfterSend = false
+        chatLoginSetupMode = false
+        if (wasReadingCoach) resetReadingCoachStateOnly()
+        destroyChatWebView()
+        if (wasReadingCoach && restoreReader) restoreReaderAfterCoach(restoreLesson)
+    }
+
+    private fun expandedChatOverlayLayoutParams(height: Int): FrameLayout.LayoutParams {
+        val width = (resources.displayMetrics.widthPixels * 0.96f).roundToInt()
+        val gravity = if (readingCoachActive) {
+            Gravity.TOP or Gravity.CENTER_HORIZONTAL
+        } else {
+            Gravity.CENTER
+        }
+        return FrameLayout.LayoutParams(width, height, gravity).apply {
+            if (readingCoachActive) topMargin = dp(8)
+        }
+    }
+
+    private fun compactChatOverlayLayoutParams(height: Int): FrameLayout.LayoutParams {
+        val geometry = compactChatDialogGeometry(height)
+        return FrameLayout.LayoutParams(geometry.width, height, Gravity.TOP or Gravity.START).apply {
+            leftMargin = geometry.x
+            topMargin = geometry.y
+        }
+    }
+
+    private fun applyExpandedChatOverlay(height: Int) {
+        val overlay = chatOverlay ?: return
+        overlay.layoutParams = expandedChatOverlayLayoutParams(height)
+        overlay.visibility = View.VISIBLE
+        overlay.isClickable = true
+        overlay.isFocusable = true
+        overlay.isFocusableInTouchMode = true
+        overlay.bringToFront()
+        overlay.requestFocus()
+    }
+
+    private fun applyCompactChatOverlay(height: Int) {
+        val overlay = chatOverlay ?: return
+        overlay.layoutParams = compactChatOverlayLayoutParams(height)
+        overlay.visibility = View.VISIBLE
+        overlay.isClickable = true
+        overlay.isFocusable = false
+        overlay.isFocusableInTouchMode = false
+        overlay.bringToFront()
+        overlay.requestLayout()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -5145,10 +6770,12 @@ class MainActivity : Activity() {
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {
                     status.text = "마이크를 준비한 뒤 ChatGPT 화면 안의 음성 버튼을 눌러주세요."
+                    val prepareDelay = if (readingCoachActive) 2200L else 700L
                     handler.postDelayed({
                         if (chatWebView === view) {
-                            primeChatMicrophone(auto = true)
-                            if (chatLoginSetupMode && pendingChatPrompt == null) {
+                            if (readingCoachActive) {
+                                prepareReadingCoachSession()
+                            } else if (chatLoginSetupMode && pendingChatPrompt == null) {
                                 status.text = "로그인 후 닫기를 누르면 준비가 끝나요."
                             } else if (pendingChatVoiceBeforePrompt) {
                                 startChatVoiceBeforePromptFlow()
@@ -5156,7 +6783,7 @@ class MainActivity : Activity() {
                                 injectPendingChatPrompt()
                             }
                         }
-                    }, 700L)
+                    }, prepareDelay)
                 }
             }
             webChromeClient = object : WebChromeClient() {
@@ -5304,10 +6931,7 @@ class MainActivity : Activity() {
     }
 
     private fun compactChatGptAssistantDialog() {
-        val dialog = chatDialog ?: return
-        val window = dialog.window ?: return
         val height = dp(64)
-        val geometry = compactChatDialogGeometry(height)
         chatStatusLabel?.text = "Voice ChatGPT"
         compactChatDialogContent()
         chatDialogBox?.apply {
@@ -5316,20 +6940,79 @@ class MainActivity : Activity() {
             background = rounded(color(R.color.skin_surface), dp(10))
             requestLayout()
         }
-        window.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
-            decorView.setPadding(0, 0, 0, 0)
-            clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            addFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL)
-            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE or WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED)
-            setLayout(geometry.width, height)
-            attributes = attributes.apply {
-                gravity = Gravity.TOP or Gravity.START
-                x = geometry.x
-                this.y = geometry.y
-                dimAmount = 0f
-            }
+        applyCompactChatOverlay(height)
+        scheduleCompactChatDialogReposition(height)
+    }
+
+    private fun expandChatGptAssistantDialogForVoice() {
+        val popupHeight = (resources.displayMetrics.heightPixels * 0.50f).roundToInt()
+        val webHeight = max(dp(240), popupHeight - dp(128))
+        chatStatusLabel?.apply {
+            visibility = View.VISIBLE
+            text = "Voice 버튼을 준비하는 중이에요."
         }
+        chatDialogBox?.apply {
+            minimumHeight = popupHeight
+            layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, popupHeight)
+            background = rounded(color(R.color.skin_surface), dp(18))
+            requestLayout()
+        }
+        (chatDialogBox?.getChildAt(0) as? LinearLayout)?.apply {
+            setPadding(dp(12), dp(10), dp(12), dp(8))
+            background = rounded(color(R.color.skin_surface_alt), dp(18))
+            for (index in 0 until childCount) getChildAt(index)?.visibility = View.VISIBLE
+            (getChildAt(0) as? TextView)?.apply {
+                text = "ChatGPT 보조"
+                textSize = 17f
+            }
+            if (childCount > 0) getChildAt(childCount - 1)?.layoutParams = fixed(dp(64), dp(38))
+        }
+        chatWebView?.layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, webHeight)
+        applyExpandedChatOverlay(popupHeight)
+    }
+
+    private fun bringChatGptDialogToForegroundForVoice(reason: String) {
+        val overlay = chatOverlay
+        val box = chatDialogBox
+        val webView = chatWebView
+        val popupHeight = (resources.displayMetrics.heightPixels * 0.50f).roundToInt()
+        val webHeight = max(dp(240), popupHeight - dp(128))
+
+        box?.apply {
+            visibility = View.VISIBLE
+            minimumHeight = popupHeight
+            layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, popupHeight)
+            elevation = dp(20).toFloat()
+            bringToFront()
+            requestLayout()
+            invalidate()
+        }
+        webView?.apply {
+            visibility = View.VISIBLE
+            alpha = 1f
+            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, webHeight)
+            elevation = dp(24).toFloat()
+            isFocusable = true
+            isFocusableInTouchMode = true
+            bringToFront()
+            requestFocus()
+            requestLayout()
+            invalidate()
+        }
+        applyExpandedChatOverlay(popupHeight)
+        Log.d(
+            "SeoinCoach",
+            "coach foreground prep reason=$reason overlayAttached=${overlay?.parent != null} web=${webView != null} box=${box != null}"
+        )
+    }
+
+    private fun scheduleCompactChatDialogReposition(height: Int = dp(64)) {
+        readerScroll?.post {
+            applyCompactChatOverlay(height)
+        }
+        handler.postDelayed({
+            applyCompactChatOverlay(height)
+        }, 240L)
     }
 
     private fun compactChatDialogContent() {
@@ -5359,6 +7042,17 @@ class MainActivity : Activity() {
         var x = defaultMargin
         var y = dp(116)
         var width = metrics.widthPixels - defaultMargin * 2
+        if (readingCoachActive) {
+            val scrollLocation = IntArray(2)
+            readerScroll?.takeIf { it.width > 0 && it.height > 0 }?.getLocationOnScreen(scrollLocation)
+            y = if (scrollLocation[1] > 0) {
+                scrollLocation[1] - dialogHeight - dp(6)
+            } else {
+                dp(72)
+            }
+            y = y.coerceIn(dp(8), max(dp(8), metrics.heightPixels - dialogHeight - dp(8)))
+            return CompactDialogGeometry(x = x, y = y, width = max(dp(280), width))
+        }
         val overlay = comprehensionOverlay ?: return CompactDialogGeometry(x = x, y = y, width = width)
         val overlayLocation = IntArray(2)
         if (overlay.width > 0 && overlay.height > 0) {
@@ -5410,6 +7104,278 @@ class MainActivity : Activity() {
                 "마이크 준비 완료. 화면 안의 음성 버튼을 눌러주세요."
             }
             onDone?.invoke(clicked)
+        }
+    }
+
+    private fun clearCoachComposerDraft(onDone: () -> Unit) {
+        val webView = chatWebView ?: run {
+            onDone()
+            return
+        }
+        val script = """
+            (function() {
+              const isVisible = function(el) {
+                if (!el) return false;
+                const rect = el.getBoundingClientRect();
+                const style = window.getComputedStyle(el);
+                return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+              };
+              const readInput = function(input) {
+                if (!input) return '';
+                if (input.isContentEditable || input.getAttribute('contenteditable') === 'true') return input.textContent || '';
+                return input.value || '';
+              };
+              const clearInput = function(input) {
+                if (!input) return false;
+                input.focus();
+                if (input.isContentEditable || input.getAttribute('contenteditable') === 'true') {
+                  input.textContent = '';
+                } else {
+                  const proto = input.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
+                  const setter = Object.getOwnPropertyDescriptor(proto, 'value').set;
+                  setter.call(input, '');
+                }
+                input.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'deleteContentBackward', data: null }));
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+                return true;
+              };
+              const inputs = Array.from(document.querySelectorAll('#prompt-textarea, [data-testid="prompt-textarea"], textarea, [contenteditable="true"]'))
+                .filter(function(el) { return isVisible(el) && !el.closest('[aria-hidden="true"]'); });
+              const input = inputs.find(function(el) {
+                return el.id === 'prompt-textarea' || el.getAttribute('data-testid') === 'prompt-textarea';
+              }) || inputs[0];
+              const before = readInput(input);
+              const cleared = clearInput(input);
+              return JSON.stringify({ cleared: cleared, beforeLength: before.length, before: before.slice(0, 48) });
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            Log.d("SeoinCoach", "coach composer clear result=${jsStringValue(result)}")
+            onDone()
+        }
+    }
+
+    private fun requestCoachVoiceMode(
+        flowToken: Long,
+        retries: Int,
+        onDone: (Boolean) -> Unit
+    ) {
+        val webView = chatWebView ?: run {
+            if (retries > 0) {
+                handler.postDelayed({
+                    if (readingCoachActive && flowToken == readingCoachFlowToken) {
+                        requestCoachVoiceMode(flowToken, retries - 1, onDone)
+                    }
+                }, 1000L)
+            } else {
+                onDone(false)
+            }
+            return
+        }
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            pendingPrimeMicAfterPermission = true
+            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), chatMicPermissionRequestCode)
+            onDone(false)
+            return
+        }
+        if (readingCoachVoiceRequestInFlight) {
+            updateReadingCoachStatus("Voice request already running...")
+            handler.postDelayed({
+                if (readingCoachActive && flowToken == readingCoachFlowToken && !readingCoachFallbackTts) {
+                    requestCoachVoiceMode(flowToken, retries, onDone)
+                }
+            }, 700L)
+            return
+        }
+        bringChatGptDialogToForegroundForVoice("voice-button-request")
+        readingCoachVoiceRequestInFlight = true
+        clearPendingChatPromptState()
+        clearCoachComposerDraft {
+            handler.postDelayed({
+                if (!readingCoachActive || flowToken != readingCoachFlowToken || readingCoachFallbackTts) {
+                    readingCoachVoiceRequestInFlight = false
+                    return@postDelayed
+                }
+                webView.evaluateJavascript(buildCoachVoiceButtonScript()) { result ->
+                    if (!readingCoachActive || flowToken != readingCoachFlowToken || readingCoachFallbackTts) {
+                        readingCoachVoiceRequestInFlight = false
+                        return@evaluateJavascript
+                    }
+                    val clean = jsStringValue(result)
+                    val success = clean.contains("\"success\":true")
+                    readingCoachVoiceRequestInFlight = false
+                    Log.d("SeoinCoach", "voice mode request retries=$retries success=$success result=$clean")
+                    if (success) {
+                        onDone(true)
+                        return@evaluateJavascript
+                    }
+                    if (retries > 0) {
+                        updateReadingCoachStatus("Waiting for ChatGPT voice button... $retries")
+                        handler.postDelayed({
+                            if (readingCoachActive && flowToken == readingCoachFlowToken && !readingCoachFallbackTts) {
+                                requestCoachVoiceMode(flowToken, retries - 1, onDone)
+                            }
+                        }, 1000L)
+                    } else {
+                        onDone(false)
+                    }
+                }
+            }, 350L)
+        }
+    }
+
+    private fun buildCoachVoiceButtonScript(): String = """
+        (function() {
+          const isVisible = function(el) {
+            if (!el) return false;
+            const rect = el.getBoundingClientRect();
+            const style = window.getComputedStyle(el);
+            return rect.width > 0 && rect.height > 0 &&
+              style.visibility !== 'hidden' &&
+              style.display !== 'none';
+          };
+
+          const labelOf = function(el) {
+            return [
+              el.getAttribute('aria-label'),
+              el.getAttribute('data-testid'),
+              el.getAttribute('title'),
+              el.textContent
+            ].filter(Boolean).join(' ').toLowerCase();
+          };
+
+          const score = function(el) {
+            if (!isVisible(el) || el.disabled || el.getAttribute('aria-disabled') === 'true') return 0;
+            const label = labelOf(el);
+            const isVoiceLike = /voice|voice mode|voice chat|voice conversation|\uBCF4\uC774\uC2A4|\uC74C\uC131 \uBAA8\uB4DC|\uC74C\uC131 \uB300\uD654|\uC74C\uC131\uC73C\uB85C \uB300\uD654|\uB300\uD654 \uC2DC\uC791/.test(label);
+
+            if (/send|submit|attach|upload|\uC804\uC1A1|\uBCF4\uB0B4\uAE30|\uCCA8\uBD80/.test(label)) return 0;
+            if (/options|menu|close|stop|end|leave|hang up|\uC635\uC158|\uBA54\uB274|\uB2EB\uAE30|\uC911\uC9C0|\uC885\uB8CC/.test(label)) return 0;
+            if (/dictate|dictation|\uBC1B\uC544\uC4F0\uAE30|\uC74C\uC131 \uC785\uB825/.test(label) && !isVoiceLike) return 0;
+            if (/composer-speech-button|speech/.test(label) && !isVoiceLike) return 0;
+
+            let points = 0;
+            if (/voice-mode-button|voice-button/.test(label)) points += 150;
+            if (/voice mode|start voice|voice chat|voice conversation/.test(label)) points += 120;
+            if (/\uC74C\uC131 \uBAA8\uB4DC|\uC74C\uC131 \uB300\uD654|\uC74C\uC131\uC73C\uB85C \uB300\uD654|\uB300\uD654 \uC2DC\uC791|\uBCF4\uC774\uC2A4/.test(label)) points += 120;
+            if (/\bvoice\b|\uC74C\uC131/.test(label)) points += 80;
+            if (/speech/.test(label)) points += 60;
+            if (/microphone|\bmic\b|\uB9C8\uC774\uD06C/.test(label)) points += 65;
+            return points;
+          };
+
+          const candidates = Array.from(document.querySelectorAll('button, [role="button"]'))
+            .map(function(el) { return { el: el, points: score(el), label: labelOf(el).slice(0, 100) }; })
+            .filter(function(item) { return item.points >= 60; })
+            .sort(function(a, b) { return b.points - a.points; });
+
+          const allLabels = Array.from(document.querySelectorAll('button, [role="button"]'))
+            .filter(isVisible)
+            .map(function(el) { return labelOf(el).slice(0, 80); })
+            .filter(Boolean)
+            .join(' | ')
+            .slice(0, 420);
+
+          const target = candidates.length ? candidates[0] : null;
+          if (!target) {
+            return JSON.stringify({ success: false, reason: 'no-voice-button', labels: allLabels });
+          }
+
+          target.el.click();
+          return JSON.stringify({
+            success: true,
+            points: target.points,
+            label: target.label,
+            candidates: candidates.slice(0, 4).map(function(item) {
+              return { points: item.points, label: item.label };
+            })
+          });
+        })();
+    """.trimIndent()
+
+    private fun waitForCoachVoiceUiReady(
+        flowToken: Long,
+        maxWaitMs: Long,
+        startedAtMs: Long = System.currentTimeMillis(),
+        attempt: Int = 0,
+        onDone: (Boolean) -> Unit
+    ) {
+        val webView = chatWebView ?: run {
+            onDone(false)
+            return
+        }
+        val script = """
+            (function() {
+              const isVisible = function(el) {
+                if (!el) return false;
+                const rect = el.getBoundingClientRect();
+                const style = window.getComputedStyle(el);
+                return rect.width > 0 && rect.height > 0 && style.visibility !== 'hidden' && style.display !== 'none';
+              };
+              const labelOf = function(el) {
+                return [
+                  el.getAttribute('aria-label'),
+                  el.getAttribute('data-testid'),
+                  el.getAttribute('title'),
+                  el.textContent
+                ].filter(Boolean).join(' ').trim().toLowerCase();
+              };
+              const text = (document.body && document.body.innerText || '').toLowerCase();
+              const visibleComposer = Array.from(document.querySelectorAll('#prompt-textarea, [data-testid="prompt-textarea"], textarea, [contenteditable="true"]'))
+                .some(function(el) { return isVisible(el) && !el.closest('[aria-hidden="true"]'); });
+              const labels = Array.from(document.querySelectorAll('button, [role="button"]'))
+                .filter(isVisible)
+                .map(labelOf)
+                .join('\n');
+              const hasReadyText =
+                text.includes('start speaking') ||
+                text.includes('speak now') ||
+                text.includes('listening') ||
+                text.includes('connected') ||
+                text.includes('\uB300\uD654\uB97C \uC2DC\uC791') ||
+                text.includes('\uB4E4\uC744 \uC900\uBE44') ||
+                text.includes('\uB4E3\uACE0');
+              const hasEndButton = /end conversation|end voice|leave voice|disconnect|hang up|\uC885\uB8CC|\uB05D\uB0B4\uAE30|\uB098\uAC00\uAE30/.test(labels);
+              const hasVoiceMicControl = (/mute|unmute|microphone|\bmic\b|\uB9C8\uC774\uD06C|\uC74C\uC18C\uAC70/.test(labels) && hasEndButton);
+              const hasMicError =
+                text.includes('microphone access required') ||
+                text.includes('enable microphone access') ||
+                text.includes('\uB9C8\uC774\uD06C \uC561\uC138\uC2A4') ||
+                text.includes('\uB9C8\uC774\uD06C \uAD8C\uD55C');
+              const voiceReady = !hasMicError && (hasEndButton || hasVoiceMicControl || (hasReadyText && !visibleComposer));
+              return JSON.stringify({
+                voiceReady: voiceReady,
+                composerReady: visibleComposer,
+                hasEndButton: hasEndButton,
+                hasVoiceMicControl: hasVoiceMicControl,
+                hasReadyText: hasReadyText,
+                hasMicError: hasMicError,
+                labels: labels.slice(0, 220)
+              });
+            })();
+        """.trimIndent()
+        webView.evaluateJavascript(script) { result ->
+            if (!readingCoachActive || flowToken != readingCoachFlowToken || readingCoachFallbackTts) return@evaluateJavascript
+            val clean = jsStringValue(result)
+            val voiceReady = clean.contains("\"voiceReady\":true")
+            val composerReady = clean.contains("\"composerReady\":true")
+            Log.d("SeoinCoach", "voice ui wait attempt=$attempt ready=${voiceReady && composerReady} result=$clean")
+            if (voiceReady && composerReady) {
+                onDone(true)
+                return@evaluateJavascript
+            }
+            if (System.currentTimeMillis() - startedAtMs >= maxWaitMs) {
+                onDone(false)
+                return@evaluateJavascript
+            }
+            updateReadingCoachStatus(
+                "Waiting for voice conversation and input..."
+            )
+            handler.postDelayed({
+                if (readingCoachActive && flowToken == readingCoachFlowToken && !readingCoachFallbackTts) {
+                    waitForCoachVoiceUiReady(flowToken, maxWaitMs, startedAtMs, attempt + 1, onDone)
+                }
+            }, 850L)
         }
     }
 
@@ -5470,6 +7436,11 @@ class MainActivity : Activity() {
     }
 
     private fun destroyChatWebView() {
+        chatOverlay?.let { overlay ->
+            (overlay.parent as? ViewGroup)?.removeView(overlay)
+        }
+        chatOverlay = null
+        chatDialogBox = null
         chatWebView?.apply {
             stopLoading()
             loadUrl("about:blank")
